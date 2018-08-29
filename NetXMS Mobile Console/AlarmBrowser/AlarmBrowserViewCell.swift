@@ -16,6 +16,7 @@ class AlarmBrowserViewCell: UITableViewCell {
    @IBOutlet weak var objectName: UILabel!
    @IBOutlet weak var createdOn: UILabel!
    @IBOutlet weak var message: UILabel!
+   @IBOutlet weak var severityLabel: UILabel!
    
    override func awakeFromNib() {
         super.awakeFromNib()

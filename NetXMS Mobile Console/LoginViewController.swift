@@ -28,15 +28,13 @@ class LoginViewController: UIViewController {
    {
       if let jsonData = jsonData
       {
-         Connection.sharedInstance?.sessionDataMap.updateValue(jsonData["session"] as! String, forKey: "sessionId")
-         Connection.sharedInstance?.sessionDataMap.updateValue(jsonData["serverVersion"] as! String, forKey: "serverVersion")
-         print("Session id: \(Connection.sharedInstance?.sessionDataMap["sessionId"] ?? "Empty")")
-         print("Server version: \(Connection.sharedInstance?.sessionDataMap["serverVersion"] ?? "Empty")")
-         
          DispatchQueue.main.async
          {
+            Connection.sharedInstance?.session = Session(json: jsonData)
             Connection.sharedInstance?.getAllObjects()
+            Connection.sharedInstance?.getRootObjects()
             Connection.sharedInstance?.getAllAlarms()
+            Connection.sharedInstance?.getPredefinedGraphs()
             Connection.sharedInstance?.startNotificationHandler()
             self.storeCredentialsInKeyChain()
             let mainNavigationController = self.storyboard?.instantiateViewController(withIdentifier: "MainNavigationController") as! MainNavigationController

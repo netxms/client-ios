@@ -17,6 +17,7 @@ struct RequestData
    let method: String
    var fields: [String : String]
    var requestBody: Data?
+   var queryItems = [URLQueryItem]()
    
    init(url: String, method: String)
    {
@@ -31,15 +32,31 @@ struct RequestData
  */
 class Connection
 {
+   static private let OBJECT_CHANGED = 4
+   static private let OBJECT_DELETED = 99
+   static private let ALARM_DELETED = 1003
+   static private let NEW_ALARM = 1004
+   static private let ALARM_CHANGED = 1005
+   static private let ALARM_TERMINATED = 1011
+   static private let MULTIPLE_ALARMS_TERMINATED = 1032;
+   static private let MULTIPLE_ALARMS_RESOLVED = 1033;
+   
    static var sharedInstance: Connection?
    
    var login: String
    var password: String
    var apiUrl: String
-   var sessionDataMap = [String : Any]()
    var objectCache = [Int : AbstractObject]()
+   var rootObjects = [Int : AbstractObject]()
    var alarmCache = [Int : Alarm]()
    var timer: Timer?
+   var refreshAlarmBrowser: Bool
+   var logoutStarted = false
+   var session: Session?
+   
+   // Views
+   var alarmBrowser: AlarmBrowserViewController?
+   var objectBrowser: ObjectBrowserViewController?
    
    /**
     * Connection object constructor
@@ -49,6 +66,9 @@ class Connection
       self.login = login
       self.password = password
       self.apiUrl = apiUrl
+      self.refreshAlarmBrowser = false
+      self.alarmBrowser = nil
+      self.session = nil
    }
    
    /**
@@ -87,9 +107,10 @@ class Connection
     */
    func logout(onSuccess: @escaping ([String : Any]?) -> Void)
    {
-      if let sessionId = sessionDataMap["sessionId"]
+      if self.session != nil
       {
-         let requestData = RequestData(url: "\(apiUrl)/sessions/\(sessionId)", method: "DELETE")
+         logoutStarted = true
+         let requestData = RequestData(url: "\(apiUrl)/sessions/\(self.session?.handle.description.lowercased() ?? "")", method: "DELETE")
          sendRequest(requestData: requestData, onSuccess: onSuccess, onFailure: nil)
       }
    }
@@ -99,9 +120,12 @@ class Connection
     */
    func sendRequest(requestData: RequestData, onSuccess: @escaping ([String : Any]?) -> Void, onFailure: ((AnyObject?) -> Void)?)
    {
-      guard let url = URL(string: requestData.url) else
+      var components = URLComponents(string: requestData.url)
+      components?.queryItems = requestData.queryItems
+      
+      guard let url = components?.url
+      else
       {
-         print("Unable to create URL object")
          return
       }
       
@@ -162,9 +186,12 @@ class Connection
     */
    func getAllAlarms()
    {
-      var requestData = RequestData(url: "\(apiUrl)/alarms", method: "GET")
-      requestData.fields.updateValue(sessionDataMap["sessionId"] as! String, forKey: "Session-Id")
-      sendRequest(requestData: requestData, onSuccess: onGetAllAlarmsSuccess)
+      if self.session != nil
+      {
+         var requestData = RequestData(url: "\(apiUrl)/alarms", method: "GET")
+         requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
+         sendRequest(requestData: requestData, onSuccess: onGetAllAlarmsSuccess)
+      }
    }
    
    func onGetAllAlarmsSuccess(jsonData: [String : Any]?) -> Void
@@ -172,18 +199,81 @@ class Connection
       if let jsonData = jsonData,
          let alarms = jsonData["alarms"] as? [[String: Any]]
       {
+         alarmCache.removeAll()
          for a in alarms
          {
-            if let alarm = Alarm(json: a)
+            let alarm = Alarm(json: a)
+            alarmCache.updateValue(alarm, forKey: alarm.id)
+         }
+         if refreshAlarmBrowser
+         {
+            DispatchQueue.main.async
             {
-               alarmCache.updateValue(alarm, forKey: alarm.id)
+               self.alarmBrowser?.refresh()
             }
+            refreshAlarmBrowser = false
          }
       }
    }
    
+   /**
+    * Modify alarm
+    */
+   func modifyAlarm(alarmList: [[String : Any]])
+   {
+      if self.session != nil
+      {
+         var requestData = RequestData(url: "\(apiUrl)/alarms", method: "POST")
+         requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
+         let json: [String : Any] = ["alarmList" : alarmList]
+         requestData.requestBody = try? JSONSerialization.data(withJSONObject: json)
+         
+         sendRequest(requestData: requestData, onSuccess: onModifyAlarmSuccess)
+      }
+   }
+   
+   func modifyAlarm(alarmId: Int, action: Int, timeout: Int)
+   {      
+      var alarmList = [String : Any]()
+      alarmList.updateValue(alarmId, forKey: "alarmId")
+      alarmList.updateValue(action, forKey: "action")
+      if (action == AlarmBrowserViewController.STICKY_ACKNOWLEDGE_ALARM)
+      {
+         if var modifyData = alarmList[alarmId.description] as? [String : Any]
+         {
+            modifyData.updateValue(timeout, forKey: "timeout")
+         }
+      }
+      modifyAlarm(alarmList: [alarmList])
+   }
+   
+   func modifyAlarm(alarmId: Int, action: Int)
+   {
+      modifyAlarm(alarmId: alarmId, action: action, timeout: 0)
+   }
+   
+   func onModifyAlarmSuccess(jsonData: [String : Any]?) -> Void
+   {
+   }
+   
    func onReceiveNotificationSuccess(jsonData: [String : Any]?) -> Void
    {
+      if let jsonData = jsonData,
+         let code = jsonData["code"] as? Int
+      {
+         switch code
+         {
+         case Connection.ALARM_DELETED, Connection.NEW_ALARM, Connection.ALARM_CHANGED,
+              Connection.ALARM_TERMINATED, Connection.MULTIPLE_ALARMS_RESOLVED, Connection.MULTIPLE_ALARMS_TERMINATED:
+            refreshAlarmBrowser = true
+            getAllAlarms()
+         case Connection.OBJECT_CHANGED, Connection.OBJECT_DELETED:
+            getAllObjects()
+            getRootObjects()
+         default:
+            break
+         }
+      }
       DispatchQueue.main.async
       {
          self.sendNotificationRequest()
@@ -209,9 +299,17 @@ class Connection
    
    func sendNotificationRequest()
    {
-      var requestData = RequestData(url: "\(apiUrl)/notifications", method: "GET")
-      requestData.fields.updateValue(sessionDataMap["sessionId"] as! String, forKey: "Session-Id")
-      sendRequest(requestData: requestData, onSuccess: onReceiveNotificationSuccess, onFailure: onReceiveNotificationFailure)
+      if logoutStarted == true
+      {
+         return
+      }
+      
+      if self.session != nil
+      {
+         var requestData = RequestData(url: "\(apiUrl)/notifications", method: "GET")
+         requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
+         sendRequest(requestData: requestData, onSuccess: onReceiveNotificationSuccess, onFailure: onReceiveNotificationFailure)
+      }
    }
    
    /**
@@ -236,9 +334,12 @@ class Connection
     */
    func getAllObjects()
    {
-      var requestData = RequestData(url: "\(apiUrl)/objects", method: "GET")
-      requestData.fields.updateValue(sessionDataMap["sessionId"] as! String, forKey: "Session-Id")
-      sendRequest(requestData: requestData, onSuccess: onGetAllObjectsSuccess)
+      if self.session != nil
+      {
+         var requestData = RequestData(url: "\(apiUrl)/objects", method: "GET")
+         requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
+         sendRequest(requestData: requestData, onSuccess: onGetAllObjectsSuccess)
+      }
    }
    
    func onGetAllObjectsSuccess(jsonData: [String : Any]?) -> Void
@@ -248,10 +349,58 @@ class Connection
       {
          for o in objects
          {
-            if let object = AbstractObject(json: o)
+            var object: AbstractObject
+            switch o["objectClass"] as! Int
             {
-               objectCache.updateValue(object, forKey: object.objectId)
+            case AbstractObject.OBJECT_NODE:
+               object = Node(json: o)
+            /*case AbstractObject.OBJECT_CLUSTER:
+               object = Cluster(json: o)
+            case AbstractObject.OBJECT_CONTAINER:
+               object = Container(json: o)*/
+            default:
+               object = AbstractObject(json: o)
             }
+            objectCache.updateValue(object, forKey: object.objectId)
+         }
+      }
+   }
+   
+   /**
+    * Get root objects
+    */
+   func getRootObjects()
+   {
+      if self.session != nil
+      {
+         var requestData = RequestData(url: "\(apiUrl)/objects", method: "GET")
+         requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
+         requestData.queryItems.append(URLQueryItem(name: "rootObjectsOnly", value: "true"))
+         
+         sendRequest(requestData: requestData, onSuccess: onGetRootObjectsSuccess)
+      }
+   }
+   
+   func onGetRootObjectsSuccess(jsonData: [String : Any]?) -> Void
+   {
+      if let jsonData = jsonData,
+      let objects = jsonData["objects"] as? [[String : Any]]
+      {
+         for o in objects
+         {
+            var object: AbstractObject
+            switch o["objectClass"] as! Int
+            {
+               case AbstractObject.OBJECT_NODE:
+                  object = Node(json: o)
+             /*case AbstractObject.OBJECT_CLUSTER:
+                  object = Cluster(json: o)
+               case AbstractObject.OBJECT_CONTAINER:
+                  object = Container(json: o)*/
+               default:
+                  object = AbstractObject(json: o)
+            }
+            rootObjects.updateValue(object, forKey: object.objectId)
          }
       }
    }
@@ -268,6 +417,80 @@ class Connection
       else
       {
          return ""
+      }
+   }
+   
+   func getSortedAlarms() -> [Alarm]
+   {
+      return alarmCache.values.sorted {
+         if ($0.currentSeverity.rawValue == $1.currentSeverity.rawValue)
+         {
+            return (resolveObjectName(objectId: $0.sourceObjectId).lowercased()) < (resolveObjectName(objectId: $1.sourceObjectId).lowercased())
+         }
+         else
+         {
+            return $0.currentSeverity.rawValue > $1.currentSeverity.rawValue
+         }
+      }
+   }
+   
+   func getSortedRootObjects() -> [AbstractObject]
+   {
+      return rootObjects.values.sorted {
+            return ($0.objectName.lowercased()) < ($1.objectName.lowercased())
+      }
+   }
+   
+   func getLastValues(objectId: Int, onSuccess: @escaping ([String : Any]?) -> Void)
+   {
+      if self.session != nil
+      {
+         var requestData = RequestData(url: "\(apiUrl)/objects/\(objectId)/lastvalues", method: "GET")
+         requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
+         sendRequest(requestData: requestData, onSuccess: onSuccess)
+      }
+   }
+   
+   func getHistoricalData(objectId: Int, dciId: Int, onSuccess: @escaping ([String : Any]?) -> Void)
+   {
+      if self.session != nil
+      {
+         var requestData = RequestData(url: "\(apiUrl)/objects/\(objectId)/datacollection/\(dciId)/values", method: "GET")
+         requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
+         //requestData.queryItems.append(URLQueryItem(name: "timeInterval", value: "900"))
+         sendRequest(requestData: requestData, onSuccess: onSuccess)
+      }
+   }
+   
+   func getPredefinedGraphs()
+   {
+      if self.session != nil
+      {
+         var requestData = RequestData(url: "\(apiUrl)/predefinedgraphs", method: "GET")
+         requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
+         sendRequest(requestData: requestData, onSuccess: onGetPredefinedGraphsSuccess)
+      }
+   }
+   
+   func onGetPredefinedGraphsSuccess(jsonData: [String : Any]?) -> Void
+   {
+      if let jsonData = jsonData,
+         let graphs = jsonData["root"] as? [String: Any]
+      {
+         /*alarmCache.removeAll()
+         for a in alarms
+         {
+            let alarm = Alarm(json: a)
+            alarmCache.updateValue(alarm, forKey: alarm.id)
+         }
+         if refreshAlarmBrowser
+         {
+            DispatchQueue.main.async
+               {
+                  self.alarmBrowser?.refresh()
+            }
+            refreshAlarmBrowser = false
+         }*/
       }
    }
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.1 (57501) - http://www.bohemiancoding.com/sketch -->
+    <title>export / icon / Alarms</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="40" height="40" rx="10"></rect>
+        <linearGradient x1="50%" y1="148.766192%" x2="50%" y2="6.09192164%" id="linearGradient-3">
+            <stop stop-color="#FFFFFF" stop-opacity="0.3" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-15" transform="translate(-1156.000000, -248.000000)">
+            <g id="Group-14" transform="translate(99.000000, 100.000000)">
+                <g id="Group-9" transform="translate(647.000000, 0.000000)">
+                    <g id="export-/-icon-/-Alarms" transform="translate(410.000000, 148.000000)">
+                        <g id="Group-2" stroke-width="1">
+                            <mask id="mask-2" fill="white">
+                                <use xlink:href="#path-1"></use>
+                            </mask>
+                            <use id="Rectangle-2" fill="#FF8E02" xlink:href="#path-1"></use>
+                            <g id="Group" mask="url(#mask-2)">
+                                <g transform="translate(20.000000, 20.000000) scale(-1, 1) rotate(45.000000) translate(-20.000000, -20.000000) translate(-4.000000, -4.000000)" id="Rectangle-2">
+                                    <rect fill="#FFB92C" x="0" y="0" width="48" height="11.9231734"></rect>
+                                    <rect fill="#FFB11E" x="0" y="11.9231734" width="48" height="11.9231734"></rect>
+                                    <rect fill="#FF9E02" x="0" y="23.8463469" width="48" height="11.9231734"></rect>
+                                    <rect fill="#FF8E02" x="0" y="35.7695203" width="48" height="11.9231734"></rect>
+                                </g>
+                            </g>
+                        </g>
+                        <path d="M21.6218341,9.87808639 L33.6460826,27.784491 C34.2691877,28.7124136 34.0481948,29.987934 33.1524812,30.6334454 C32.8213443,30.8720849 32.4276298,31 32.0242496,31 L7.97575259,31 C6.8846234,31 6.00008842,30.083658 6.00008842,28.9532928 C6.00008842,28.5354074 6.12356349,28.1275353 6.3539196,27.784491 L18.3781681,9.87808639 C19.0012732,8.95016373 20.2325191,8.72122418 21.1282327,9.3667356 C21.3207599,9.50548362 21.4879021,9.67863611 21.6218341,9.87808639 Z M20,26 C19.4477153,26 19,26.4477153 19,27 C19,27.5522847 19.4477153,28 20,28 C20.5522847,28 21,27.5522847 21,27 C21,26.4477153 20.5522847,26 20,26 Z M20,13 C19.9782963,13 19.9565954,13.0004929 19.9349142,13.0014785 C19.144104,13.0374244 18.5321656,13.7076426 18.5681115,14.4984528 L18.9566094,23.0454077 C18.9808857,23.5794844 19.4209498,24 19.955578,24 L20.044422,24 C20.5790502,24 21.0191143,23.5794844 21.0433906,23.0454077 L21.4318885,14.4984528 C21.432874,14.4767715 21.433367,14.4550706 21.433367,14.433367 C21.433367,13.6417403 20.7916267,13 20,13 Z" id="Combined-Shape" fill="url(#linearGradient-3)"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
