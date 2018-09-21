@@ -49,6 +49,7 @@ class Connection
    var objectCache = [Int : AbstractObject]()
    var rootObjects = [Int : AbstractObject]()
    var alarmCache = [Int : Alarm]()
+   var predefinedGraphRoot: GraphFolder?
    var timer: Timer?
    var refreshAlarmBrowser: Bool
    var logoutStarted = false
@@ -57,6 +58,7 @@ class Connection
    // Views
    var alarmBrowser: AlarmBrowserViewController?
    var objectBrowser: ObjectBrowserViewController?
+   var predefinedGraphsBrowser: PredefinedGraphsViewController?
    
    /**
     * Connection object constructor
@@ -366,6 +368,18 @@ class Connection
       }
    }
    
+   func getLastValuesForMultipleObjects(query: String, onSuccess: @escaping ([String : Any]?) -> Void)
+   {
+      if self.session != nil
+      {
+         var requestData = RequestData(url: "\(apiUrl)/objects/datacollection/values", method: "GET")
+         requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
+         requestData.queryItems.append(URLQueryItem(name: "dciList", value: query))
+         
+         sendRequest(requestData: requestData, onSuccess: onSuccess)
+      }
+   }
+   
    /**
     * Get root objects
     */
@@ -475,22 +489,19 @@ class Connection
    func onGetPredefinedGraphsSuccess(jsonData: [String : Any]?) -> Void
    {
       if let jsonData = jsonData,
-         let graphs = jsonData["root"] as? [String: Any]
+         let rootData = jsonData["root"] as? [String: Any]
       {
-         /*alarmCache.removeAll()
-         for a in alarms
-         {
-            let alarm = Alarm(json: a)
-            alarmCache.updateValue(alarm, forKey: alarm.id)
-         }
-         if refreshAlarmBrowser
-         {
-            DispatchQueue.main.async
-               {
-                  self.alarmBrowser?.refresh()
-            }
-            refreshAlarmBrowser = false
-         }*/
+         self.predefinedGraphRoot = GraphFolder(json: rootData)
+      }
+   }
+   
+   func getObjectTools(objectId: Int, onSuccess: @escaping ([String : Any]?) -> Void)
+   {
+      if self.session != nil
+      {
+         var requestData = RequestData(url: "\(apiUrl)/objects/\(objectId)/objecttools", method: "GET")
+         requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
+         sendRequest(requestData: requestData, onSuccess: onSuccess)
       }
    }
 }

@@ -50,10 +50,10 @@ open class KeychainWrapper {
     public static let standard = KeychainWrapper()
     
     /// ServiceName is used for the kSecAttrService property to uniquely identify this keychain accessor. If no service name is specified, KeychainWrapper will default to using the bundleIdentifier.
-    private (set) public var serviceName: String
+    private (set) var serviceName: String
     
     /// AccessGroup is used for the kSecAttrAccessGroup property to identify which Keychain Access Group this entry belongs to. This allows you to use the KeychainWrapper with shared keychain access between different applications.
-    private (set) public var accessGroup: String?
+    private (set) var accessGroup: String?
     
     private static let defaultServiceName: String = {
         return Bundle.main.bundleIdentifier ?? "SwiftKeychainWrapper"
@@ -67,12 +67,12 @@ open class KeychainWrapper {
     ///
     /// - parameter serviceName: The ServiceName for this instance. Used to uniquely identify all keys stored using this keychain wrapper instance.
     /// - parameter accessGroup: Optional unique AccessGroup for this instance. Use a matching AccessGroup between applications to allow shared keychain access.
-    public init(serviceName: String, accessGroup: String? = nil) {
+    init(serviceName: String, accessGroup: String? = nil) {
         self.serviceName = serviceName
         self.accessGroup = accessGroup
     }
 
-    // MARK:- Public Methods
+    // MARK:- var Methods
     
     /// Checks if keychain data exists for a specified key.
     ///
@@ -140,7 +140,7 @@ open class KeychainWrapper {
         return keys
     }
     
-    // MARK: Public Getters
+    // MARK: var Getters
     
     open func integer(forKey key: String, withAccessibility accessibility: KeychainItemAccessibility? = nil) -> Int? {
         guard let numberValue = object(forKey: key, withAccessibility: accessibility) as? NSNumber else {
@@ -244,7 +244,7 @@ open class KeychainWrapper {
         return status == noErr ? result as? Data : nil
     }
     
-    // MARK: Public Setters
+    // MARK: var Setters
     
     @discardableResult open func set(_ value: Int, forKey key: String, withAccessibility accessibility: KeychainItemAccessibility? = nil) -> Bool {
         return set(NSNumber(value: value), forKey: key, withAccessibility: accessibility)

@@ -16,9 +16,21 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
    @IBOutlet weak var alarmTableView: UITableView!
    @IBOutlet weak var lastValuesTableView: UITableView!
    @IBOutlet weak var comments: UILabel!
+   @IBOutlet weak var objectToolsButton: UIButton!
    
     override func viewDidLoad() {
-        super.viewDidLoad()
+      super.viewDidLoad()
+      
+      objectToolsButton.layer.masksToBounds = false
+      objectToolsButton.layer.shadowColor = UIColor.gray.cgColor
+      objectToolsButton.layer.shadowOpacity = 0.3
+      objectToolsButton.layer.shadowOffset = CGSize(width: -1, height: 2)
+      objectToolsButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
+      
+      objectToolsButton.layer.shadowPath = UIBezierPath(rect: objectToolsButton.bounds).cgPath
+      objectToolsButton.layer.shouldRasterize = true
+      objectToolsButton.layer.rasterizationScale = UIScreen.main.scale
+      
       self.title = Connection.sharedInstance?.resolveObjectName(objectId: object.objectId)
       self.comments.text = object.comments
       let sortedAlarms = (Connection.sharedInstance?.getSortedAlarms())!
@@ -167,8 +179,8 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
       {
          if let lineChartVC = storyboard?.instantiateViewController(withIdentifier: "LineChartViewController")
          {
-            (lineChartVC as! LineChartViewController).dciValue = lastValuesWithActiveThresholds[indexPath.row]
-            (lineChartVC as! LineChartViewController).objectId = object.objectId
+            //(lineChartVC as! LineChartViewController).dciValue = lastValuesWithActiveThresholds[indexPath.row]
+            //(lineChartVC as! LineChartViewController).objectId = object.objectId
             navigationController?.pushViewController(lineChartVC, animated: true)
          }
       }
@@ -206,6 +218,16 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
       {
          alarmBrowserVC.objectFilter = self.object.objectId
          navigationController?.pushViewController(alarmBrowserVC, animated: true)
+      }
+   }
+   
+   @IBAction func onObjectToolsButtonPressed(_ sender: Any)
+   {
+      
+      if let objectToolsVC = storyboard?.instantiateViewController(withIdentifier: "ObjectToolsViewController") as? ObjectToolsViewController
+      {
+         objectToolsVC.objectId = self.object.objectId
+         navigationController?.pushViewController(objectToolsVC, animated: true)
       }
    }
    /*

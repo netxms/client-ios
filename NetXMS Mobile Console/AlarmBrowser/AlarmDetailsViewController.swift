@@ -16,10 +16,65 @@ class AlarmDetailsViewController : UIViewController
    @IBOutlet weak var createdOn: UILabel!
    @IBOutlet weak var message: UILabel!
    @IBOutlet weak var severityLabel: UILabel!
+   @IBOutlet weak var acknowledgeButton: UIButton!
+   @IBOutlet weak var stickyAcknowledgeButton: UIButton!
+   @IBOutlet weak var resolveButton: UIButton!
+   @IBOutlet weak var terminateButton: UIButton!
+   @IBOutlet weak var lastValuesButton: UIButton!
    
    override func viewDidLoad()
    {
       super.viewDidLoad()
+      
+      acknowledgeButton.layer.masksToBounds = false
+      acknowledgeButton.layer.shadowColor = UIColor.gray.cgColor
+      acknowledgeButton.layer.shadowOpacity = 0.3
+      acknowledgeButton.layer.shadowOffset = CGSize(width: -1, height: 2)
+      acknowledgeButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
+      
+      acknowledgeButton.layer.shadowPath = UIBezierPath(rect: acknowledgeButton.bounds).cgPath
+      acknowledgeButton.layer.shouldRasterize = true
+      acknowledgeButton.layer.rasterizationScale = UIScreen.main.scale
+      
+      stickyAcknowledgeButton.layer.masksToBounds = false
+      stickyAcknowledgeButton.layer.shadowColor = UIColor.gray.cgColor
+      stickyAcknowledgeButton.layer.shadowOpacity = 0.3
+      stickyAcknowledgeButton.layer.shadowOffset = CGSize(width: -1, height: 2)
+      stickyAcknowledgeButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
+      
+      stickyAcknowledgeButton.layer.shadowPath = UIBezierPath(rect: stickyAcknowledgeButton.bounds).cgPath
+      stickyAcknowledgeButton.layer.shouldRasterize = true
+      stickyAcknowledgeButton.layer.rasterizationScale = UIScreen.main.scale
+      
+      resolveButton.layer.masksToBounds = false
+      resolveButton.layer.shadowColor = UIColor.gray.cgColor
+      resolveButton.layer.shadowOpacity = 0.3
+      resolveButton.layer.shadowOffset = CGSize(width: -1, height: 2)
+      resolveButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
+      
+      resolveButton.layer.shadowPath = UIBezierPath(rect: resolveButton.bounds).cgPath
+      resolveButton.layer.shouldRasterize = true
+      resolveButton.layer.rasterizationScale = UIScreen.main.scale
+      
+      terminateButton.layer.masksToBounds = false
+      terminateButton.layer.shadowColor = UIColor.gray.cgColor
+      terminateButton.layer.shadowOpacity = 0.3
+      terminateButton.layer.shadowOffset = CGSize(width: -1, height: 2)
+      terminateButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
+      
+      terminateButton.layer.shadowPath = UIBezierPath(rect: terminateButton.bounds).cgPath
+      terminateButton.layer.shouldRasterize = true
+      terminateButton.layer.rasterizationScale = UIScreen.main.scale
+      
+      lastValuesButton.layer.masksToBounds = false
+      lastValuesButton.layer.shadowColor = UIColor.gray.cgColor
+      lastValuesButton.layer.shadowOpacity = 0.3
+      lastValuesButton.layer.shadowOffset = CGSize(width: -1, height: 2)
+      lastValuesButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
+      
+      lastValuesButton.layer.shadowPath = UIBezierPath(rect: lastValuesButton.bounds).cgPath
+      lastValuesButton.layer.shouldRasterize = true
+      lastValuesButton.layer.rasterizationScale = UIScreen.main.scale
       
       objectName.text = Connection.sharedInstance?.resolveObjectName(objectId: alarm.sourceObjectId)
       createdOn.text = DateFormatter.localizedString(from: Date(timeIntervalSince1970: alarm.creationTime), dateStyle: DateFormatter.Style.short, timeStyle: DateFormatter.Style.short)

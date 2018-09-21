@@ -45,20 +45,20 @@ class LoginViewController: UIViewController {
    
    @IBAction func loginButtonPressed()
    {
-      if !(apiUrl.text?.isEmpty)! && !(login.text?.isEmpty)! && !(password.text?.isEmpty)!
+      if !(apiUrl.text?.isEmpty)! && !(login.text?.isEmpty)!
       {
-         Connection.sharedInstance = Connection(login: login.text!, password: password.text!, apiUrl: apiUrl.text!)
+         Connection.sharedInstance = Connection(login: login.text!, password: password.text ?? "", apiUrl: apiUrl.text!)
          Connection.sharedInstance?.login(onSuccess: onLoginSuccess)
       }
    }
    
    func storeCredentialsInKeyChain()
    {
-      if !(apiUrl.text?.isEmpty)! && !(login.text?.isEmpty)! && !(password.text?.isEmpty)!
+      if !(apiUrl.text?.isEmpty)! && !(login.text?.isEmpty)!
       {
          KeychainWrapper.standard.set(apiUrl.text!, forKey: "NetXMSApiUrl")
          KeychainWrapper.standard.set(login.text!, forKey: "NetXMSLogin")
-         KeychainWrapper.standard.set(password.text!, forKey: "NetXMSPassword")
+         KeychainWrapper.standard.set(password.text ?? "", forKey: "NetXMSPassword")
       }
    }
    

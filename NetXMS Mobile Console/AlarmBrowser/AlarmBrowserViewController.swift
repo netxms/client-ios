@@ -10,10 +10,10 @@ import UIKit
 
 class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
 {
-   static public let TERMINATE_ALARM = 0
-   static public let ACKNOWLEDGE_ALARM = 1
-   static public let STICKY_ACKNOWLEDGE_ALARM = 2
-   static public let RESOLVE_ALARM = 3
+   static let TERMINATE_ALARM = 0
+   static let ACKNOWLEDGE_ALARM = 1
+   static let STICKY_ACKNOWLEDGE_ALARM = 2
+   static let RESOLVE_ALARM = 3
    
    var alarms: [Alarm]!
    var filteredAlarms = [Alarm]()

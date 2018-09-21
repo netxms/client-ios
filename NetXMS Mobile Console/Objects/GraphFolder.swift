@@ -19,28 +19,30 @@ class GraphFolder
    {
       self.name = json["name"] as? String ?? ""
       
-      if graphs = json["graphs"] as? [[String : Any]]
+      if let graphs = json["graphs"] as? [[String : Any]]
       {
          for g in graphs
          {
-            self.graphs.append(contentsOf: GraphSettings(g))
+            let settings = GraphSettings(json: g)
+            print(settings)
+            self.graphs.append(GraphSettings(json: g))
          }
       }
       
-      if parentData = json["parent"] as? [String : Any]
+      if let parentData = json["parent"] as? [String : Any]
       {
-         self.parent = GraphFolder(parentData)
+         self.parent = GraphFolder(json: parentData)
       }
       else
       {
          self.parent = nil
       }
       
-      if subfolders = json["subfolders"] as? [[String : Any]]
+      if let subfolders = json["subfolders"] as? [[String : Any]]
       {
          for s in subfolders
          {
-            self.subfolders.append(contentsOf: GraphFolder(a))
+            self.subfolders.append(GraphFolder(json: s))
          }
       }
    }   

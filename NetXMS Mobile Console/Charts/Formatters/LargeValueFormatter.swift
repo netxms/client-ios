@@ -9,15 +9,15 @@
 import Foundation
 import Charts
 
-public class LargeValueFormatter: NSObject, IValueFormatter, IAxisValueFormatter {
+class LargeValueFormatter: NSObject, IValueFormatter, IAxisValueFormatter {
    
    /// Suffix to be appended after the values.
-   public var suffix = ["", " k", " M", " G", " T"]
+   let suffix = ["", " k", " M", " G", " T"]
    
    /// An appendix text to be added at the end of the formatted value.
-   public var appendix: String?
+   var appendix: String?
    
-   public init(appendix: String? = nil) {
+   init(appendix: String? = nil) {
       self.appendix = appendix
    }
    
@@ -53,11 +53,11 @@ public class LargeValueFormatter: NSObject, IValueFormatter, IAxisValueFormatter
       return r
    }
    
-   public func stringForValue(_ value: Double, axis: AxisBase?) -> String {
+   func stringForValue(_ value: Double, axis: AxisBase?) -> String {
       return format(value: value)
    }
    
-   public func stringForValue(
+   func stringForValue(
       _ value: Double,
       entry: ChartDataEntry,
       dataSetIndex: Int,
