@@ -19,14 +19,14 @@ enum NodeType: Int
    {
       switch (type)
       {
-         case "PHYSICAL":
-            return NodeType.PHYSICAL
-         case "VIRTUAL":
-            return NodeType.VIRTUAL
-         case "CONTROLLER":
-            return NodeType.CONTROLLER
-         default:
-            return NodeType.UNKNOWN
+      case "PHYSICAL":
+         return NodeType.PHYSICAL
+      case "VIRTUAL":
+         return NodeType.VIRTUAL
+      case "CONTROLLER":
+         return NodeType.CONTROLLER
+      default:
+         return NodeType.UNKNOWN
       }
    }
 }

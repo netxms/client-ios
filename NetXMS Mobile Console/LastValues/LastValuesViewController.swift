@@ -8,27 +8,29 @@
 
 import UIKit
 
-class LastValuesViewController: UITableViewController, UISearchBarDelegate {
+class LastValuesViewController: UITableViewController, UISearchBarDelegate
+{
    var objectId: Int!
    var lastValues = [DciValue]()
    var filteredLastValues = [DciValue]()
    @IBOutlet weak var searchBar: UISearchBar!
    
-    override func viewDidLoad() {
-        super.viewDidLoad()
+   override func viewDidLoad()
+   {
+      super.viewDidLoad()
       self.title = "Last Values"
       Connection.sharedInstance?.getLastValues(objectId: objectId, onSuccess: onGetLastValuesSuccess)
       
       self.searchBar.delegate = self
       let searchBarHeight = searchBar.frame.size.height
       tableView.setContentOffset(CGPoint(x: 0, y: searchBarHeight), animated: false)
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
-    }
+      
+      // Uncomment the following line to preserve selection between presentations
+      // self.clearsSelectionOnViewWillAppear = false
+      
+      // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+      // self.navigationItem.rightBarButtonItem = self.editButtonItem
+   }
    
    func onGetLastValuesSuccess(jsonData: [String : Any]?) -> Void
    {
@@ -46,10 +48,10 @@ class LastValuesViewController: UITableViewController, UISearchBarDelegate {
             }
             self.filteredLastValues.append(contentsOf: self.lastValues)
             DispatchQueue.main.async
-            {
-               self.tableView.reloadData()
+               {
+                  self.tableView.reloadData()
             }
-
+            
          }
       }
    }
@@ -83,13 +85,15 @@ class LastValuesViewController: UITableViewController, UISearchBarDelegate {
       
       self.tableView.reloadData()
    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return filteredLastValues.count
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+   
+   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+   {
+      // #warning Incomplete implementation, return the number of rows
+      return filteredLastValues.count
+   }
+   
+   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+   {
       let cell: LastValuesCell = tableView.dequeueReusableCell(withIdentifier: "LastValuesCell", for: indexPath) as! LastValuesCell
       
       cell.dciName.text = filteredLastValues[indexPath.row].description
@@ -127,11 +131,12 @@ class LastValuesViewController: UITableViewController, UISearchBarDelegate {
             cell.statusLabel.backgroundColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
          }
       }
-
-        return cell
-    }
+      
+      return cell
+   }
    
-   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+   {
       if let lineChartVC = storyboard?.instantiateViewController(withIdentifier: "LastValuesChartController")
       {
          (lineChartVC as! LastValuesChartController).dciValue = filteredLastValues[indexPath.row]

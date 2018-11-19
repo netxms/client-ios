@@ -8,7 +8,8 @@
 
 import UIKit
 
-class ObjectBrowserViewCell: UITableViewCell {
+class ObjectBrowserViewCell: UITableViewCell
+{
    @IBOutlet weak var severityLabel: UILabel!
    @IBOutlet weak var objectName: UILabel!
    @IBOutlet weak var button: UIButton!
@@ -16,17 +17,19 @@ class ObjectBrowserViewCell: UITableViewCell {
    var object: AbstractObject?
    var objectBrowser: ObjectBrowserViewController?
    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-
+   override func awakeFromNib()
+   {
+      super.awakeFromNib()
+      // Initialization code
+   }
+   
+   override func setSelected(_ selected: Bool, animated: Bool)
+   {
+      super.setSelected(selected, animated: animated)
+      
+      // Configure the view for the selected state
+   }
+   
    @IBAction func onButtonPressed(_ sender: Any)
    {
       if let objectBrowserVC = objectBrowser?.storyboard?.instantiateViewController(withIdentifier: "ObjectBrowserViewController")

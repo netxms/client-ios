@@ -45,6 +45,26 @@ enum ObjectToolType: Int
    }
 }
 
+enum InputFieldType: Int
+{
+   case TEXT = 0
+   case PASSWORD = 1
+   case NUMBER = 2
+   
+   static func resolveInputFieldType(type: String) -> InputFieldType
+   {
+      switch type {
+      case "TEXT":
+         return InputFieldType.TEXT
+      case "PASSWORD":
+         return InputFieldType.PASSWORD
+      default:
+         return InputFieldType.NUMBER
+         
+      }
+   }
+}
+
 class ObjectTool
 {
    let id: Int
@@ -54,7 +74,8 @@ class ObjectTool
    let description: String
    let commandName: String
    let commandShortName: String
-   var inputFields: [String : InputField]
+   var inputFields = [String : InputField]()
+   let data: String
    
    init(json: [String : Any])
    {
@@ -63,13 +84,46 @@ class ObjectTool
       self.displayName = json["displayName"] as? String ?? ""
       self.type = ObjectToolType.resolveObjectToolType(type: json["type"] as? Int ?? 0)
       self.description = json["description"] as? String ?? ""
-      self.commandName = json["commandName"] as? String ""
-      self.commandShortName = json["commandShortName"] as? String ""
-      //self.inputFields
+      self.commandName = json["commandName"] as? String ?? ""
+      self.commandShortName = json["commandShortName"] as? String ?? ""
+      self.data = json["data"] as? String ?? ""
+      
+      if let fields = json["inputFields"] as? [String : [String : Any]]
+      {
+         for f in fields
+         {
+            let field = InputField(json: f.value)
+            self.inputFields.updateValue(field, forKey: field.name)
+         }
+      }
    }
 }
 
 class InputField
 {
+   var name: String
+   var type: InputFieldType
+   var displayName: String
+   var sequence: Int
+   var options: InputFieldOptions
    
+   init(json: [String : Any])
+   {
+      self.name = json["name"] as? String ?? ""
+      self.type = InputFieldType.resolveInputFieldType(type: json["type"] as? String ?? "")
+      self.displayName = json["displayName"] as? String ?? ""
+      self.sequence = json["sequence"] as? Int ?? 0
+      self.options = InputFieldOptions(json: json["options"] as? [String : Any] ?? [:])
+   }
 }
+
+class InputFieldOptions
+{
+   var validatePassword: Bool
+   
+   init(json: [String : Any])
+   {
+      self.validatePassword = json["validatePassword"] as? Bool ?? false
+   }
+}
+

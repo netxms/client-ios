@@ -13,8 +13,8 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
    @IBOutlet weak var searchBar: UISearchBar!
    var objects = [AbstractObject]()
    
-    override func viewDidLoad()
-    {
+   override func viewDidLoad()
+   {
       super.viewDidLoad()
       Connection.sharedInstance?.objectBrowser = self
       if objects.count == 0
@@ -25,7 +25,7 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
       self.searchBar.delegate = self
       let searchBarHeight = searchBar.frame.size.height
       tableView.setContentOffset(CGPoint(x: 0, y: searchBarHeight), animated: false)
-    }
+   }
    
    func refresh()
    {
@@ -102,20 +102,23 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
       }
       self.tableView.reloadData()
    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-    // MARK: - Table view data source
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return objects.count
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ObjectCell", for: indexPath) as! ObjectBrowserViewCell
+   
+   override func didReceiveMemoryWarning()
+   {
+      super.didReceiveMemoryWarning()
+      // Dispose of any resources that can be recreated.
+   }
+   
+   // MARK: - Table view data source
+   
+   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+   {
+      return objects.count
+   }
+   
+   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+   {
+      let cell = tableView.dequeueReusableCell(withIdentifier: "ObjectCell", for: indexPath) as! ObjectBrowserViewCell
       cell.object = self.objects[indexPath.row]
       cell.objectBrowser = self
       cell.objectName?.text = Connection.sharedInstance?.resolveObjectName(objectId: self.objects[indexPath.row].objectId)
@@ -157,9 +160,9 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
          cell.severityLabel.backgroundColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
       }
       
-     return cell
-    }
-
+      return cell
+   }
+   
    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
    {
       if let objectDetailsVC = storyboard?.instantiateViewController(withIdentifier: "ObjectDetailsViewController")

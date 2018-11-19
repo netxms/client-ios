@@ -9,9 +9,11 @@
 import Foundation
 import Charts
 
-class TimestampFormatter: IndexAxisValueFormatter {
+class TimestampFormatter: IndexAxisValueFormatter
+{
    
-   init(timestamps: [Double]) {
+   init(timestamps: [Double])
+   {
       super.init()
       convertTimestampToDate(timestamps: timestamps)
    }

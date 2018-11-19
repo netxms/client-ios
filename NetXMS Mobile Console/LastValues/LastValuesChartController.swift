@@ -15,11 +15,10 @@ class LastValuesChartController: LineChartViewController
    var dciValue: DciValue!
    var objectId: Int!
    
-   override func viewDidLoad() {
+   override func viewDidLoad()
+   {
       self.lineChartView = lastValuesChart
       super.viewDidLoad()
-      
-      
       
       Connection.sharedInstance?.getHistoricalData(objectId: objectId, dciId: dciValue.id, onSuccess: onGetSuccess)
       //setChart(dataPoints: months, values: unitsSold)

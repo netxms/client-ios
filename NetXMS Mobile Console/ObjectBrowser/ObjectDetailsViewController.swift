@@ -18,7 +18,11 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
    @IBOutlet weak var comments: UILabel!
    @IBOutlet weak var objectToolsButton: UIButton!
    
-    override func viewDidLoad() {
+   @IBOutlet weak var tableViewHeight: NSLayoutConstraint!
+   @IBOutlet weak var lastValuesTabbleHeight: NSLayoutConstraint!
+   
+   override func viewDidLoad()
+   {
       super.viewDidLoad()
       
       objectToolsButton.layer.masksToBounds = false
@@ -43,9 +47,12 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
             i += 1
          }
       }
+      
+      //tableViewHeight.constant = 50.0 * CGFloat(self.alarms.count)
+      
       Connection.sharedInstance?.getLastValues(objectId: object.objectId, onSuccess: onGetLastValuesSuccess)
-    }
-
+   }
+   
    func onGetLastValuesSuccess(jsonData: [String : Any]?) -> Void
    {
       if let jsonData = jsonData,
@@ -68,24 +75,29 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
             }
             if self.lastValuesWithActiveThresholds.count > 0
             {
-               self.lastValuesWithActiveThresholds = self.lastValuesWithActiveThresholds.sorted {
+               self.lastValuesWithActiveThresholds = self.lastValuesWithActiveThresholds.sorted
+               {
                   return ($0.description.lowercased()) < ($1.description.lowercased())
                }
             }
             DispatchQueue.main.async
             {
-                  self.lastValuesTableView.reloadData()
+               //self.lastValuesTabbleHeight.constant = 50.0 * CGFloat(self.lastValuesWithActiveThresholds.count)
+               //self.view.setNeedsUpdateConstraints()
+               self.lastValuesTableView.reloadData()
             }
          }
       }
    }
    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
+   override func didReceiveMemoryWarning()
+   {
+      super.didReceiveMemoryWarning()
+      // Dispose of any resources that can be recreated.
+   }
    
-   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+   {
       if tableView == self.alarmTableView
       {
          return alarms.count
@@ -96,7 +108,8 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
       }
    }
    
-   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+   {
       if tableView == self.alarmTableView
       {
          let cell: ObjectDetailsAlarmCell = tableView.dequeueReusableCell(withIdentifier: "ObjectDetailsAlarmCell", for: indexPath) as! ObjectDetailsAlarmCell
@@ -230,14 +243,4 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
          navigationController?.pushViewController(objectToolsVC, animated: true)
       }
    }
-   /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

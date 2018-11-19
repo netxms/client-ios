@@ -8,37 +8,40 @@
 
 import UIKit
 
-class LoginViewController: UIViewController {
+class LoginViewController: UIViewController
+{
    
    @IBOutlet weak var apiUrl: UITextField!
    @IBOutlet weak var login: UITextField!
    @IBOutlet weak var password: UITextField!
    
-   override func viewDidLoad() {
-        super.viewDidLoad()
+   override func viewDidLoad()
+   {
+      super.viewDidLoad()
       loadCredentialsFromKeyChain()
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
+   }
+   
+   override func didReceiveMemoryWarning()
+   {
+      super.didReceiveMemoryWarning()
+      // Dispose of any resources that can be recreated.
+   }
    
    func onLoginSuccess(jsonData: [String : Any]?) -> Void
    {
       if let jsonData = jsonData
       {
          DispatchQueue.main.async
-         {
-            Connection.sharedInstance?.session = Session(json: jsonData)
-            Connection.sharedInstance?.getAllObjects()
-            Connection.sharedInstance?.getRootObjects()
-            Connection.sharedInstance?.getAllAlarms()
-            Connection.sharedInstance?.getPredefinedGraphs()
-            Connection.sharedInstance?.startNotificationHandler()
-            self.storeCredentialsInKeyChain()
-            let mainNavigationController = self.storyboard?.instantiateViewController(withIdentifier: "MainNavigationController") as! MainNavigationController
-            self.present(mainNavigationController, animated: true, completion: nil)
+            {
+               Connection.sharedInstance?.session = Session(json: jsonData)
+               Connection.sharedInstance?.getAllObjects()
+               Connection.sharedInstance?.getRootObjects()
+               Connection.sharedInstance?.getAllAlarms()
+               Connection.sharedInstance?.getPredefinedGraphs()
+               Connection.sharedInstance?.startNotificationHandler()
+               self.storeCredentialsInKeyChain()
+               let mainNavigationController = self.storyboard?.instantiateViewController(withIdentifier: "MainNavigationController") as! MainNavigationController
+               self.present(mainNavigationController, animated: true, completion: nil)
          }
       }
    }
@@ -75,15 +78,4 @@ class LoginViewController: UIViewController {
          loginButtonPressed()
       }
    }
-   
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

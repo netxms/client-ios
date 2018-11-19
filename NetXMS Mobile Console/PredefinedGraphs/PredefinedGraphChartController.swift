@@ -14,7 +14,8 @@ class PredefinedGraphChartController: LineChartViewController
    @IBOutlet weak var predefinedGraphView: LineChartView!
    var object: AnyObject?
    
-   override func viewDidLoad() {
+   override func viewDidLoad()
+   {
       self.lineChartView = predefinedGraphView
       super.viewDidLoad()
       if let object = self.object as? GraphSettings
@@ -24,19 +25,20 @@ class PredefinedGraphChartController: LineChartViewController
          {
             switch object.timeFrameType
             {
-               case TimeFrameType.TIME_FRAME_BACK_FROM_NOW:
-                  query.append("\(d.dciId),\(d.nodeId),\(0),\(0),\(object.timeRange),\(object.timeUnits.rawValue);")
-               case TimeFrameType.TIME_FRAME_FIXED:
-                  query.append("\(d.dciId),\(d.nodeId),\(object.timeFrom),\(object.timeTo),\(0),\(0);")
-               default:
-                  query.append("\(d.dciId),\(d.nodeId),\(0),\(0),\(0),\(0);")
+            case TimeFrameType.TIME_FRAME_BACK_FROM_NOW:
+               query.append("\(d.dciId),\(d.nodeId),\(0),\(0),\(object.timeRange),\(object.timeUnits.rawValue);")
+            case TimeFrameType.TIME_FRAME_FIXED:
+               query.append("\(d.dciId),\(d.nodeId),\(object.timeFrom),\(object.timeTo),\(0),\(0);")
+            default:
+               query.append("\(d.dciId),\(d.nodeId),\(0),\(0),\(0),\(0);")
             }
          }
          Connection.sharedInstance?.getLastValuesForMultipleObjects(query: query, onSuccess: onGetSuccess)
       }
    }
    
-   override func onGetSuccess(jsonData: [String : Any]?) {
+   override func onGetSuccess(jsonData: [String : Any]?)
+   {
       if let jsonData = jsonData,
          let values = jsonData["values"] as? [String: Any]
       {
@@ -75,8 +77,8 @@ class PredefinedGraphChartController: LineChartViewController
          }
          
          DispatchQueue.main.async
-         {
-            self.setChart(dataPoints: dataPoints, values: timeStamps, labels: labels)
+            {
+               self.setChart(dataPoints: dataPoints, values: timeStamps, labels: labels)
          }
       }
    }

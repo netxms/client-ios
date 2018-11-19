@@ -19,11 +19,11 @@ class ServerData
    init?(json: [String : Any])
    {
       guard let address = json["address"] as? String,
-      let color = json["color"] as? String,
-      let id = json["id"] as? Int,
-      let timeZone = json["timeZone"] as? String,
-      let version = json["version"] as? String
-      else
+         let color = json["color"] as? String,
+         let id = json["id"] as? Int,
+         let timeZone = json["timeZone"] as? String,
+         let version = json["version"] as? String
+         else
       {
          return nil
       }
@@ -45,9 +45,9 @@ class UserData
    init?(json: [String : Any])
    {
       guard let globalAccessRights = json["globalAccessRights"] as? Int,
-      let id = json["id"] as? Int,
-      let name = json["name"] as? String
-      else
+         let id = json["id"] as? Int,
+         let name = json["name"] as? String
+         else
       {
          return nil
       }
@@ -73,13 +73,13 @@ class Session
       if let sessionData = json["session"] as? [String : Any]
       {
          guard let encrypted = sessionData["encrypted"] as? Bool,
-         let objectsSynchronized = sessionData["objectsSynchronized"] as? Bool,
-         let passwordExpired = sessionData["passwordExpired"] as? Bool,
-         let serverData = sessionData["server"] as? [String : Any],
-         let userData = sessionData["user"] as? [String : Any],
-         let zoningEnabled = sessionData["zoningEnabled"] as? Bool,
-         let handle = json["sessionHandle"] as? String
-         else
+            let objectsSynchronized = sessionData["objectsSynchronized"] as? Bool,
+            let passwordExpired = sessionData["passwordExpired"] as? Bool,
+            let serverData = sessionData["server"] as? [String : Any],
+            let userData = sessionData["user"] as? [String : Any],
+            let zoningEnabled = sessionData["zoningEnabled"] as? Bool,
+            let handle = json["sessionHandle"] as? String
+            else
          {
             return nil
          }

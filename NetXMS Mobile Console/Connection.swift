@@ -51,7 +51,8 @@ class Connection
    var alarmCache = [Int : Alarm]()
    var predefinedGraphRoot: GraphFolder?
    var timer: Timer?
-   var refreshAlarmBrowser: Bool
+   var refreshAlarmBrowser = false
+   var refreshObjectBrowser = false
    var logoutStarted = false
    var session: Session?
    
@@ -68,7 +69,6 @@ class Connection
       self.login = login
       self.password = password
       self.apiUrl = apiUrl
-      self.refreshAlarmBrowser = false
       self.alarmBrowser = nil
       self.session = nil
    }
@@ -126,7 +126,7 @@ class Connection
       components?.queryItems = requestData.queryItems
       
       guard let url = components?.url
-      else
+         else
       {
          return
       }
@@ -210,8 +210,8 @@ class Connection
          if refreshAlarmBrowser
          {
             DispatchQueue.main.async
-            {
-               self.alarmBrowser?.refresh()
+               {
+                  self.alarmBrowser?.refresh()
             }
             refreshAlarmBrowser = false
          }
@@ -270,6 +270,7 @@ class Connection
             refreshAlarmBrowser = true
             getAllAlarms()
          case Connection.OBJECT_CHANGED, Connection.OBJECT_DELETED:
+            refreshObjectBrowser = true
             getAllObjects()
             getRootObjects()
          default:
@@ -277,8 +278,8 @@ class Connection
          }
       }
       DispatchQueue.main.async
-      {
-         self.sendNotificationRequest()
+         {
+            self.sendNotificationRequest()
       }
    }
    
@@ -323,13 +324,13 @@ class Connection
    }
    
    /*@objc func refreshObjects()
-   {
-      var requestData = RequestData(url: "\(apiUrl)/objects", method: "GET")
-      requestData.fields.updateValue(sessionDataMap["sessionId"] as! String, forKey: "Session-Id")
-      sendRequest(requestData: requestData) { jsonData in
-         print(jsonData)
-      }
-   }*/
+    {
+    var requestData = RequestData(url: "\(apiUrl)/objects", method: "GET")
+    requestData.fields.updateValue(sessionDataMap["sessionId"] as! String, forKey: "Session-Id")
+    sendRequest(requestData: requestData) { jsonData in
+    print(jsonData)
+    }
+    }*/
    
    /**
     * Fill local object list
@@ -356,10 +357,10 @@ class Connection
             {
             case AbstractObject.OBJECT_NODE:
                object = Node(json: o)
-            /*case AbstractObject.OBJECT_CLUSTER:
-               object = Cluster(json: o)
-            case AbstractObject.OBJECT_CONTAINER:
-               object = Container(json: o)*/
+               /*case AbstractObject.OBJECT_CLUSTER:
+                object = Cluster(json: o)
+                case AbstractObject.OBJECT_CONTAINER:
+                object = Container(json: o)*/
             default:
                object = AbstractObject(json: o)
             }
@@ -398,23 +399,31 @@ class Connection
    func onGetRootObjectsSuccess(jsonData: [String : Any]?) -> Void
    {
       if let jsonData = jsonData,
-      let objects = jsonData["objects"] as? [[String : Any]]
+         let objects = jsonData["objects"] as? [[String : Any]]
       {
+         rootObjects.removeAll()
          for o in objects
          {
             var object: AbstractObject
             switch o["objectClass"] as! Int
             {
-               case AbstractObject.OBJECT_NODE:
-                  object = Node(json: o)
-             /*case AbstractObject.OBJECT_CLUSTER:
-                  object = Cluster(json: o)
-               case AbstractObject.OBJECT_CONTAINER:
-                  object = Container(json: o)*/
-               default:
-                  object = AbstractObject(json: o)
+            case AbstractObject.OBJECT_NODE:
+               object = Node(json: o)
+               /*case AbstractObject.OBJECT_CLUSTER:
+                object = Cluster(json: o)
+                case AbstractObject.OBJECT_CONTAINER:
+                object = Container(json: o)*/
+            default:
+               object = AbstractObject(json: o)
             }
             rootObjects.updateValue(object, forKey: object.objectId)
+         }
+         if refreshObjectBrowser
+         {
+            DispatchQueue.main.async
+               {
+                  self.objectBrowser?.refresh()
+            }
          }
       }
    }
@@ -451,7 +460,7 @@ class Connection
    func getSortedRootObjects() -> [AbstractObject]
    {
       return rootObjects.values.sorted {
-            return ($0.objectName.lowercased()) < ($1.objectName.lowercased())
+         return ($0.objectName.lowercased()) < ($1.objectName.lowercased())
       }
    }
    
@@ -503,5 +512,47 @@ class Connection
          requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
          sendRequest(requestData: requestData, onSuccess: onSuccess)
       }
+   }
+   
+   func executeObjectTool(objectId: Int, details: [[String : Any]], onSuccess: @escaping ([String : Any]?) -> Void)
+   {
+      if self.session != nil
+      {
+         var requestData = RequestData(url: "\(apiUrl)/objects/\(objectId)/objecttools", method: "POST")
+         requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
+         let json: [String : Any] = ["toolList" : details]
+         requestData.requestBody = try? JSONSerialization.data(withJSONObject: json)
+         
+         sendRequest(requestData: requestData, onSuccess: onSuccess)
+      }
+   }
+   
+   func getObjectToolOutput(objectId: Int, uuid: UUID, onSuccess: @escaping ([String : Any]?) -> Void)
+   {
+      if self.session != nil
+      {
+         var requestData = RequestData(url: "\(apiUrl)/objects/\(objectId)/objecttools/output/\(uuid)", method: "GET")
+         requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
+         
+         sendRequest(requestData: requestData, onSuccess: onSuccess)
+      }
+   }
+   
+   func stopObjectTool(objectId: Int, uuid: UUID, streamId: Int)
+   {
+      if self.session != nil
+      {
+         var requestData = RequestData(url: "\(apiUrl)/objects/\(objectId)/objecttools/output/\(uuid)", method: "POST")
+         requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
+         let json: [String : Any] = ["streamId" : streamId, "uuid" : uuid.uuidString]
+         requestData.requestBody = try? JSONSerialization.data(withJSONObject: json)
+         
+         sendRequest(requestData: requestData, onSuccess: onStopObjectToolSuccess)
+      }
+   }
+   
+   func onStopObjectToolSuccess(jsonData: [String : Any]?) -> Void
+   {
+      
    }
 }

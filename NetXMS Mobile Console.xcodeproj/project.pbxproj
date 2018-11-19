@@ -47,6 +47,7 @@
 		1148CC44214FD9DB007005EC /* DateValueFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1148CC41214FD9DB007005EC /* DateValueFormatter.swift */; };
 		1148CC462150F6FE007005EC /* LastValuesChartController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1148CC452150F6FE007005EC /* LastValuesChartController.swift */; };
 		1148CC4921510C1A007005EC /* ObjectToolsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1148CC4821510C1A007005EC /* ObjectToolsViewController.swift */; };
+		114995AC217F02BF002F2FE6 /* ObjectToolOutputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114995AB217F02BF002F2FE6 /* ObjectToolOutputViewController.swift */; };
 		1161F7B3203EAFE700B9C845 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161F7B2203EAFE700B9C845 /* AppDelegate.swift */; };
 		1161F7B8203EAFE700B9C845 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1161F7B6203EAFE700B9C845 /* Main.storyboard */; };
 		1161F7BA203EAFE700B9C845 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1161F7B9203EAFE700B9C845 /* Assets.xcassets */; };
@@ -159,6 +160,7 @@
 		1148CC41214FD9DB007005EC /* DateValueFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DateValueFormatter.swift; path = "../../../../../Downloads/Charts-master/ChartsDemo-iOS/Swift/Formatters/DateValueFormatter.swift"; sourceTree = "<group>"; };
 		1148CC452150F6FE007005EC /* LastValuesChartController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastValuesChartController.swift; sourceTree = "<group>"; };
 		1148CC4821510C1A007005EC /* ObjectToolsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectToolsViewController.swift; sourceTree = "<group>"; };
+		114995AB217F02BF002F2FE6 /* ObjectToolOutputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectToolOutputViewController.swift; sourceTree = "<group>"; };
 		1161F7AF203EAFE700B9C845 /* NetXMS Mobile Console.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "NetXMS Mobile Console.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1161F7B2203EAFE700B9C845 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1161F7B7203EAFE700B9C845 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -410,6 +412,7 @@
 				116F027120F761E200056C7F /* ObjectDetailsLastValuesCell.swift */,
 				1148CC4821510C1A007005EC /* ObjectToolsViewController.swift */,
 				110CE04421525086007CED7F /* ObjectToolsViewCell.swift */,
+				114995AB217F02BF002F2FE6 /* ObjectToolOutputViewController.swift */,
 			);
 			path = ObjectBrowser;
 			sourceTree = "<group>";
@@ -635,6 +638,7 @@
 				1189A8B720F754E300510DB4 /* ObjectDetailsViewController.swift in Sources */,
 				116F027220F761E200056C7F /* ObjectDetailsLastValuesCell.swift in Sources */,
 				11043452210EF075003DB91A /* Session.swift in Sources */,
+				114995AC217F02BF002F2FE6 /* ObjectToolOutputViewController.swift in Sources */,
 				1189A8B920F7557900510DB4 /* ObjectDetailsAlarmCell.swift in Sources */,
 				1148CC4921510C1A007005EC /* ObjectToolsViewController.swift in Sources */,
 				1161F7F1203F0B8B00B9C845 /* Alarm.swift in Sources */,
@@ -805,6 +809,7 @@
 		1161F7D8203EAFE800B9C845 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3P4TEC3UN3;
@@ -820,6 +825,7 @@
 		1161F7D9203EAFE800B9C845 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3P4TEC3UN3;

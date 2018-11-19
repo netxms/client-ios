@@ -8,19 +8,22 @@
 
 import UIKit
 
-class PredefinedGraphViewCell: UITableViewCell {
+class PredefinedGraphViewCell: UITableViewCell
+{
    @IBOutlet weak var graphIcon: UIImageView!
    @IBOutlet weak var graphName: UILabel!
    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-
+   override func awakeFromNib()
+   {
+      super.awakeFromNib()
+      // Initialization code
+   }
+   
+   override func setSelected(_ selected: Bool, animated: Bool)
+   {
+      super.setSelected(selected, animated: animated)
+      
+      // Configure the view for the selected state
+   }
+   
 }

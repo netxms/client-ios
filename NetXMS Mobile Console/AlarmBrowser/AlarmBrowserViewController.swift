@@ -20,8 +20,8 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
    var objectFilter = -1
    @IBOutlet weak var searchBar: UISearchBar!
    
-    override func viewDidLoad()
-    {
+   override func viewDidLoad()
+   {
       super.viewDidLoad()
       Connection.sharedInstance?.alarmBrowser = self
       self.searchBar.delegate = self
@@ -32,7 +32,7 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       {
          filteredAlarms = filteredAlarms.filter { $0.sourceObjectId == objectFilter }
       }
-    }
+   }
    
    func refresh()
    {
@@ -44,7 +44,8 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       self.tableView.reloadData()
    }
    
-   func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+   func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String)
+   {
       if searchText == ""
       {
          filteredAlarms = (Connection.sharedInstance?.getSortedAlarms())!
@@ -66,11 +67,13 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       self.tableView.reloadData()
    }
    
-   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+   {
       return filteredAlarms.count
    }
    
-   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+   {
       let cell = tableView.dequeueReusableCell(withIdentifier: "AlarmCell", for: indexPath) as! AlarmBrowserViewCell
       cell.objectName?.text = Connection.sharedInstance?.resolveObjectName(objectId: self.filteredAlarms[indexPath.row].sourceObjectId)
       cell.message?.text = self.filteredAlarms[indexPath.row].message
@@ -95,7 +98,7 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       case Severity.RESOLVE:
          cell.severityLabel.backgroundColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
       }
-
+      
       return cell
    }
    
@@ -116,7 +119,7 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       let terminateAction = UITableViewRowAction(style: .default, title: "Terminate") { (rowAction, indexPath) in
          Connection.sharedInstance?.modifyAlarm(alarmId: self.filteredAlarms[indexPath.row].id, action: AlarmBrowserViewController.TERMINATE_ALARM)
       }
-   
+      
       return [acknowledgeAction, terminateAction]
    }
 }

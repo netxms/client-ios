@@ -14,8 +14,9 @@ class PredefinedGraphsViewController: UITableViewController, UISearchBarDelegate
    var root: GraphFolder!
    var list = [AnyObject]()
    
-    override func viewDidLoad() {
-        super.viewDidLoad()
+   override func viewDidLoad()
+   {
+      super.viewDidLoad()
       Connection.sharedInstance?.predefinedGraphsBrowser = self
       if self.root == nil
       {
@@ -36,12 +37,13 @@ class PredefinedGraphsViewController: UITableViewController, UISearchBarDelegate
       self.searchBar.delegate = self
       let searchBarHeight = searchBar.frame.size.height
       tableView.setContentOffset(CGPoint(x: 0, y: searchBarHeight), animated: false)
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
+   }
+   
+   override func didReceiveMemoryWarning()
+   {
+      super.didReceiveMemoryWarning()
+      // Dispose of any resources that can be recreated.
+   }
    
    func refresh()
    {
@@ -60,14 +62,16 @@ class PredefinedGraphsViewController: UITableViewController, UISearchBarDelegate
       }
       self.tableView.reloadData()
    }
-
-    // MARK: - Table view data source
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return list.count
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+   
+   // MARK: - Table view data source
+   
+   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+   {
+      return list.count
+   }
+   
+   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+   {
       let cell = tableView.dequeueReusableCell(withIdentifier: "GraphCell", for: indexPath)
       
       if let cell = cell as? PredefinedGraphViewCell
@@ -86,7 +90,7 @@ class PredefinedGraphsViewController: UITableViewController, UISearchBarDelegate
       }
       return cell
    }
-
+   
    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
    {
       let cell = tableView.dequeueReusableCell(withIdentifier: "GraphCell", for: indexPath)

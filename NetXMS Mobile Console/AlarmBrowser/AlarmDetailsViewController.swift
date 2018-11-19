@@ -101,28 +101,66 @@ class AlarmDetailsViewController : UIViewController
       }
    }
    
-   @IBAction func acknowledgePressed(_ sender: Any) {
+   @IBAction func acknowledgePressed(_ sender: Any)
+   {
       Connection.sharedInstance?.modifyAlarm(alarmId: alarm.id, action: AlarmBrowserViewController.ACKNOWLEDGE_ALARM)
    }
    
-   @IBAction func stickyAcknowledgePressed(_ sender: Any) {
-      Connection.sharedInstance?.modifyAlarm(alarmId: alarm.id, action: AlarmBrowserViewController.ACKNOWLEDGE_ALARM) // TODO!!!
+   @IBAction func stickyAcknowledgePressed(_ sender: Any)
+   {
+      showTimeoutDialog(alarmId: alarm.id)
    }
    
-   @IBAction func resolvePressed(_ sender: Any) {
+   @IBAction func resolvePressed(_ sender: Any)
+   {
       Connection.sharedInstance?.modifyAlarm(alarmId: alarm.id, action: AlarmBrowserViewController.RESOLVE_ALARM)
    }
    
-   @IBAction func terminatePressed(_ sender: Any) {
+   @IBAction func terminatePressed(_ sender: Any)
+   {
       Connection.sharedInstance?.modifyAlarm(alarmId: alarm.id, action: AlarmBrowserViewController.TERMINATE_ALARM)
       self.navigationController?.popViewController(animated: true)
    }
    
-   @IBAction func lastValuesPressed(_ sender: Any) {
+   @IBAction func lastValuesPressed(_ sender: Any)
+   {
       if let lastValuesVC = storyboard?.instantiateViewController(withIdentifier: "LastValuesViewController") as? LastValuesViewController
       {
          lastValuesVC.objectId = self.alarm.sourceObjectId
          navigationController?.pushViewController(lastValuesVC, animated: true)
       }
+   }
+   
+   func showTimeoutDialog(alarmId: Int)
+   {
+      //Creating UIAlertController and
+      //Setting title and message for the alert dialog
+      let alertController = UIAlertController(title: "Choose timeout", message: "Choose timeout for sticky acknowledge", preferredStyle: .alert)
+      
+      //the confirm action taking the inputs
+      let confirmAction = UIAlertAction(title: "Enter", style: .default) { (_) in
+         //getting the input values from user
+         let timeout = alertController.textFields?[0].text
+         if let timeoutString = timeout,
+            let timeout = Int(timeoutString)
+         {
+            Connection.sharedInstance?.modifyAlarm(alarmId: self.alarm.id, action: AlarmBrowserViewController.ACKNOWLEDGE_ALARM, timeout: timeout)
+         }
+      }
+      
+      //the cancel action doing nothing
+      let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (_) in }
+      
+      //adding textfields to our dialog box
+      alertController.addTextField { (textField) in
+         textField.placeholder = "Timeout"
+      }
+      
+      //adding the action to dialogbox
+      alertController.addAction(confirmAction)
+      alertController.addAction(cancelAction)
+      
+      //finally presenting the dialog box
+      self.present(alertController, animated: true, completion: nil)
    }
 }

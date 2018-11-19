@@ -13,7 +13,7 @@ class Alarm
 {
    /**
     * Alarm states
-   **/
+    **/
    static private let STATE_OUTSTANDING = 0
    static private let STATE_ACKNOWLEDGED = 1
    static private let STATE_RESOLVED = 2

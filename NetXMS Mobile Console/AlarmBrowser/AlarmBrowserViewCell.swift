@@ -8,8 +8,8 @@
 
 import UIKit
 
-class AlarmBrowserViewCell: UITableViewCell {
-
+class AlarmBrowserViewCell: UITableViewCell
+{
    //@IBOutlet weak var severityIcon: UIImageView!
    //@IBOutlet weak var stateIcon: UIImageView!
    @IBOutlet weak var containerView: UIView!
@@ -18,15 +18,16 @@ class AlarmBrowserViewCell: UITableViewCell {
    @IBOutlet weak var message: UILabel!
    @IBOutlet weak var severityLabel: UILabel!
    
-   override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-
+   override func awakeFromNib()
+   {
+      super.awakeFromNib()
+      // Initialization code
+   }
+   
+   override func setSelected(_ selected: Bool, animated: Bool)
+   {
+      super.setSelected(selected, animated: animated)
+      
+      // Configure the view for the selected state
+   }
 }

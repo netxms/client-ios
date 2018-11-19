@@ -9,11 +9,13 @@
 import UIKit
 import Charts
 
-class LineChartViewController: UIViewController, ChartViewDelegate {
+class LineChartViewController: UIViewController, ChartViewDelegate
+{
    @IBOutlet weak var lineChartView: LineChartView!
    static let colors = [NSUIColor.blue, NSUIColor.brown, NSUIColor.green, NSUIColor.red, NSUIColor.yellow, NSUIColor.orange, NSUIColor.cyan, NSUIColor.black]
    
-   override func viewDidLoad() {
+   override func viewDidLoad()
+   {
       super.viewDidLoad()
       
       lineChartView.delegate = self
