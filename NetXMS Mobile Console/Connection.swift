@@ -236,15 +236,10 @@ class Connection
    
    func modifyAlarm(alarmId: Int, action: Int, timeout: Int)
    {      
-      var alarmList = [String : Any]()
-      alarmList.updateValue(alarmId, forKey: "alarmId")
-      alarmList.updateValue(action, forKey: "action")
+      var alarmList = ["alarmId" : alarmId, "action" : action]
       if (action == AlarmBrowserViewController.STICKY_ACKNOWLEDGE_ALARM)
       {
-         if var modifyData = alarmList[alarmId.description] as? [String : Any]
-         {
-            modifyData.updateValue(timeout, forKey: "timeout")
-         }
+         alarmList.updateValue(timeout, forKey: "timeout")
       }
       modifyAlarm(alarmList: [alarmList])
    }
@@ -278,8 +273,8 @@ class Connection
          }
       }
       DispatchQueue.main.async
-         {
-            self.sendNotificationRequest()
+      {
+         self.sendNotificationRequest()
       }
    }
    
@@ -350,6 +345,7 @@ class Connection
       if let jsonData = jsonData,
          let objects = jsonData["objects"] as? [[String: Any]]
       {
+         objectCache.removeAll()
          for o in objects
          {
             var object: AbstractObject
@@ -369,7 +365,7 @@ class Connection
       }
    }
    
-   func getLastValuesForMultipleObjects(query: String, onSuccess: @escaping ([String : Any]?) -> Void)
+   func getHistoricalDataForMultipleObjects(query: String, onSuccess: @escaping ([String : Any]?) -> Void)
    {
       if self.session != nil
       {
@@ -421,8 +417,8 @@ class Connection
          if refreshObjectBrowser
          {
             DispatchQueue.main.async
-               {
-                  self.objectBrowser?.refresh()
+            {
+               self.objectBrowser?.refresh()
             }
          }
       }

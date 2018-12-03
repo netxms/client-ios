@@ -29,6 +29,7 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
    
    func refresh()
    {
+      objects.removeAll()
       for (_,value) in (Connection.sharedInstance?.rootObjects)!
       {
          objects.append(value)
@@ -121,7 +122,7 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
       let cell = tableView.dequeueReusableCell(withIdentifier: "ObjectCell", for: indexPath) as! ObjectBrowserViewCell
       cell.object = self.objects[indexPath.row]
       cell.objectBrowser = self
-      cell.objectName?.text = Connection.sharedInstance?.resolveObjectName(objectId: self.objects[indexPath.row].objectId)
+      cell.objectName?.text = self.objects[indexPath.row].objectName//Connection.sharedInstance?.resolveObjectName(objectId: self.objects[indexPath.row].objectId)
       
       if self.objects[indexPath.row].objectClass == AbstractObject.OBJECT_NODE
       {

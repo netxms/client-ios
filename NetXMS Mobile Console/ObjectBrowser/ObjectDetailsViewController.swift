@@ -17,9 +17,8 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
    @IBOutlet weak var lastValuesTableView: UITableView!
    @IBOutlet weak var comments: UILabel!
    @IBOutlet weak var objectToolsButton: UIButton!
-   
-   @IBOutlet weak var tableViewHeight: NSLayoutConstraint!
-   @IBOutlet weak var lastValuesTabbleHeight: NSLayoutConstraint!
+   @IBOutlet weak var alarmTableViewHeight: NSLayoutConstraint!
+   @IBOutlet weak var lastValuesTableViewHeight: NSLayoutConstraint!
    
    override func viewDidLoad()
    {
@@ -46,9 +45,20 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
             self.alarms.append(alarm)
             i += 1
          }
+         else if object.children.count > 0
+         {
+            for child in object.children
+            {
+               if alarm.sourceObjectId == child && i < 4
+               {
+                  self.alarms.append(alarm)
+                  i += 1
+               }
+            }
+         }
       }
       
-      //tableViewHeight.constant = 50.0 * CGFloat(self.alarms.count)
+      alarmTableViewHeight.constant = (self.alarms.count > 0 ? 50.0 * CGFloat(self.alarms.count) : 50.0)
       
       Connection.sharedInstance?.getLastValues(objectId: object.objectId, onSuccess: onGetLastValuesSuccess)
    }
@@ -56,11 +66,14 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
    func onGetLastValuesSuccess(jsonData: [String : Any]?) -> Void
    {
       if let jsonData = jsonData,
-         let lastValues = jsonData["lastValues"] as? [[String: Any]]
+         let lastValuesLists = jsonData["lastValues"] as? [[Any]]
       {
-         for v in lastValues
+         for list in lastValuesLists
          {
-            self.lastValues.append(DciValue(json: v))
+            for v in list
+            {
+               self.lastValues.append(DciValue(json: v as? [String : Any] ?? [:]))
+            }
          }
          if self.lastValues.count > 0
          {
@@ -82,8 +95,8 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
             }
             DispatchQueue.main.async
             {
-               //self.lastValuesTabbleHeight.constant = 50.0 * CGFloat(self.lastValuesWithActiveThresholds.count)
-               //self.view.setNeedsUpdateConstraints()
+               self.lastValuesTableViewHeight.constant = (self.lastValuesWithActiveThresholds.count > 0 ? 50.0 * CGFloat(self.lastValuesWithActiveThresholds.count) : 50.0)
+               self.view.setNeedsUpdateConstraints()
                self.lastValuesTableView.reloadData()
             }
          }
@@ -100,17 +113,17 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
    {
       if tableView == self.alarmTableView
       {
-         return alarms.count
+         return (alarms.count > 0 ? alarms.count : 1)
       }
       else
       {
-         return self.lastValuesWithActiveThresholds.count
+         return (self.lastValuesWithActiveThresholds.count > 0 ? self.lastValuesWithActiveThresholds.count : 1)
       }
    }
    
    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
    {
-      if tableView == self.alarmTableView
+      if tableView == self.alarmTableView && self.alarms.count > 0
       {
          let cell: ObjectDetailsAlarmCell = tableView.dequeueReusableCell(withIdentifier: "ObjectDetailsAlarmCell", for: indexPath) as! ObjectDetailsAlarmCell
          
@@ -140,7 +153,7 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
          
          return cell
       }
-      else
+      else if tableView == self.lastValuesTableView && self.lastValuesWithActiveThresholds.count > 0
       {
          let cell: ObjectDetailsLastValuesCell = tableView.dequeueReusableCell(withIdentifier: "ObjectBrowserLastValuesCell", for: indexPath) as! ObjectDetailsLastValuesCell
          
@@ -176,6 +189,12 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
          
          return cell
       }
+      else
+      {
+         let cell: ObjectDetailsNoDataCell = tableView.dequeueReusableCell(withIdentifier: "ObjectDetailsNoDataCell", for: indexPath) as! ObjectDetailsNoDataCell
+         
+         return cell
+      }
    }
    
    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
@@ -190,10 +209,9 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
       }
       else
       {
-         if let lineChartVC = storyboard?.instantiateViewController(withIdentifier: "LineChartViewController")
+         if let lineChartVC = storyboard?.instantiateViewController(withIdentifier: "LastValuesChartController")
          {
-            //(lineChartVC as! LineChartViewController).dciValue = lastValuesWithActiveThresholds[indexPath.row]
-            //(lineChartVC as! LineChartViewController).objectId = object.objectId
+            (lineChartVC as! LastValuesChartController).dciValues = [lastValuesWithActiveThresholds[indexPath.row]]
             navigationController?.pushViewController(lineChartVC, animated: true)
          }
       }
@@ -229,7 +247,7 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
    {
       if let alarmBrowserVC = storyboard?.instantiateViewController(withIdentifier: "AlarmBrowserViewController") as? AlarmBrowserViewController
       {
-         alarmBrowserVC.objectFilter = self.object.objectId
+         alarmBrowserVC.object = self.object
          navigationController?.pushViewController(alarmBrowserVC, animated: true)
       }
    }

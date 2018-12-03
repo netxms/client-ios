@@ -17,23 +17,24 @@ class PredefinedGraphsViewController: UITableViewController, UISearchBarDelegate
    override func viewDidLoad()
    {
       super.viewDidLoad()
+      
       Connection.sharedInstance?.predefinedGraphsBrowser = self
-      if self.root == nil
+      if self.root == nil,
+      let root = Connection.sharedInstance?.predefinedGraphRoot
       {
-         if let root = Connection.sharedInstance?.predefinedGraphRoot
-         {
-            self.root = root
-            title = "Root"
-            for f in root.subfolders
-            {
-               list.append(f)
-            }
-            for g in root.graphs
-            {
-               list.append(g)
-            }
-         }
+         self.root = root
       }
+      
+      title = root.name
+      for f in root.subfolders
+      {
+         list.append(f)
+      }
+      for g in root.graphs
+      {
+         list.append(g)
+      }
+      
       self.searchBar.delegate = self
       let searchBarHeight = searchBar.frame.size.height
       tableView.setContentOffset(CGPoint(x: 0, y: searchBarHeight), animated: false)
@@ -50,7 +51,7 @@ class PredefinedGraphsViewController: UITableViewController, UISearchBarDelegate
       if let root = Connection.sharedInstance?.predefinedGraphRoot
       {
          self.root = root
-         title = "Root"
+         title = root.name
          for f in root.subfolders
          {
             list.append(f)
@@ -72,44 +73,45 @@ class PredefinedGraphsViewController: UITableViewController, UISearchBarDelegate
    
    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
    {
-      let cell = tableView.dequeueReusableCell(withIdentifier: "GraphCell", for: indexPath)
+      let obj = list[indexPath.row]
       
-      if let cell = cell as? PredefinedGraphViewCell
+      if obj as? GraphSettings != nil
       {
-         if let obj = list[indexPath.row] as? GraphSettings
+         if let graphCell = tableView.dequeueReusableCell(withIdentifier: "GraphCell", for: indexPath) as? PredefinedGraphViewCell
          {
-            cell.graphName.text = obj.shortName
+            graphCell.graphName.text = (obj as! GraphSettings).shortName
+            return graphCell
          }
       }
-      else if let cell = cell as? PredefinedGraphFolderViewCell
+      else if obj as? GraphFolder != nil
       {
-         if let obj = list[indexPath.row] as? GraphFolder
+         if let graphFolderCell = tableView.dequeueReusableCell(withIdentifier: "GraphFolderCell", for: indexPath) as? PredefinedGraphFolderViewCell
          {
-            cell.folderName.text = obj.name
+            graphFolderCell.folderName.text = (obj as! GraphFolder).name
+            return graphFolderCell
          }
       }
-      return cell
+      return UITableViewCell()
    }
    
    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
    {
-      let cell = tableView.dequeueReusableCell(withIdentifier: "GraphCell", for: indexPath)
-      if ((cell as? PredefinedGraphViewCell) != nil)
+      let obj = list[indexPath.row]
+      
+      if obj as? GraphSettings != nil
       {
-         if let obj = list[indexPath.row] as? GraphSettings
+         if let predefinedGraphVC = storyboard?.instantiateViewController(withIdentifier: "PredefinedGraphChartController")
          {
-            if let predefinedGraphVC = storyboard?.instantiateViewController(withIdentifier: "PredefinedGraphChartController")
-            {
-               (predefinedGraphVC as! PredefinedGraphChartController).object = obj
-               navigationController?.pushViewController(predefinedGraphVC, animated: true)
-            }
+            (predefinedGraphVC as! PredefinedGraphChartController).object = obj
+            navigationController?.pushViewController(predefinedGraphVC, animated: true)
          }
       }
-      else if ((cell as? PredefinedGraphFolderViewCell) != nil)
+      else if obj as? GraphFolder != nil
       {
-         if let obj = list[indexPath.row] as? GraphFolder
+         if let predefinedGraphVC = storyboard?.instantiateViewController(withIdentifier: "PredefinedGraphsViewController")
          {
-            //cell.folderName.text = obj.name
+            (predefinedGraphVC as! PredefinedGraphsViewController).root = obj as? GraphFolder
+            navigationController?.pushViewController(predefinedGraphVC, animated: true)
          }
       }
    }

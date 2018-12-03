@@ -14,11 +14,11 @@ class Alarm
    /**
     * Alarm states
     **/
-   static private let STATE_OUTSTANDING = 0
-   static private let STATE_ACKNOWLEDGED = 1
-   static private let STATE_RESOLVED = 2
-   static private let STATE_TERMINATED = 3
-   static private let STATE_ACKNOWLEDGED_STICKY = 4
+   static public let STATE_OUTSTANDING = 0
+   static public let STATE_ACKNOWLEDGED = 1
+   static public let STATE_RESOLVED = 2
+   static public let STATE_TERMINATED = 3
+   static public let STATE_ACKNOWLEDGED_STICKY = 4
    
    let ackByUser: Int
    let ackTime: Int

@@ -14,10 +14,15 @@ class LastValuesViewController: UITableViewController, UISearchBarDelegate
    var lastValues = [DciValue]()
    var filteredLastValues = [DciValue]()
    @IBOutlet weak var searchBar: UISearchBar!
+   @IBOutlet weak var cancelButton: UIBarButtonItem!
    
    override func viewDidLoad()
    {
       super.viewDidLoad()
+      
+      setCancelButtonState(enabled: false)
+      let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressOnCell))
+      self.view.addGestureRecognizer(longPressRecognizer)
       self.title = "Last Values"
       Connection.sharedInstance?.getLastValues(objectId: objectId, onSuccess: onGetLastValuesSuccess)
       
@@ -35,11 +40,14 @@ class LastValuesViewController: UITableViewController, UISearchBarDelegate
    func onGetLastValuesSuccess(jsonData: [String : Any]?) -> Void
    {
       if let jsonData = jsonData,
-         let lastValues = jsonData["lastValues"] as? [[String: Any]]
+         let lastValuesLists = jsonData["lastValues"] as? [[Any]]
       {
-         for v in lastValues
+         for list in lastValuesLists
          {
-            self.lastValues.append(DciValue(json: v))
+            for v in list
+            {
+               self.lastValues.append(DciValue(json: v as? [String : Any] ?? [:]))
+            }
          }
          if self.lastValues.count > 0
          {
@@ -96,6 +104,7 @@ class LastValuesViewController: UITableViewController, UISearchBarDelegate
    {
       let cell: LastValuesCell = tableView.dequeueReusableCell(withIdentifier: "LastValuesCell", for: indexPath) as! LastValuesCell
       
+      cell.dciValue = filteredLastValues[indexPath.row]
       cell.dciName.text = filteredLastValues[indexPath.row].description
       cell.timestamp.text = DateFormatter.localizedString(from: Date(timeIntervalSince1970: filteredLastValues[indexPath.row].timestamp), dateStyle: DateFormatter.Style.short, timeStyle: DateFormatter.Style.short)
       if filteredLastValues[indexPath.row].value == ""
@@ -137,11 +146,73 @@ class LastValuesViewController: UITableViewController, UISearchBarDelegate
    
    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
    {
-      if let lineChartVC = storyboard?.instantiateViewController(withIdentifier: "LastValuesChartController")
+      if let lineChartVC = storyboard?.instantiateViewController(withIdentifier: "LastValuesChartController"),
+         self.tableView.isEditing == false
       {
-         (lineChartVC as! LastValuesChartController).dciValue = filteredLastValues[indexPath.row]
-         (lineChartVC as! LastValuesChartController).objectId = objectId
+         (lineChartVC as! LastValuesChartController).dciValues = [filteredLastValues[indexPath.row]]
          navigationController?.pushViewController(lineChartVC, animated: true)
       }
+   }
+   
+   @objc func longPressOnCell(longPressGestureRecognizer: UILongPressGestureRecognizer)
+   {
+      if longPressGestureRecognizer.state == UIGestureRecognizerState.began
+      {
+         let touchPoint = longPressGestureRecognizer.location(in: self.view)
+         if let indexPath = tableView.indexPathForRow(at: touchPoint)
+         {
+            self.tableView.setEditing(true, animated: true)
+            setCancelButtonState(enabled: true)
+            self.navigationController?.setToolbarHidden(false, animated: true)
+            // your code here, get the row for the indexPath or do whatever you want
+         }
+      }
+   }
+   
+   @IBAction func onCancelButtonPressed(_ sender: Any)
+   {
+      self.tableView.setEditing(false, animated: true)
+      self.navigationController?.setToolbarHidden(true, animated: true)
+      setCancelButtonState(enabled: false)
+   }
+   
+   func setCancelButtonState(enabled: Bool)
+   {
+      self.cancelButton.isEnabled = enabled
+      if enabled == false
+      {
+         self.cancelButton.tintColor = UIColor.clear
+      }
+      else
+      {
+         self.cancelButton.tintColor = UIColor.red
+      }
+   }
+   
+   @IBAction func onActionPressed(_ sender: Any)
+   {
+      if let lineChartVC = storyboard?.instantiateViewController(withIdentifier: "LastValuesChartController")
+      {
+         var dciValues = [DciValue]()
+         for cell in self.tableView.visibleCells
+         {
+            if let cell = cell as? LastValuesCell,
+               cell.isSelected == true
+            {
+               dciValues.append(cell.dciValue)
+            }
+         }
+         
+         (lineChartVC as! LastValuesChartController).dciValues = dciValues
+         navigationController?.pushViewController(lineChartVC, animated: true)
+      }
+      
+   }
+   
+   override func viewWillDisappear(_ animated: Bool)
+   {
+      self.tableView.setEditing(false, animated: true)
+      self.navigationController?.setToolbarHidden(true, animated: true)
+      setCancelButtonState(enabled: false)
    }
 }

@@ -28,55 +28,36 @@ class AlarmDetailsViewController : UIViewController
       
       acknowledgeButton.layer.masksToBounds = false
       acknowledgeButton.layer.shadowColor = UIColor.gray.cgColor
-      acknowledgeButton.layer.shadowOpacity = 0.3
+      acknowledgeButton.layer.shadowOpacity = 0.5
       acknowledgeButton.layer.shadowOffset = CGSize(width: -1, height: 2)
       acknowledgeButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
       
-      acknowledgeButton.layer.shadowPath = UIBezierPath(rect: acknowledgeButton.bounds).cgPath
-      acknowledgeButton.layer.shouldRasterize = true
-      acknowledgeButton.layer.rasterizationScale = UIScreen.main.scale
-      
       stickyAcknowledgeButton.layer.masksToBounds = false
       stickyAcknowledgeButton.layer.shadowColor = UIColor.gray.cgColor
-      stickyAcknowledgeButton.layer.shadowOpacity = 0.3
+      stickyAcknowledgeButton.layer.shadowOpacity = 0.5
       stickyAcknowledgeButton.layer.shadowOffset = CGSize(width: -1, height: 2)
       stickyAcknowledgeButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
       
-      stickyAcknowledgeButton.layer.shadowPath = UIBezierPath(rect: stickyAcknowledgeButton.bounds).cgPath
-      stickyAcknowledgeButton.layer.shouldRasterize = true
-      stickyAcknowledgeButton.layer.rasterizationScale = UIScreen.main.scale
-      
       resolveButton.layer.masksToBounds = false
       resolveButton.layer.shadowColor = UIColor.gray.cgColor
-      resolveButton.layer.shadowOpacity = 0.3
+      resolveButton.layer.shadowOpacity = 0.5
       resolveButton.layer.shadowOffset = CGSize(width: -1, height: 2)
       resolveButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
       
-      resolveButton.layer.shadowPath = UIBezierPath(rect: resolveButton.bounds).cgPath
-      resolveButton.layer.shouldRasterize = true
-      resolveButton.layer.rasterizationScale = UIScreen.main.scale
-      
       terminateButton.layer.masksToBounds = false
       terminateButton.layer.shadowColor = UIColor.gray.cgColor
-      terminateButton.layer.shadowOpacity = 0.3
+      terminateButton.layer.shadowOpacity = 0.5
       terminateButton.layer.shadowOffset = CGSize(width: -1, height: 2)
       terminateButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
       
-      terminateButton.layer.shadowPath = UIBezierPath(rect: terminateButton.bounds).cgPath
-      terminateButton.layer.shouldRasterize = true
-      terminateButton.layer.rasterizationScale = UIScreen.main.scale
-      
       lastValuesButton.layer.masksToBounds = false
       lastValuesButton.layer.shadowColor = UIColor.gray.cgColor
-      lastValuesButton.layer.shadowOpacity = 0.3
+      lastValuesButton.layer.shadowOpacity = 0.5
       lastValuesButton.layer.shadowOffset = CGSize(width: -1, height: 2)
       lastValuesButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
       
-      lastValuesButton.layer.shadowPath = UIBezierPath(rect: lastValuesButton.bounds).cgPath
-      lastValuesButton.layer.shouldRasterize = true
-      lastValuesButton.layer.rasterizationScale = UIScreen.main.scale
-      
       objectName.text = Connection.sharedInstance?.resolveObjectName(objectId: alarm.sourceObjectId)
+      self.title = objectName.text
       createdOn.text = DateFormatter.localizedString(from: Date(timeIntervalSince1970: alarm.creationTime), dateStyle: DateFormatter.Style.short, timeStyle: DateFormatter.Style.short)
       message.text = alarm.message
       
@@ -99,21 +80,36 @@ class AlarmDetailsViewController : UIViewController
       case Severity.RESOLVE:
          severityLabel.backgroundColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
       }
+      
+      if alarm.state == Alarm.STATE_ACKNOWLEDGED || alarm.state == Alarm.STATE_ACKNOWLEDGED_STICKY
+      {
+         acknowledgeButton.isHidden = true
+         stickyAcknowledgeButton.isHidden = true
+      }
+      else if alarm.state == Alarm.STATE_RESOLVED
+      {
+         acknowledgeButton.isHidden = true
+         stickyAcknowledgeButton.isHidden = true
+         resolveButton.isHidden = true
+      }
    }
    
    @IBAction func acknowledgePressed(_ sender: Any)
    {
       Connection.sharedInstance?.modifyAlarm(alarmId: alarm.id, action: AlarmBrowserViewController.ACKNOWLEDGE_ALARM)
+      self.navigationController?.popViewController(animated: true)
    }
    
    @IBAction func stickyAcknowledgePressed(_ sender: Any)
    {
       showTimeoutDialog(alarmId: alarm.id)
+      self.navigationController?.popViewController(animated: true)
    }
    
    @IBAction func resolvePressed(_ sender: Any)
    {
       Connection.sharedInstance?.modifyAlarm(alarmId: alarm.id, action: AlarmBrowserViewController.RESOLVE_ALARM)
+      self.navigationController?.popViewController(animated: true)
    }
    
    @IBAction func terminatePressed(_ sender: Any)
@@ -142,9 +138,10 @@ class AlarmDetailsViewController : UIViewController
          //getting the input values from user
          let timeout = alertController.textFields?[0].text
          if let timeoutString = timeout,
-            let timeout = Int(timeoutString)
+            var timeout = Int(timeoutString)
          {
-            Connection.sharedInstance?.modifyAlarm(alarmId: self.alarm.id, action: AlarmBrowserViewController.ACKNOWLEDGE_ALARM, timeout: timeout)
+            timeout = timeout * 3600 // To convert in hours
+            Connection.sharedInstance?.modifyAlarm(alarmId: self.alarm.id, action: AlarmBrowserViewController.STICKY_ACKNOWLEDGE_ALARM, timeout: timeout)
          }
       }
       
@@ -153,7 +150,7 @@ class AlarmDetailsViewController : UIViewController
       
       //adding textfields to our dialog box
       alertController.addTextField { (textField) in
-         textField.placeholder = "Timeout"
+         textField.placeholder = "Timeout (in hours)"
       }
       
       //adding the action to dialogbox

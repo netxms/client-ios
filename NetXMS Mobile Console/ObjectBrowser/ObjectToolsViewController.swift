@@ -8,17 +8,25 @@
 
 import UIKit
 
-class ObjectToolsViewController: UITableViewController {
+class ObjectToolsViewController: UITableViewController, UISearchBarDelegate {
    var objectId: Int!
    var objectTools = [ObjectTool]()
+   var filteredObjectTools = [ObjectTool]()
    var selectedObjectTool: ObjectTool!
    var inputFieldQuery = [String]()
+   @IBOutlet weak var searchBar: UISearchBar!
    
    override func viewDidLoad()
    {
       super.viewDidLoad()
       
       Connection.sharedInstance?.getObjectTools(objectId: objectId, onSuccess: onGetObjectToolsSuccess)
+      
+      self.title = "Object Tools"
+      
+      self.searchBar.delegate = self
+      let searchBarHeight = searchBar.frame.size.height
+      tableView.setContentOffset(CGPoint(x: 0, y: searchBarHeight), animated: false)
    }
    
    func onGetObjectToolsSuccess(jsonData: [String : Any]?) -> Void
@@ -31,6 +39,7 @@ class ObjectToolsViewController: UITableViewController {
             let tool = ObjectTool(json: t)
             self.objectTools.append(tool)
          }
+         self.filteredObjectTools.append(contentsOf: self.objectTools)
       }
       
       DispatchQueue.main.async
@@ -49,22 +58,20 @@ class ObjectToolsViewController: UITableViewController {
    
    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
    {
-      // #warning Incomplete implementation, return the number of rows
-      print(self.objectTools.count)
-      return self.objectTools.count
+      return self.filteredObjectTools.count
    }
    
    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
    {
       let cell = tableView.dequeueReusableCell(withIdentifier: "ObjectToolsCell", for: indexPath)
-      (cell as! ObjectToolsViewCell).objectToolName.text = objectTools[indexPath.row].displayName
+      (cell as! ObjectToolsViewCell).objectToolName.text = filteredObjectTools[indexPath.row].displayName
       
       return cell
    }
    
    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
    {
-      selectedObjectTool = objectTools[indexPath.row]
+      selectedObjectTool = filteredObjectTools[indexPath.row]
       
       if !selectedObjectTool.inputFields.isEmpty
       {
@@ -152,5 +159,25 @@ class ObjectToolsViewController: UITableViewController {
       
       //finally presenting the dialog box
       self.present(alertController, animated: true, completion: nil)
+   }
+   
+   func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String)
+   {
+      if searchText == ""
+      {
+         filteredObjectTools.removeAll()
+         filteredObjectTools.append(contentsOf: self.objectTools)
+      }
+      else
+      {
+         self.filteredObjectTools = (self.objectTools.filter { (tool) -> Bool in
+            if tool.displayName.lowercased().range(of: searchText.lowercased()) != nil
+            {
+               return true
+            }
+            return false
+         })
+      }
+      self.tableView.reloadData()
    }
 }

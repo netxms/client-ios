@@ -98,6 +98,7 @@ class AbstractObject
    //let responsibleUsers: [Int]
    let statusThresholds: [Int]
    let comments: String
+   let isDeleted: Bool
    
    init(json: [String : Any])
    {
@@ -115,6 +116,7 @@ class AbstractObject
       //let responsibleUsers = json["responsibleUsers"] as? [Int]
       self.statusThresholds = json["statusThresholds"] as? [Int] ?? []
       self.comments = json["comments"] as? String ?? ""
+      self.isDeleted = json["isDeleted"] as? Bool ?? false
    }
    
    static func resolveObjectStatus(status: String) -> ObjectStatus

@@ -10,8 +10,7 @@ import UIKit
 
 class AlarmBrowserViewCell: UITableViewCell
 {
-   //@IBOutlet weak var severityIcon: UIImageView!
-   //@IBOutlet weak var stateIcon: UIImageView!
+   var alarmId: Int!
    @IBOutlet weak var containerView: UIView!
    @IBOutlet weak var objectName: UILabel!
    @IBOutlet weak var createdOn: UILabel!

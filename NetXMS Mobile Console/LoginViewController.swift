@@ -14,6 +14,9 @@ class LoginViewController: UIViewController
    @IBOutlet weak var apiUrl: UITextField!
    @IBOutlet weak var login: UITextField!
    @IBOutlet weak var password: UITextField!
+   @IBOutlet weak var underlineURL: UIView!
+   @IBOutlet weak var underlinePassword: UIView!
+   @IBOutlet weak var underlineUsername: UIView!
    
    override func viewDidLoad()
    {
@@ -23,6 +26,19 @@ class LoginViewController: UIViewController
    
    override func didReceiveMemoryWarning()
    {
+      if apiUrl.text?.isEmpty == false
+      {
+         underlineURL.backgroundColor = UIColor.darkGray
+      }
+      if login.text?.isEmpty == false
+      {
+         underlineUsername.backgroundColor = UIColor.darkGray
+      }
+      if password.text?.isEmpty == false
+      {
+         underlinePassword.backgroundColor = UIColor.darkGray
+      }
+      
       super.didReceiveMemoryWarning()
       // Dispose of any resources that can be recreated.
    }
@@ -76,6 +92,45 @@ class LoginViewController: UIViewController
          self.password.insertText(retreivedPassword)
          
          loginButtonPressed()
+      }
+   }
+   
+   @IBAction func onUrlEdit(_ sender: Any)
+   {
+      self.underlineURL.backgroundColor = UIColor.darkGray
+   }
+   
+   @IBAction func onUrlstopEdit(_ sender: Any)
+   {
+      if self.apiUrl.text?.isEmpty == true
+      {
+         self.underlineURL.backgroundColor = UIColor.lightGray
+      }
+   }
+   
+   @IBAction func onUsernameEdit(_ sender: Any)
+   {
+      self.underlineUsername.backgroundColor = UIColor.darkGray
+   }
+   
+   @IBAction func onUsernameStopEdit(_ sender: Any)
+   {
+      if self.login.text?.isEmpty == true
+      {
+         self.underlineUsername.backgroundColor = UIColor.lightGray
+      }
+   }
+   
+   @IBAction func onPasswordEdit(_ sender: Any)
+   {
+      self.underlinePassword.backgroundColor = UIColor.darkGray
+   }
+   
+   @IBAction func onPasswordStopEdit(_ sender: Any)
+   {
+      if self.password.text?.isEmpty == true
+      {
+         self.underlinePassword.backgroundColor = UIColor.lightGray
       }
    }
 }

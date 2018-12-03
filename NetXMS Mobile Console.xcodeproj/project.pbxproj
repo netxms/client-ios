@@ -27,7 +27,6 @@
 		1125612D21368C9500F492AD /* PredefinedGraphsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1125612C21368C9500F492AD /* PredefinedGraphsViewController.swift */; };
 		1125612F21368DE100F492AD /* GraphFolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1125612E21368DE100F492AD /* GraphFolder.swift */; };
 		1125613121368DFB00F492AD /* GraphSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1125613021368DFB00F492AD /* GraphSettings.swift */; };
-		1125614B213D2C9B00F492AD /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11256147213D2BD400F492AD /* Charts.framework */; };
 		1125614E213D2D9200F492AD /* KeychainItemAccessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1125614C213D2D9200F492AD /* KeychainItemAccessibility.swift */; };
 		1125614F213D2D9200F492AD /* KeychainWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1125614D213D2D9200F492AD /* KeychainWrapper.swift */; };
 		11283D61213EC20000EF4083 /* PredefinedGraphViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11283D60213EC20000EF4083 /* PredefinedGraphViewCell.swift */; };
@@ -36,6 +35,9 @@
 		11283D6B214A759300EF4083 /* TimestampFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11283D6A214A759300EF4083 /* TimestampFormatter.swift */; };
 		11283D6D214A7B1200EF4083 /* PredefinedGraphChartController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11283D6C214A7B1200EF4083 /* PredefinedGraphChartController.swift */; };
 		112ADAA6205BB82B00FAB36D /* AbstractObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112ADAA5205BB82B00FAB36D /* AbstractObject.swift */; };
+		112B7FEE21AE98C0009AAD52 /* ObjectDetailsNoDataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112B7FED21AE98C0009AAD52 /* ObjectDetailsNoDataCell.swift */; };
+		112B7FF521AEB6AE009AAD52 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11256147213D2BD400F492AD /* Charts.framework */; };
+		112B7FF621AEB6AE009AAD52 /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 11256147213D2BD400F492AD /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1132E92B20B2B8A10009FF02 /* filter.png in Resources */ = {isa = PBXBuildFile; fileRef = 1132E92A20B2B8A10009FF02 /* filter.png */; };
 		1137427620A4957600A80679 /* MainNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1137427520A4957600A80679 /* MainNavigationController.swift */; };
 		1137427820A49C9D00A80679 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1137427720A49C9D00A80679 /* MainViewController.swift */; };
@@ -90,6 +92,13 @@
 			remoteGlobalIDString = 1CBBC58C6CE1EBEE9852CE41;
 			remoteInfo = ChartsTests;
 		};
+		112B7FF721AEB6AE009AAD52 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 11256141213D2BD400F492AD /* Charts.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = A58A4ED274A941CA248EA921;
+			remoteInfo = Charts;
+		};
 		1161F7C4203EAFE800B9C845 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1161F7A7203EAFE700B9C845 /* Project object */;
@@ -107,12 +116,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		1104347821105595003DB91A /* Embed Frameworks */ = {
+		112B7FF921AEB6AE009AAD52 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				112B7FF621AEB6AE009AAD52 /* Charts.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -149,6 +159,7 @@
 		11283D6A214A759300EF4083 /* TimestampFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimestampFormatter.swift; sourceTree = "<group>"; };
 		11283D6C214A7B1200EF4083 /* PredefinedGraphChartController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredefinedGraphChartController.swift; sourceTree = "<group>"; };
 		112ADAA5205BB82B00FAB36D /* AbstractObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbstractObject.swift; sourceTree = "<group>"; };
+		112B7FED21AE98C0009AAD52 /* ObjectDetailsNoDataCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDetailsNoDataCell.swift; sourceTree = "<group>"; };
 		1132E92A20B2B8A10009FF02 /* filter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = filter.png; sourceTree = "<group>"; };
 		1137427520A4957600A80679 /* MainNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainNavigationController.swift; sourceTree = "<group>"; };
 		1137427720A49C9D00A80679 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -199,7 +210,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1125614B213D2C9B00F492AD /* Charts.framework in Frameworks */,
+				112B7FF521AEB6AE009AAD52 /* Charts.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,6 +424,7 @@
 				1148CC4821510C1A007005EC /* ObjectToolsViewController.swift */,
 				110CE04421525086007CED7F /* ObjectToolsViewCell.swift */,
 				114995AB217F02BF002F2FE6 /* ObjectToolOutputViewController.swift */,
+				112B7FED21AE98C0009AAD52 /* ObjectDetailsNoDataCell.swift */,
 			);
 			path = ObjectBrowser;
 			sourceTree = "<group>";
@@ -437,11 +449,12 @@
 				1161F7AB203EAFE700B9C845 /* Sources */,
 				1161F7AC203EAFE700B9C845 /* Frameworks */,
 				1161F7AD203EAFE700B9C845 /* Resources */,
-				1104347821105595003DB91A /* Embed Frameworks */,
+				112B7FF921AEB6AE009AAD52 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				112B7FF821AEB6AE009AAD52 /* PBXTargetDependency */,
 			);
 			name = "NetXMS Mobile Console";
 			productName = "NetXMS Mobile Console";
@@ -614,6 +627,7 @@
 				110CE04521525086007CED7F /* ObjectToolsViewCell.swift in Sources */,
 				11DDCE6420D2561700CF2BB1 /* ObjectBrowserViewController.swift in Sources */,
 				113F8E9020EF546C0076A79E /* Container.swift in Sources */,
+				112B7FEE21AE98C0009AAD52 /* ObjectDetailsNoDataCell.swift in Sources */,
 				1125614F213D2D9200F492AD /* KeychainWrapper.swift in Sources */,
 				11C1B8C220456F87005B2B6D /* AlarmBrowserViewCell.swift in Sources */,
 				11B6799521088509005C8C4B /* Severity.swift in Sources */,
@@ -667,6 +681,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		112B7FF821AEB6AE009AAD52 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Charts;
+			targetProxy = 112B7FF721AEB6AE009AAD52 /* PBXContainerItemProxy */;
+		};
 		1161F7C5203EAFE800B9C845 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1161F7AE203EAFE700B9C845 /* NetXMS Mobile Console */;

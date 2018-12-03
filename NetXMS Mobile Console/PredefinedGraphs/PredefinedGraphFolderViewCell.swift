@@ -12,7 +12,6 @@ class PredefinedGraphFolderViewCell: UITableViewCell
 {
    @IBOutlet weak var folderIcon: UIImageView!
    @IBOutlet weak var folderName: UILabel!
-   @IBOutlet weak var folderButton: UIButton!
    
    override func awakeFromNib()
    {
@@ -26,5 +25,4 @@ class PredefinedGraphFolderViewCell: UITableViewCell
       
       // Configure the view for the selected state
    }
-   
 }

@@ -20,6 +20,7 @@ class PredefinedGraphChartController: LineChartViewController
       super.viewDidLoad()
       if let object = self.object as? GraphSettings
       {
+         self.title = object.shortName
          var query = ""
          for d in object.dciList
          {
@@ -33,7 +34,7 @@ class PredefinedGraphChartController: LineChartViewController
                query.append("\(d.dciId),\(d.nodeId),\(0),\(0),\(0),\(0);")
             }
          }
-         Connection.sharedInstance?.getLastValuesForMultipleObjects(query: query, onSuccess: onGetSuccess)
+         Connection.sharedInstance?.getHistoricalDataForMultipleObjects(query: query, onSuccess: onGetSuccess)
       }
    }
    
@@ -55,12 +56,20 @@ class PredefinedGraphChartController: LineChartViewController
          var timeStamps = [[Double]]()
          var values = [Double]()
          var time = [Double]()
-         for d in dciData
+         var labels = [String]()
+         for data in dciData
          {
-            for v in d.values
+            for v in data.values
             {
                values.append(v.value)
                time.append(Double(v.timestamp))
+            }
+            for dci in (object as! GraphSettings).dciList
+            {
+               if dci.dciId == data.dciId
+               {
+                  labels.append(dci.dciDescription)
+               }
             }
             values.reverse()
             time.reverse()
@@ -68,12 +77,6 @@ class PredefinedGraphChartController: LineChartViewController
             timeStamps.append(time)
             values.removeAll()
             time.removeAll()
-         }
-         
-         var labels = [String]()
-         for d in (object as! GraphSettings).dciList
-         {
-            labels.append(d.dciDescription)
          }
          
          DispatchQueue.main.async

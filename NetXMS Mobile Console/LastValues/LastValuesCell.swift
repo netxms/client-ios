@@ -10,6 +10,7 @@ import UIKit
 
 class LastValuesCell: UITableViewCell
 {
+   var dciValue: DciValue!
    @IBOutlet weak var statusLabel: UILabel!
    @IBOutlet weak var dciName: UILabel!
    @IBOutlet weak var timestamp: UILabel!
@@ -18,7 +19,6 @@ class LastValuesCell: UITableViewCell
    override func awakeFromNib()
    {
       super.awakeFromNib()
-      // Initialization code
    }
    
    override func setSelected(_ selected: Bool, animated: Bool)

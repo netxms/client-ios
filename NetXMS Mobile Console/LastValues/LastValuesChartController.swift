@@ -12,39 +12,76 @@ import Charts
 class LastValuesChartController: LineChartViewController
 {
    @IBOutlet weak var lastValuesChart: LineChartView!
-   var dciValue: DciValue!
-   var objectId: Int!
+   var dciValues: [DciValue]!
    
    override func viewDidLoad()
    {
       self.lineChartView = lastValuesChart
-      super.viewDidLoad()
+      if dciValues.count == 1
+      {
+         self.title = dciValues[0].description
+      }
+      else
+      {
+         self.title = "Historical Data"
+      }
+      	
+      var query = ""
+      for dci in dciValues
+      {
+         query.append("\(dci.id),\(dci.nodeId),\(0),\(0),\(0),\(0);")
+      }
+      Connection.sharedInstance?.getHistoricalDataForMultipleObjects(query: query, onSuccess: onGetSuccess)
       
-      Connection.sharedInstance?.getHistoricalData(objectId: objectId, dciId: dciValue.id, onSuccess: onGetSuccess)
       //setChart(dataPoints: months, values: unitsSold)
       // Do any additional setup after loading the view.
+      super.viewDidLoad()
    }
    
-   override func onGetSuccess(jsonData: [String : Any]?) -> Void
+   override func onGetSuccess(jsonData: [String : Any]?)
    {
       if let jsonData = jsonData,
-         let data = jsonData["values"] as? [String : Any],
-         let values = data["values"] as? [[String : Any]]
+         let values = jsonData["values"] as? [String: Any]
       {
-         var timestamps = [Double]()
-         var data = [Double]()
-         
-         for value in values
+         var dciData = [DciData]()
+         for v in values
          {
-            timestamps.append((value["timestamp"] as! Double))
-            data.append((value["value"] as! Double))
-         }
-         timestamps.reverse()
-         data.reverse()
-         self.lineChartView.xAxis.valueFormatter = TimestampFormatter(timestamps: timestamps)
-         DispatchQueue.main.async
+            if let v = v.value as? [String : Any]
             {
-               self.setChart(dataPoints: timestamps, values: data, label: self.dciValue.description)
+               dciData.append(DciData(json: v))
+            }
+         }
+         
+         var dataPoints = [[Double]]()
+         var timeStamps = [[Double]]()
+         var values = [Double]()
+         var time = [Double]()
+         var labels = [String]()
+         for d in dciData
+         {
+            for v in d.values
+            {
+               values.append(v.value)
+               time.append(Double(v.timestamp))
+            }
+            for dci in dciValues
+            {
+               if d.dciId == dci.id
+               {
+                  labels.append(dci.description)
+               }
+            }
+            values.reverse()
+            time.reverse()
+            dataPoints.append(values)
+            timeStamps.append(time)
+            values.removeAll()
+            time.removeAll()
+         }
+         
+         DispatchQueue.main.async
+         {
+            self.setChart(dataPoints: dataPoints, values: timeStamps, labels: labels)
          }
       }
    }

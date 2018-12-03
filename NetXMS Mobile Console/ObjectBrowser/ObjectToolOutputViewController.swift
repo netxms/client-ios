@@ -19,6 +19,7 @@ class ObjectToolOutputViewController: UIViewController
    
    override func viewDidLoad()
    {
+      self.navigationController?.setToolbarHidden(false, animated: false)
       super.viewDidLoad()
       
       self.title = objectTool.displayName
@@ -57,7 +58,6 @@ class ObjectToolOutputViewController: UIViewController
    {
       Connection.sharedInstance?.stopObjectTool(objectId: objectId, uuid: uuid, streamId: streamId)
    }
-   
    @IBAction func onRefreshPressed(_ sender: Any)
    {
       Connection.sharedInstance?.stopObjectTool(objectId: objectId, uuid: uuid, streamId: streamId)
@@ -90,5 +90,10 @@ class ObjectToolOutputViewController: UIViewController
    override func viewDidDisappear(_ animated: Bool)
    {
       Connection.sharedInstance?.stopObjectTool(objectId: objectId, uuid: uuid, streamId: streamId)
+   }
+   
+   override func viewWillDisappear(_ animated: Bool)
+   {
+      self.navigationController?.setToolbarHidden(true, animated: false)
    }
 }
