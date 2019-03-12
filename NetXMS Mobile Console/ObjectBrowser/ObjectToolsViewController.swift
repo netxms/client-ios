@@ -10,8 +10,9 @@ import UIKit
 
 class ObjectToolsViewController: UITableViewController, UISearchBarDelegate {
    var objectId: Int!
-   var objectTools = [ObjectTool]()
-   var filteredObjectTools = [ObjectTool]()
+   var objectTools = [AnyObject]()
+   var objectToolFolders = [String : ObjectToolFolder]()
+   var filteredObjectTools = [AnyObject]()
    var selectedObjectTool: ObjectTool!
    var inputFieldQuery = [String]()
    @IBOutlet weak var searchBar: UISearchBar!
@@ -37,7 +38,30 @@ class ObjectToolsViewController: UITableViewController, UISearchBarDelegate {
          for t in objectTools
          {
             let tool = ObjectTool(json: t)
-            self.objectTools.append(tool)
+            let toolName = tool.name.replacingOccurrences(of: "&", with: "")
+            let splitName = toolName.components(separatedBy: "->")
+            if (splitName.count == 1)
+            {
+               self.objectTools.append(tool)
+            }
+            else
+            {
+               var parentFolder: ObjectToolFolder
+               for i in (splitName.count - 1)...1
+               {
+                  
+                  if objectToolFolders[splitName[i]] != nil
+                  {
+                     parentFolder = objectToolFolders[splitName[i]]!
+                     parentFolder.children.append(tool)
+                  }
+                  else
+                  {
+                     parentFolder = ObjectToolFolder(name: splitName[i])
+                     parentFolder.children.append(tool)
+                  }
+               }
+            }
          }
          self.filteredObjectTools.append(contentsOf: self.objectTools)
       }
@@ -71,17 +95,28 @@ class ObjectToolsViewController: UITableViewController, UISearchBarDelegate {
    
    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
    {
-      selectedObjectTool = filteredObjectTools[indexPath.row]
+      selectedObjectTool = filteredObjectTools[indexPath.row] as! ObjectTool
       
       if !selectedObjectTool.inputFields.isEmpty
       {
          showInputDialog()
       }
+      else if selectedObjectTool.type == ObjectToolType.TYPE_URL
+      {
+         DispatchQueue.main.async
+         {
+            if let objectToolURLOutputVC = self.storyboard?.instantiateViewController(withIdentifier: "ObjectToolURLOutputViewController") as? ObjectToolsURLOutputViewController
+            {
+               objectToolURLOutputVC.tool = self.selectedObjectTool
+               objectToolURLOutputVC.objectId = self.objectId
+               self.navigationController?.pushViewController(objectToolURLOutputVC, animated: true)
+            }
+         }
+      }
       else
       {
-         var details = [String : Any]()
-         details.updateValue(selectedObjectTool.id, forKey: "id")
-         Connection.sharedInstance?.executeObjectTool(objectId: self.objectId, details: [details], onSuccess: onExecuteObjectToolSuccess)
+        let details: [String : Any] = ["id": selectedObjectTool.id]
+         Connection.sharedInstance?.executeObjectTool(objectId: self.objectId, details: details, onSuccess: onExecuteObjectToolSuccess)
       }
    }
    
@@ -91,15 +126,15 @@ class ObjectToolsViewController: UITableViewController, UISearchBarDelegate {
          let uuid  = jsonData["UUID"] as? String
       {
          DispatchQueue.main.async
+         {
+            if let objectToolOutputVC = self.storyboard?.instantiateViewController(withIdentifier: "ObjectToolOutputViewController")
             {
-               if let objectToolOutputVC = self.storyboard?.instantiateViewController(withIdentifier: "ObjectToolOutputViewController")
-               {
-                  (objectToolOutputVC as? ObjectToolOutputViewController)?.uuid = UUID(uuidString: uuid)
-                  (objectToolOutputVC as? ObjectToolOutputViewController)?.objectId = self.objectId
-                  (objectToolOutputVC as? ObjectToolOutputViewController)?.objectTool = self.selectedObjectTool
-                  (objectToolOutputVC as? ObjectToolOutputViewController)?.inputFieldQuery = self.inputFieldQuery
-                  self.navigationController?.pushViewController(objectToolOutputVC, animated: true)
-               }
+               (objectToolOutputVC as? ObjectToolOutputViewController)?.uuid = UUID(uuidString: uuid)
+               (objectToolOutputVC as? ObjectToolOutputViewController)?.objectId = self.objectId
+               (objectToolOutputVC as? ObjectToolOutputViewController)?.objectTool = self.selectedObjectTool
+               (objectToolOutputVC as? ObjectToolOutputViewController)?.inputFieldQuery = self.inputFieldQuery
+               self.navigationController?.pushViewController(objectToolOutputVC, animated: true)
+            }
          }
       }
    }
@@ -143,10 +178,8 @@ class ObjectToolsViewController: UITableViewController, UISearchBarDelegate {
             }
             self.inputFieldQuery = inputFields
             
-            var tool = [String : Any]()
-            tool.updateValue(self.selectedObjectTool.id, forKey: "id")
-            tool.updateValue(inputFields, forKey: "inputFields")
-            Connection.sharedInstance?.executeObjectTool(objectId: self.objectId, details: [tool], onSuccess: self.onExecuteObjectToolSuccess)
+            let tool: [String : Any] = ["id": self.selectedObjectTool.id, "inputFields": inputFields]
+            Connection.sharedInstance?.executeObjectTool(objectId: self.objectId, details: tool, onSuccess: self.onExecuteObjectToolSuccess)
          }
       }
       

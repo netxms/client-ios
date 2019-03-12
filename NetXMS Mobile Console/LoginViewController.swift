@@ -17,15 +17,14 @@ class LoginViewController: UIViewController
    @IBOutlet weak var underlineURL: UIView!
    @IBOutlet weak var underlinePassword: UIView!
    @IBOutlet weak var underlineUsername: UIView!
+   @IBOutlet weak var loginButton: UIButton!
    
    override func viewDidLoad()
    {
       super.viewDidLoad()
+      
       loadCredentialsFromKeyChain()
-   }
-   
-   override func didReceiveMemoryWarning()
-   {
+      
       if apiUrl.text?.isEmpty == false
       {
          underlineURL.backgroundColor = UIColor.darkGray
@@ -38,9 +37,6 @@ class LoginViewController: UIViewController
       {
          underlinePassword.backgroundColor = UIColor.darkGray
       }
-      
-      super.didReceiveMemoryWarning()
-      // Dispose of any resources that can be recreated.
    }
    
    func onLoginSuccess(jsonData: [String : Any]?) -> Void
@@ -51,7 +47,6 @@ class LoginViewController: UIViewController
             {
                Connection.sharedInstance?.session = Session(json: jsonData)
                Connection.sharedInstance?.getAllObjects()
-               Connection.sharedInstance?.getRootObjects()
                Connection.sharedInstance?.getAllAlarms()
                Connection.sharedInstance?.getPredefinedGraphs()
                Connection.sharedInstance?.startNotificationHandler()
@@ -60,6 +55,11 @@ class LoginViewController: UIViewController
                self.present(mainNavigationController, animated: true, completion: nil)
          }
       }
+   }
+   
+   override func viewDidLayoutSubviews()
+   {
+      MainNavigationController.setButtonStyle(button: loginButton)
    }
    
    @IBAction func loginButtonPressed()

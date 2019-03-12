@@ -62,10 +62,8 @@ class ObjectToolOutputViewController: UIViewController
    {
       Connection.sharedInstance?.stopObjectTool(objectId: objectId, uuid: uuid, streamId: streamId)
       
-      var details = [String : Any]()
-      details.updateValue(objectTool.id, forKey: "id")
-      details.updateValue(inputFieldQuery, forKey: "inputFields")
-      Connection.sharedInstance?.executeObjectTool(objectId: self.objectId, details: [details], onSuccess: self.onRefreshObjectToolSuccess)
+    let details: [String : Any] = ["id": objectTool.id, "inputFields": inputFieldQuery]
+      Connection.sharedInstance?.executeObjectTool(objectId: self.objectId, details: details, onSuccess: self.onRefreshObjectToolSuccess)
    }
    
    func onRefreshObjectToolSuccess(jsonData: [String : Any]?) -> Void

@@ -99,6 +99,18 @@ class ObjectTool
    }
 }
 
+class ObjectToolFolder
+{
+   let name: String
+   var subFolders = [String : ObjectToolFolder]()
+   var children = [ObjectTool]()
+   
+   init(name: String)
+   {
+      self.name = name
+   }
+}
+
 class InputField
 {
    var name: String

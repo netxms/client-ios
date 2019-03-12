@@ -29,12 +29,6 @@ class LastValuesViewController: UITableViewController, UISearchBarDelegate
       self.searchBar.delegate = self
       let searchBarHeight = searchBar.frame.size.height
       tableView.setContentOffset(CGPoint(x: 0, y: searchBarHeight), animated: false)
-      
-      // Uncomment the following line to preserve selection between presentations
-      // self.clearsSelectionOnViewWillAppear = false
-      
-      // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-      // self.navigationItem.rightBarButtonItem = self.editButtonItem
    }
    
    func onGetLastValuesSuccess(jsonData: [String : Any]?) -> Void
@@ -46,7 +40,11 @@ class LastValuesViewController: UITableViewController, UISearchBarDelegate
          {
             for v in list
             {
-               self.lastValues.append(DciValue(json: v as? [String : Any] ?? [:]))
+               let value = DciValue(json: v as? [String : Any] ?? [:])
+               if value.dcObjectType == 1 // Item
+               {
+                  self.lastValues.append(value)
+               }
             }
          }
          if self.lastValues.count > 0
@@ -116,6 +114,7 @@ class LastValuesViewController: UITableViewController, UISearchBarDelegate
       {
          let formatter = LargeValueFormatter()
          cell.value.text = formatter.stringForValue(Double(filteredLastValues[indexPath.row].value)!, axis: nil)
+         //cell.value.sizeToFit()
       }
       
       if let activeThreshold = filteredLastValues[indexPath.row].activeThreshold
@@ -123,22 +122,34 @@ class LastValuesViewController: UITableViewController, UISearchBarDelegate
          switch activeThreshold.currentSeverity
          {
          case Severity.NORMAL:
-            cell.statusLabel.backgroundColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
+            cell.statusLabel.text = "Normal"
+            cell.statusLabel.textColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
          case Severity.WARNING:
-            cell.statusLabel.backgroundColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
+            cell.statusLabel.text = "Warning"
+            cell.statusLabel.textColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
          case Severity.MINOR:
-            cell.statusLabel.backgroundColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
+            cell.statusLabel.text = "Minor"
+            cell.statusLabel.textColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
          case Severity.MAJOR:
-            cell.statusLabel.backgroundColor = UIColor(red: 255, green: 128, blue: 0, alpha: 100)
+            cell.statusLabel.text = "Major"
+            cell.statusLabel.textColor = UIColor(red: 255, green: 0, blue: 0, alpha: 100)
          case Severity.CRITICAL:
-            cell.statusLabel.backgroundColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
+            cell.statusLabel.text = "Critical"
+            cell.statusLabel.textColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
          case Severity.UNKNOWN:
-            cell.statusLabel.backgroundColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
+            cell.statusLabel.text = "Unknown"
+            cell.statusLabel.textColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
          case Severity.TERMINATE:
-            cell.statusLabel.backgroundColor = UIColor(red: 139, green: 0, blue: 0, alpha: 100)
+            cell.statusLabel.text = "Terminate"
+            cell.statusLabel.textColor = UIColor(red: 139, green: 0, blue: 0, alpha: 100)
          case Severity.RESOLVE:
-            cell.statusLabel.backgroundColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
+            cell.statusLabel.text = "Resolve"
+            cell.statusLabel.textColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
          }
+      }
+      else
+      {
+         cell.statusLabel.text = ""
       }
       
       return cell

@@ -14,30 +14,32 @@ class MainViewController: UIViewController
    @IBOutlet weak var alarmsButton: UIButton!
    @IBOutlet weak var objectsButton: UIButton!
    @IBOutlet weak var graphsButton: UIButton!
+   @IBOutlet weak var topBar: UINavigationItem!
+   @IBOutlet weak var serverLabel: UILabel!
    
    override func viewDidLoad()
    {
       self.navigationController?.setToolbarHidden(true, animated: false)
       
-      alarmsButton.layer.masksToBounds = false
-      alarmsButton.layer.shadowColor = UIColor.gray.cgColor
-      alarmsButton.layer.shadowOpacity = 0.3
-      alarmsButton.layer.shadowOffset = CGSize(width: -1, height: 2)
-      alarmsButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
+      self.serverLabel.text = "\(Connection.sharedInstance!.session!.userData.name)@\(Connection.sharedInstance!.session!.serverData.address)"
       
-      objectsButton.layer.masksToBounds = false
-      objectsButton.layer.shadowColor = UIColor.gray.cgColor
-      objectsButton.layer.shadowOpacity = 0.3
-      objectsButton.layer.shadowOffset = CGSize(width: -1, height: 2)
-      objectsButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
+      objectsButton.layer.cornerRadius = 4
+      objectsButton.layer.shadowColor = UIColor(red:0.03, green:0.08, blue:0.15, alpha:0.15).cgColor
+      objectsButton.layer.shadowOpacity = 1
+      objectsButton.layer.shadowOffset = CGSize(width: 0, height: 4)
+      objectsButton.layer.shadowRadius = 12
       
-      graphsButton.layer.masksToBounds = false
-      graphsButton.layer.shadowColor = UIColor.gray.cgColor
-      graphsButton.layer.shadowOpacity = 0.3
-      graphsButton.layer.shadowOffset = CGSize(width: -1, height: 2)
-      graphsButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
+      alarmsButton.layer.cornerRadius = 4
+      alarmsButton.layer.shadowColor = UIColor(red:0.03, green:0.08, blue:0.15, alpha:0.15).cgColor
+      alarmsButton.layer.shadowOpacity = 1
+      alarmsButton.layer.shadowOffset = CGSize(width: 0, height: 4)
+      alarmsButton.layer.shadowRadius = 12
       
-      self.title = "NetXMS Mobile Console"
+      graphsButton.layer.cornerRadius = 4
+      graphsButton.layer.shadowColor = UIColor(red:0.03, green:0.08, blue:0.15, alpha:0.15).cgColor
+      graphsButton.layer.shadowOpacity = 1
+      graphsButton.layer.shadowOffset = CGSize(width: 0, height: 4)
+      graphsButton.layer.shadowRadius = 12
       
       super.viewDidLoad()
    }

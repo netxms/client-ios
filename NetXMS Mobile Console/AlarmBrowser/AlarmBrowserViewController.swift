@@ -19,11 +19,16 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
    var filteredAlarms = [Alarm]()
    var object: AbstractObject!
    @IBOutlet weak var searchBar: UISearchBar!
-   @IBOutlet weak var cancelButton: UIBarButtonItem!
+   @IBOutlet var cancelButton: UIBarButtonItem!
+   var selectButton: UIButton!
+   var selectBarButtonItem: UIBarButtonItem!
    
    override func viewDidLoad()
    {
       super.viewDidLoad()
+      
+      selectButton = UIButton(type: .system)
+      selectBarButtonItem = UIBarButtonItem(title: "Select", style: .plain, target: self, action: #selector(AlarmBrowserViewController.selectButtonPressed(_:)))
       
       setCancelButtonState(enabled: false)
       let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressOnCell))
@@ -38,7 +43,7 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       {
          for a in alarms
          {
-            if object.children.count > 0 && object.objectClass == AbstractObject.OBJECT_CONTAINER
+            if object.children.count > 0 && object.objectClass == ObjectClass.OBJECT_CONTAINER
             {
                for c in object.children
                {
@@ -67,7 +72,7 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       {
          for a in alarms
          {
-            if object.children.count > 0 && object.objectClass == AbstractObject.OBJECT_CONTAINER
+            if object.children.count > 0 && object.objectClass == ObjectClass.OBJECT_CONTAINER
             {
                for c in object.children
                {
@@ -129,21 +134,29 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       switch self.filteredAlarms[indexPath.row].currentSeverity
       {
       case Severity.NORMAL:
-         cell.severityLabel.backgroundColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
+        cell.severityLabel.text = "Normal"
+        cell.severityLabel.textColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
       case Severity.WARNING:
-         cell.severityLabel.backgroundColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
+        cell.severityLabel.text = "Warning"
+         cell.severityLabel.textColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
       case Severity.MINOR:
-         cell.severityLabel.backgroundColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
+        cell.severityLabel.text = "Minor"
+         cell.severityLabel.textColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
       case Severity.MAJOR:
-         cell.severityLabel.backgroundColor = UIColor(red: 255, green: 0, blue: 0, alpha: 100)
+        cell.severityLabel.text = "Major"
+         cell.severityLabel.textColor = UIColor(red: 255, green: 0, blue: 0, alpha: 100)
       case Severity.CRITICAL:
-         cell.severityLabel.backgroundColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
+        cell.severityLabel.text = "Critical"
+         cell.severityLabel.textColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
       case Severity.UNKNOWN:
-         cell.severityLabel.backgroundColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
+        cell.severityLabel.text = "Unknown"
+         cell.severityLabel.textColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
       case Severity.TERMINATE:
-         cell.severityLabel.backgroundColor = UIColor(red: 139, green: 0, blue: 0, alpha: 100)
+        cell.severityLabel.text = "Terminate"
+         cell.severityLabel.textColor = UIColor(red: 139, green: 0, blue: 0, alpha: 100)
       case Severity.RESOLVE:
-         cell.severityLabel.backgroundColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
+        cell.severityLabel.text = "Resolve"
+         cell.severityLabel.textColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
       }
       return cell
    }
@@ -248,15 +261,20 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
    
    func setCancelButtonState(enabled: Bool)
    {
-      self.cancelButton.isEnabled = enabled
       self.navigationController?.setToolbarHidden(!enabled, animated: true)
       if enabled == false
       {
-         self.cancelButton.tintColor = UIColor.clear
+         self.navigationItem.rightBarButtonItem = self.selectBarButtonItem
       }
       else
       {
-         self.cancelButton.tintColor = UIColor.red
+         self.navigationItem.rightBarButtonItem = self.cancelButton
       }
+   }
+   
+   @IBAction func selectButtonPressed(_ sender: Any)
+   {
+      self.tableView.setEditing(true, animated: true)
+      setCancelButtonState(enabled: true)
    }
 }

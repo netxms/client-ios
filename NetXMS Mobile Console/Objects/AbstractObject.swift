@@ -8,6 +8,125 @@
 
 import Foundation
 
+enum ObjectClass: Int
+{
+   case OBJECT_GENERIC = 0
+   case OBJECT_SUBNET = 1
+   case OBJECT_NODE = 2
+   case OBJECT_INTERFACE = 3
+   case OBJECT_NETWORK = 4
+   case OBJECT_CONTAINER = 5
+   case OBJECT_ZONE = 6
+   case OBJECT_SERVICEROOT = 7
+   case OBJECT_TEMPLATE = 8
+   case OBJECT_TEMPLATEGROUP = 9
+   case OBJECT_TEMPLATEROOT = 10
+   case OBJECT_NETWORKSERVICE = 11
+   case OBJECT_VPNCONNECTOR = 12
+   case OBJECT_CONDITION = 13
+   case OBJECT_CLUSTER = 14
+   case OBJECT_POLICYGROUP = 15
+   case OBJECT_POLICYROOT = 16
+   case OBJECT_AGENTPOLICY = 17
+   case OBJECT_AGENTPOLICY_CONFIG = 18
+   case OBJECT_NETWORKMAPROOT = 19
+   case OBJECT_NETWORKMAPGROUP = 20
+   case OBJECT_NETWORKMAP = 21
+   case OBJECT_DASHBOARDROOT = 22
+   case OBJECT_DASHBOARD = 23
+   case OBJECT_BUSINESSSERVICEROOT = 27
+   case OBJECT_BUSINESSSERVICE = 28
+   case OBJECT_NODELINK = 29
+   case OBJECT_SLMCHECK = 30
+   case OBJECT_MOBILEDEVICE = 31
+   case OBJECT_RACK = 32
+   case OBJECT_ACCESSPOINT = 33
+   case OBJECT_AGENTPOLICY_LOGPARSER = 34
+   case OBJECT_CHASSIS = 35
+   case OBJECT_DASHBOARDGROUP = 36
+   case OBJECT_SENSOR = 37
+   case OBJECT_CUSTOM = 10000
+   
+   static func resolveObjectClass(objectClass: Int) -> ObjectClass
+   {
+      switch (objectClass)
+      {
+      case 0:
+         return ObjectClass.OBJECT_GENERIC
+      case 1:
+         return ObjectClass.OBJECT_SUBNET
+      case 2:
+         return ObjectClass.OBJECT_NODE
+      case 3:
+         return ObjectClass.OBJECT_INTERFACE
+      case 4:
+         return ObjectClass.OBJECT_NETWORK
+      case 5:
+         return ObjectClass.OBJECT_CONTAINER
+      case 6:
+         return ObjectClass.OBJECT_ZONE
+      case 7:
+         return ObjectClass.OBJECT_SERVICEROOT
+      case 8:
+         return ObjectClass.OBJECT_TEMPLATE
+      case 9:
+         return ObjectClass.OBJECT_TEMPLATEGROUP
+      case 10:
+         return ObjectClass.OBJECT_TEMPLATEROOT
+      case 11:
+         return ObjectClass.OBJECT_NETWORKSERVICE
+      case 12:
+         return ObjectClass.OBJECT_VPNCONNECTOR
+      case 13:
+         return ObjectClass.OBJECT_CONDITION
+      case 14:
+         return ObjectClass.OBJECT_CLUSTER
+      case 15:
+         return ObjectClass.OBJECT_POLICYGROUP
+      case 16:
+         return ObjectClass.OBJECT_POLICYROOT
+      case 17:
+         return ObjectClass.OBJECT_AGENTPOLICY
+      case 18:
+         return ObjectClass.OBJECT_AGENTPOLICY_CONFIG
+      case 19:
+         return ObjectClass.OBJECT_NETWORKMAPROOT
+      case 20:
+         return ObjectClass.OBJECT_NETWORKMAPGROUP
+      case 21:
+         return ObjectClass.OBJECT_NETWORKMAP
+      case 22:
+         return ObjectClass.OBJECT_DASHBOARDROOT
+      case 23:
+         return ObjectClass.OBJECT_DASHBOARD
+      case 27:
+         return ObjectClass.OBJECT_BUSINESSSERVICEROOT
+      case 28:
+         return ObjectClass.OBJECT_BUSINESSSERVICE
+      case 29:
+         return ObjectClass.OBJECT_NODELINK
+      case 30:
+         return ObjectClass.OBJECT_SLMCHECK
+      case 31:
+         return ObjectClass.OBJECT_MOBILEDEVICE
+      case 32:
+         return ObjectClass.OBJECT_RACK
+      case 33:
+         return ObjectClass.OBJECT_ACCESSPOINT
+      case 34:
+         return ObjectClass.OBJECT_AGENTPOLICY_LOGPARSER
+      case 35:
+         return ObjectClass.OBJECT_CHASSIS
+      case 36:
+         return ObjectClass.OBJECT_DASHBOARDGROUP
+      case 37:
+         return ObjectClass.OBJECT_SENSOR
+      default:
+         return ObjectClass.OBJECT_CUSTOM
+      }
+   }
+}
+
 struct Geolocation
 {
    var accuracy: Int
@@ -44,58 +163,18 @@ struct PostalAddress
 
 class AbstractObject
 {
-   /*
-    * Object clases
-    */
-   static public let OBJECT_GENERIC = 0;
-   static public let OBJECT_SUBNET = 1;
-   static public let OBJECT_NODE = 2;
-   static public let OBJECT_INTERFACE = 3;
-   static public let OBJECT_NETWORK = 4;
-   static public let OBJECT_CONTAINER = 5;
-   static public let OBJECT_ZONE = 6;
-   static public let OBJECT_SERVICEROOT = 7;
-   static public let OBJECT_TEMPLATE = 8;
-   static public let OBJECT_TEMPLATEGROUP = 9;
-   static public let OBJECT_TEMPLATEROOT = 10;
-   static public let OBJECT_NETWORKSERVICE = 11;
-   static public let OBJECT_VPNCONNECTOR = 12;
-   static public let OBJECT_CONDITION = 13;
-   static public let OBJECT_CLUSTER = 14;
-   static public let OBJECT_POLICYGROUP = 15;
-   static public let OBJECT_POLICYROOT = 16;
-   static public let OBJECT_AGENTPOLICY = 17;
-   static public let OBJECT_AGENTPOLICY_CONFIG = 18;
-   static public let OBJECT_NETWORKMAPROOT = 19;
-   static public let OBJECT_NETWORKMAPGROUP = 20;
-   static public let OBJECT_NETWORKMAP = 21;
-   static public let OBJECT_DASHBOARDROOT = 22;
-   static public let OBJECT_DASHBOARD = 23;
-   static public let OBJECT_BUSINESSSERVICEROOT = 27;
-   static public let OBJECT_BUSINESSSERVICE = 28;
-   static public let OBJECT_NODELINK = 29;
-   static public let OBJECT_SLMCHECK = 30;
-   static public let OBJECT_MOBILEDEVICE = 31;
-   static public let OBJECT_RACK = 32;
-   static public let OBJECT_ACCESSPOINT = 33;
-   static public let OBJECT_AGENTPOLICY_LOGPARSER = 34;
-   static public let OBJECT_CHASSIS = 35;
-   static public let OBJECT_DASHBOARDGROUP = 36;
-   static public let OBJECT_SENSOR = 37;
-   static public let OBJECT_CUSTOM = 10000;
    
    let geolocation: Geolocation
    let parents: [Int]
    let inMaintenanceMode: Bool
    let guid: UUID?
    let postalAddress: PostalAddress
-   let objectClass: Int
+   let objectClass: ObjectClass
    let objectId: Int
    let children: [Int]
    let dashboards: [Int]
    let objectName: String
    let status: ObjectStatus
-   //let responsibleUsers: [Int]
    let statusThresholds: [Int]
    let comments: String
    let isDeleted: Bool
@@ -107,17 +186,26 @@ class AbstractObject
       self.inMaintenanceMode = json["inMaintenanceMode"] as? Bool ?? false
       self.guid = UUID(uuidString: json["guid"] as? String ?? "")!
       self.postalAddress = PostalAddress(json: json["postalAddress"] as? [String : Any] ?? [:])
-      self.objectClass = json["objectClass"] as? Int ?? 0
+      self.objectClass = ObjectClass.resolveObjectClass(objectClass: (json["objectClass"] as? Int ?? 0))
       self.objectId = json["objectId"] as? Int ?? -1
       self.children = json["children"] as? [Int] ?? []
       self.dashboards = json["dashboards"] as? [Int] ?? []
       self.objectName = json["objectName"] as? String ?? "<ERROR>"
-      self.status = AbstractObject.resolveObjectStatus(status: json["status"] as? String ?? "")
-      //let responsibleUsers = json["responsibleUsers"] as? [Int]
+      self.status = ObjectStatus.resolveObjectStatus(status: json["status"] as? String ?? "")
       self.statusThresholds = json["statusThresholds"] as? [Int] ?? []
       self.comments = json["comments"] as? String ?? ""
       self.isDeleted = json["isDeleted"] as? Bool ?? false
    }
+}
+
+enum ObjectStatus: Int
+{
+   case NORMAL = 0
+   case WARNING = 1
+   case MINOR = 2
+   case MAJOR = 3
+   case CRITICAL = 4
+   case UNKNOWN = 5
    
    static func resolveObjectStatus(status: String) -> ObjectStatus
    {
@@ -137,14 +225,4 @@ class AbstractObject
          return ObjectStatus.UNKNOWN
       }
    }
-}
-
-enum ObjectStatus: Int
-{
-   case NORMAL = 0
-   case WARNING = 1
-   case MINOR = 2
-   case MAJOR = 3
-   case CRITICAL = 4
-   case UNKNOWN = 5
 }

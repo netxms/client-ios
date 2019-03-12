@@ -47,7 +47,6 @@ class Connection
    var password: String
    var apiUrl: String
    var objectCache = [Int : AbstractObject]()
-   var rootObjects = [Int : AbstractObject]()
    var alarmCache = [Int : Alarm]()
    var predefinedGraphRoot: GraphFolder?
    var timer: Timer?
@@ -267,7 +266,6 @@ class Connection
          case Connection.OBJECT_CHANGED, Connection.OBJECT_DELETED:
             refreshObjectBrowser = true
             getAllObjects()
-            getRootObjects()
          default:
             break
          }
@@ -349,14 +347,12 @@ class Connection
          for o in objects
          {
             var object: AbstractObject
-            switch o["objectClass"] as! Int
+            switch ObjectClass.resolveObjectClass(objectClass: o["objectClass"] as? Int ?? 0)
             {
-            case AbstractObject.OBJECT_NODE:
+            case ObjectClass.OBJECT_NODE:
                object = Node(json: o)
-               /*case AbstractObject.OBJECT_CLUSTER:
-                object = Cluster(json: o)
-                case AbstractObject.OBJECT_CONTAINER:
-                object = Container(json: o)*/
+            case ObjectClass.OBJECT_CLUSTER:
+               object = Cluster(json: o)
             default:
                object = AbstractObject(json: o)
             }
@@ -364,6 +360,8 @@ class Connection
          }
       }
    }
+   
+   func getFilteredObjects(filter: [)
    
    func getHistoricalDataForMultipleObjects(query: String, onSuccess: @escaping ([String : Any]?) -> Void)
    {
@@ -374,53 +372,6 @@ class Connection
          requestData.queryItems.append(URLQueryItem(name: "dciList", value: query))
          
          sendRequest(requestData: requestData, onSuccess: onSuccess)
-      }
-   }
-   
-   /**
-    * Get root objects
-    */
-   func getRootObjects()
-   {
-      if self.session != nil
-      {
-         var requestData = RequestData(url: "\(apiUrl)/objects", method: "GET")
-         requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
-         requestData.queryItems.append(URLQueryItem(name: "rootObjectsOnly", value: "true"))
-         
-         sendRequest(requestData: requestData, onSuccess: onGetRootObjectsSuccess)
-      }
-   }
-   
-   func onGetRootObjectsSuccess(jsonData: [String : Any]?) -> Void
-   {
-      if let jsonData = jsonData,
-         let objects = jsonData["objects"] as? [[String : Any]]
-      {
-         rootObjects.removeAll()
-         for o in objects
-         {
-            var object: AbstractObject
-            switch o["objectClass"] as! Int
-            {
-            case AbstractObject.OBJECT_NODE:
-               object = Node(json: o)
-               /*case AbstractObject.OBJECT_CLUSTER:
-                object = Cluster(json: o)
-                case AbstractObject.OBJECT_CONTAINER:
-                object = Container(json: o)*/
-            default:
-               object = AbstractObject(json: o)
-            }
-            rootObjects.updateValue(object, forKey: object.objectId)
-         }
-         if refreshObjectBrowser
-         {
-            DispatchQueue.main.async
-            {
-               self.objectBrowser?.refresh()
-            }
-         }
       }
    }
    
@@ -450,13 +401,6 @@ class Connection
          {
             return $0.currentSeverity.rawValue > $1.currentSeverity.rawValue
          }
-      }
-   }
-   
-   func getSortedRootObjects() -> [AbstractObject]
-   {
-      return rootObjects.values.sorted {
-         return ($0.objectName.lowercased()) < ($1.objectName.lowercased())
       }
    }
    
@@ -510,13 +454,13 @@ class Connection
       }
    }
    
-   func executeObjectTool(objectId: Int, details: [[String : Any]], onSuccess: @escaping ([String : Any]?) -> Void)
+   func executeObjectTool(objectId: Int, details: [String : Any], onSuccess: @escaping ([String : Any]?) -> Void)
    {
       if self.session != nil
       {
          var requestData = RequestData(url: "\(apiUrl)/objects/\(objectId)/objecttools", method: "POST")
          requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
-         let json: [String : Any] = ["toolList" : details]
+         let json: [String : Any] = ["toolData" : details]
          requestData.requestBody = try? JSONSerialization.data(withJSONObject: json)
          
          sendRequest(requestData: requestData, onSuccess: onSuccess)

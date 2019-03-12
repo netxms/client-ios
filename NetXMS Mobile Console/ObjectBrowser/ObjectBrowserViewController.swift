@@ -30,9 +30,15 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
    func refresh()
    {
       objects.removeAll()
-      for (_,value) in (Connection.sharedInstance?.rootObjects)!
+      for (_,value) in (Connection.sharedInstance?.objectCache)!
       {
-         objects.append(value)
+         switch value.objectClass
+         {
+         case ObjectClass.OBJECT_CONTAINER, ObjectClass.OBJECT_CLUSTER, ObjectClass.OBJECT_NODE:
+            objects.append(value)
+         default:
+            continue
+         }
       }
       objects = objects.sorted {
          return ($0.objectName.lowercased()) < ($1.objectName.lowercased())
@@ -54,7 +60,7 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
                var searchText = searchText
                if searchText.first == ">" // Search by IP
                {
-                  if object.objectClass == AbstractObject.OBJECT_NODE
+                  if object.objectClass == ObjectClass.OBJECT_NODE
                   {
                      searchText.remove(at: searchText.startIndex)
                      if (object as? Node)?.primaryIP.range(of: searchText) != nil
@@ -81,7 +87,7 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
                }
                else if searchText.first == "@" // Search by zone ID
                {
-                  if object.objectClass == AbstractObject.OBJECT_NODE
+                  if object.objectClass == ObjectClass.OBJECT_NODE
                   {
                      searchText.remove(at: searchText.startIndex)
                      if (object as? Node)?.zoneId.description.range(of: searchText) != nil
@@ -124,7 +130,7 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
       cell.objectBrowser = self
       cell.objectName?.text = self.objects[indexPath.row].objectName//Connection.sharedInstance?.resolveObjectName(objectId: self.objects[indexPath.row].objectId)
       
-      if self.objects[indexPath.row].objectClass == AbstractObject.OBJECT_NODE
+      if self.objects[indexPath.row].objectClass == ObjectClass.OBJECT_NODE
       {
          cell.button.isHidden = true
       }
@@ -135,11 +141,11 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
       
       switch self.objects[indexPath.row].objectClass
       {
-      case AbstractObject.OBJECT_NODE:
+      case ObjectClass.OBJECT_NODE:
          cell.typeImage.image = #imageLiteral(resourceName: "node.png")
-      case AbstractObject.OBJECT_CLUSTER:
+      case ObjectClass.OBJECT_CLUSTER:
          cell.typeImage.image = #imageLiteral(resourceName: "cluster.png")
-      case AbstractObject.OBJECT_CONTAINER:
+      case ObjectClass.OBJECT_CONTAINER:
          cell.typeImage.image = #imageLiteral(resourceName: "container.png")
       default:
          break

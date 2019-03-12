@@ -14,71 +14,52 @@ class AlarmDetailsViewController : UIViewController
    var alarm: Alarm!   
    @IBOutlet weak var objectName: UILabel!
    @IBOutlet weak var createdOn: UILabel!
-   @IBOutlet weak var message: UILabel!
+   @IBOutlet weak var message: UITextView!
    @IBOutlet weak var severityLabel: UILabel!
    @IBOutlet weak var acknowledgeButton: UIButton!
    @IBOutlet weak var stickyAcknowledgeButton: UIButton!
    @IBOutlet weak var resolveButton: UIButton!
    @IBOutlet weak var terminateButton: UIButton!
    @IBOutlet weak var lastValuesButton: UIButton!
+   let blackView = UIView()
+   @IBOutlet weak var buttonStack: UIStackView!
+   @IBOutlet weak var contentView: UIView!
    
    override func viewDidLoad()
    {
       super.viewDidLoad()
       
-      acknowledgeButton.layer.masksToBounds = false
-      acknowledgeButton.layer.shadowColor = UIColor.gray.cgColor
-      acknowledgeButton.layer.shadowOpacity = 0.5
-      acknowledgeButton.layer.shadowOffset = CGSize(width: -1, height: 2)
-      acknowledgeButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
-      
-      stickyAcknowledgeButton.layer.masksToBounds = false
-      stickyAcknowledgeButton.layer.shadowColor = UIColor.gray.cgColor
-      stickyAcknowledgeButton.layer.shadowOpacity = 0.5
-      stickyAcknowledgeButton.layer.shadowOffset = CGSize(width: -1, height: 2)
-      stickyAcknowledgeButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
-      
-      resolveButton.layer.masksToBounds = false
-      resolveButton.layer.shadowColor = UIColor.gray.cgColor
-      resolveButton.layer.shadowOpacity = 0.5
-      resolveButton.layer.shadowOffset = CGSize(width: -1, height: 2)
-      resolveButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
-      
-      terminateButton.layer.masksToBounds = false
-      terminateButton.layer.shadowColor = UIColor.gray.cgColor
-      terminateButton.layer.shadowOpacity = 0.5
-      terminateButton.layer.shadowOffset = CGSize(width: -1, height: 2)
-      terminateButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
-      
-      lastValuesButton.layer.masksToBounds = false
-      lastValuesButton.layer.shadowColor = UIColor.gray.cgColor
-      lastValuesButton.layer.shadowOpacity = 0.5
-      lastValuesButton.layer.shadowOffset = CGSize(width: -1, height: 2)
-      lastValuesButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
-      
       objectName.text = Connection.sharedInstance?.resolveObjectName(objectId: alarm.sourceObjectId)
       self.title = objectName.text
       createdOn.text = DateFormatter.localizedString(from: Date(timeIntervalSince1970: alarm.creationTime), dateStyle: DateFormatter.Style.short, timeStyle: DateFormatter.Style.short)
       message.text = alarm.message
-      
+
       switch alarm.currentSeverity
       {
       case Severity.NORMAL:
-         severityLabel.backgroundColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
+         severityLabel.text = "Normal"
+         severityLabel.textColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
       case Severity.WARNING:
-         severityLabel.backgroundColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
+         severityLabel.text = "Warning"
+         severityLabel.textColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
       case Severity.MINOR:
-         severityLabel.backgroundColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
+         severityLabel.text = "Minor"
+         severityLabel.textColor = UIColor(red:0.84, green:0.7, blue:0, alpha:1)
       case Severity.MAJOR:
-         severityLabel.backgroundColor = UIColor(red: 255, green: 128, blue: 0, alpha: 100)
+         severityLabel.text = "Major"
+         severityLabel.textColor = UIColor(red: 255, green: 0, blue: 0, alpha: 100)
       case Severity.CRITICAL:
-         severityLabel.backgroundColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
+         severityLabel.text = "Critical"
+         severityLabel.textColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
       case Severity.UNKNOWN:
-         severityLabel.backgroundColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
+         severityLabel.text = "Unknown"
+         severityLabel.textColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
       case Severity.TERMINATE:
-         severityLabel.backgroundColor = UIColor(red: 139, green: 0, blue: 0, alpha: 100)
+         severityLabel.text = "Terminate"
+         severityLabel.textColor = UIColor(red: 139, green: 0, blue: 0, alpha: 100)
       case Severity.RESOLVE:
-         severityLabel.backgroundColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
+         severityLabel.text = "Resolve"
+         severityLabel.textColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
       }
       
       if alarm.state == Alarm.STATE_ACKNOWLEDGED || alarm.state == Alarm.STATE_ACKNOWLEDGED_STICKY
@@ -91,6 +72,49 @@ class AlarmDetailsViewController : UIViewController
          acknowledgeButton.isHidden = true
          stickyAcknowledgeButton.isHidden = true
          resolveButton.isHidden = true
+      }
+      
+      let actionsBarButtonItem = UIBarButtonItem(title: "Actions", style: .plain, target: self, action: #selector(openMenu))
+      self.navigationItem.rightBarButtonItem = actionsBarButtonItem
+      self.buttonStack.isHidden = true
+   }
+   
+   @objc func openMenu()
+   {
+      self.buttonStack.isHidden = false
+      blackView.backgroundColor = UIColor(white: 0, alpha: 0.5)
+      
+      blackView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleDismiss)))
+      
+      contentView.addSubview(blackView)
+      //view.addSubview(collectionView)
+      let height: CGFloat = self.buttonStack.frame.height + 16
+      let y = self.view.frame.height - height
+      buttonStack.frame = CGRect(x: 16, y: self.view.frame.height, width: self.view.frame.width, height: height)
+      
+      blackView.frame = view.frame
+      blackView.alpha = 0
+      
+      UIView.animate(withDuration: 0.5, animations: {
+         self.blackView.alpha = 1
+         self.buttonStack.frame = CGRect(x: 16, y: y, width: self.view.frame.width, height: self.view.frame.height)
+         })
+   }
+   
+   @objc func handleDismiss()
+   {
+      UIView.animate(withDuration: 0.5, animations: {
+         self.blackView.alpha = 0
+         self.buttonStack.frame = CGRect(x: 16, y: self.view.frame.height, width: self.buttonStack.frame.width, height: self.buttonStack.frame.height)
+      })
+   }
+   
+   override func viewDidLayoutSubviews()
+   {
+      let buttonList = [acknowledgeButton, stickyAcknowledgeButton, resolveButton, terminateButton, lastValuesButton]
+      for button in buttonList
+      {
+         MainNavigationController.setButtonStyle(button: button!)
       }
    }
    
