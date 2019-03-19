@@ -22,7 +22,7 @@
 		110434B621132431003DB91A /* last values.png in Resources */ = {isa = PBXBuildFile; fileRef = 110434AC21132431003DB91A /* last values.png */; };
 		110434B721132431003DB91A /* objectBrowser.png in Resources */ = {isa = PBXBuildFile; fileRef = 110434AD21132431003DB91A /* objectBrowser.png */; };
 		110434B921132987003DB91A /* Alarms.svg in Resources */ = {isa = PBXBuildFile; fileRef = 110434B821132986003DB91A /* Alarms.svg */; };
-		110CE04521525086007CED7F /* ObjectToolsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110CE04421525086007CED7F /* ObjectToolsViewCell.swift */; };
+		110CE04521525086007CED7F /* ObjectToolViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110CE04421525086007CED7F /* ObjectToolViewCell.swift */; };
 		110CE049215274E8007CED7F /* ObjectTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110CE048215274E8007CED7F /* ObjectTool.swift */; };
 		1125612D21368C9500F492AD /* PredefinedGraphsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1125612C21368C9500F492AD /* PredefinedGraphsViewController.swift */; };
 		1125612F21368DE100F492AD /* GraphFolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1125612E21368DE100F492AD /* GraphFolder.swift */; };
@@ -65,6 +65,7 @@
 		1170F3C521B9124200A6FF27 /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1170F3C121B9123700A6FF27 /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1189A8B720F754E300510DB4 /* ObjectDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1189A8B620F754E300510DB4 /* ObjectDetailsViewController.swift */; };
 		1189A8B920F7557900510DB4 /* ObjectDetailsAlarmCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1189A8B820F7557900510DB4 /* ObjectDetailsAlarmCell.swift */; };
+		1192CCBA223FEC3800FB1DE1 /* ObjectToolFolderViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1192CCB9223FEC3800FB1DE1 /* ObjectToolFolderViewCell.swift */; };
 		11B6799521088509005C8C4B /* Severity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6799421088509005C8C4B /* Severity.swift */; };
 		11B67998210B269E005C8C4B /* LastValuesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B67997210B269E005C8C4B /* LastValuesViewController.swift */; };
 		11C1B8C220456F87005B2B6D /* AlarmBrowserViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C1B8C120456F87005B2B6D /* AlarmBrowserViewCell.swift */; };
@@ -145,7 +146,7 @@
 		110434AC21132431003DB91A /* last values.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "last values.png"; sourceTree = "<group>"; };
 		110434AD21132431003DB91A /* objectBrowser.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = objectBrowser.png; sourceTree = "<group>"; };
 		110434B821132986003DB91A /* Alarms.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Alarms.svg; sourceTree = "<group>"; };
-		110CE04421525086007CED7F /* ObjectToolsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectToolsViewCell.swift; sourceTree = "<group>"; };
+		110CE04421525086007CED7F /* ObjectToolViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectToolViewCell.swift; sourceTree = "<group>"; };
 		110CE048215274E8007CED7F /* ObjectTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectTool.swift; sourceTree = "<group>"; };
 		1125612C21368C9500F492AD /* PredefinedGraphsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredefinedGraphsViewController.swift; sourceTree = "<group>"; };
 		1125612E21368DE100F492AD /* GraphFolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphFolder.swift; sourceTree = "<group>"; };
@@ -193,6 +194,7 @@
 		1170F3BB21B9123700A6FF27 /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Charts.xcodeproj; path = ../Charts/Charts.xcodeproj; sourceTree = "<group>"; };
 		1189A8B620F754E300510DB4 /* ObjectDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDetailsViewController.swift; sourceTree = "<group>"; };
 		1189A8B820F7557900510DB4 /* ObjectDetailsAlarmCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDetailsAlarmCell.swift; sourceTree = "<group>"; };
+		1192CCB9223FEC3800FB1DE1 /* ObjectToolFolderViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectToolFolderViewCell.swift; sourceTree = "<group>"; };
 		11B6799421088509005C8C4B /* Severity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Severity.swift; sourceTree = "<group>"; };
 		11B67997210B269E005C8C4B /* LastValuesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastValuesViewController.swift; sourceTree = "<group>"; };
 		11C1B8C120456F87005B2B6D /* AlarmBrowserViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmBrowserViewCell.swift; sourceTree = "<group>"; };
@@ -421,7 +423,8 @@
 				1189A8B820F7557900510DB4 /* ObjectDetailsAlarmCell.swift */,
 				116F027120F761E200056C7F /* ObjectDetailsLastValuesCell.swift */,
 				1148CC4821510C1A007005EC /* ObjectToolsViewController.swift */,
-				110CE04421525086007CED7F /* ObjectToolsViewCell.swift */,
+				110CE04421525086007CED7F /* ObjectToolViewCell.swift */,
+				1192CCB9223FEC3800FB1DE1 /* ObjectToolFolderViewCell.swift */,
 				114995AB217F02BF002F2FE6 /* ObjectToolOutputViewController.swift */,
 				112B7FED21AE98C0009AAD52 /* ObjectDetailsNoDataCell.swift */,
 				1160B6BF21B53A690078EF27 /* ObjectToolsURLOutputViewController.swift */,
@@ -625,7 +628,7 @@
 				1104347D21105D17003DB91A /* LineChartViewController.swift in Sources */,
 				1161F7EF203EFC1C00B9C845 /* AlarmBrowserViewController.swift in Sources */,
 				11DDCE6620D257ED00CF2BB1 /* ObjectBrowserViewCell.swift in Sources */,
-				110CE04521525086007CED7F /* ObjectToolsViewCell.swift in Sources */,
+				110CE04521525086007CED7F /* ObjectToolViewCell.swift in Sources */,
 				11DDCE6420D2561700CF2BB1 /* ObjectBrowserViewController.swift in Sources */,
 				112B7FEE21AE98C0009AAD52 /* ObjectDetailsNoDataCell.swift in Sources */,
 				1125614F213D2D9200F492AD /* KeychainWrapper.swift in Sources */,
@@ -646,6 +649,7 @@
 				1161F7B3203EAFE700B9C845 /* AppDelegate.swift in Sources */,
 				11043454210F3543003DB91A /* LastValuesCell.swift in Sources */,
 				11283D6B214A759300EF4083 /* TimestampFormatter.swift in Sources */,
+				1192CCBA223FEC3800FB1DE1 /* ObjectToolFolderViewCell.swift in Sources */,
 				11283D6D214A7B1200EF4083 /* PredefinedGraphChartController.swift in Sources */,
 				1104348F211199B7003DB91A /* LargeValueFormatter.swift in Sources */,
 				1125612D21368C9500F492AD /* PredefinedGraphsViewController.swift in Sources */,

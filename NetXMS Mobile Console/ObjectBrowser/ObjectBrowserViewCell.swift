@@ -10,6 +10,7 @@ import UIKit
 
 class ObjectBrowserViewCell: UITableViewCell
 {
+   @IBOutlet weak var view: UIView!
    @IBOutlet weak var severityLabel: UILabel!
    @IBOutlet weak var objectName: UILabel!
    @IBOutlet weak var button: UIButton!
@@ -20,7 +21,11 @@ class ObjectBrowserViewCell: UITableViewCell
    override func awakeFromNib()
    {
       super.awakeFromNib()
-      // Initialization code
+      view.layer.cornerRadius = 4
+      view.layer.shadowColor = UIColor(red:0.03, green:0.08, blue:0.15, alpha:0.15).cgColor
+      view.layer.shadowOpacity = 1
+      view.layer.shadowOffset = CGSize(width: 0, height: 2)
+      view.layer.shadowRadius = 6
    }
    
    override func setSelected(_ selected: Bool, animated: Bool)

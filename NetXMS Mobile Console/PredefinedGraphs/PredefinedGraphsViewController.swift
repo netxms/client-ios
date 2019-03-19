@@ -40,12 +40,6 @@ class PredefinedGraphsViewController: UITableViewController, UISearchBarDelegate
       tableView.setContentOffset(CGPoint(x: 0, y: searchBarHeight), animated: false)
    }
    
-   override func didReceiveMemoryWarning()
-   {
-      super.didReceiveMemoryWarning()
-      // Dispose of any resources that can be recreated.
-   }
-   
    func refresh()
    {
       if let root = Connection.sharedInstance?.predefinedGraphRoot
@@ -64,8 +58,6 @@ class PredefinedGraphsViewController: UITableViewController, UISearchBarDelegate
       self.tableView.reloadData()
    }
    
-   // MARK: - Table view data source
-   
    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
    {
       return list.count
@@ -75,21 +67,17 @@ class PredefinedGraphsViewController: UITableViewController, UISearchBarDelegate
    {
       let obj = list[indexPath.row]
       
-      if obj as? GraphSettings != nil
+      if obj is GraphSettings,
+         let graphCell = tableView.dequeueReusableCell(withIdentifier: "GraphCell", for: indexPath) as? PredefinedGraphViewCell
       {
-         if let graphCell = tableView.dequeueReusableCell(withIdentifier: "GraphCell", for: indexPath) as? PredefinedGraphViewCell
-         {
-            graphCell.graphName.text = (obj as! GraphSettings).shortName
-            return graphCell
-         }
+         graphCell.graphName.text = (obj as! GraphSettings).shortName
+         return graphCell
       }
-      else if obj as? GraphFolder != nil
+      else if obj is GraphFolder,
+         let graphFolderCell = tableView.dequeueReusableCell(withIdentifier: "GraphFolderCell", for: indexPath) as? PredefinedGraphFolderViewCell
       {
-         if let graphFolderCell = tableView.dequeueReusableCell(withIdentifier: "GraphFolderCell", for: indexPath) as? PredefinedGraphFolderViewCell
-         {
-            graphFolderCell.folderName.text = (obj as! GraphFolder).name
-            return graphFolderCell
-         }
+         graphFolderCell.folderName.text = (obj as! GraphFolder).name
+         return graphFolderCell
       }
       return UITableViewCell()
    }

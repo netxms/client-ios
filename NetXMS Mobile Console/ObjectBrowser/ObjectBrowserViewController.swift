@@ -11,15 +11,16 @@ import UIKit
 class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
 {
    @IBOutlet weak var searchBar: UISearchBar!
-   var objects = [AbstractObject]()
+   var objects: [AbstractObject]!
    
    override func viewDidLoad()
    {
       super.viewDidLoad()
+      
       Connection.sharedInstance?.objectBrowser = self
-      if objects.count == 0
+      if objects == nil
       {
-         objects = (Connection.sharedInstance?.getSortedRootObjects())!
+         objects = getObjects()
          title = "Root"
       }
       self.searchBar.delegate = self
@@ -27,22 +28,17 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
       tableView.setContentOffset(CGPoint(x: 0, y: searchBarHeight), animated: false)
    }
    
-   func refresh()
+   func getObjects() -> [AbstractObject]
    {
-      objects.removeAll()
-      for (_,value) in (Connection.sharedInstance?.objectCache)!
+      return (Connection.sharedInstance?.getFilteredObjects(filter: [ObjectClass.OBJECT_NODE, ObjectClass.OBJECT_CLUSTER, ObjectClass.OBJECT_CONTAINER]) ?? []).sorted
       {
-         switch value.objectClass
-         {
-         case ObjectClass.OBJECT_CONTAINER, ObjectClass.OBJECT_CLUSTER, ObjectClass.OBJECT_NODE:
-            objects.append(value)
-         default:
-            continue
-         }
-      }
-      objects = objects.sorted {
          return ($0.objectName.lowercased()) < ($1.objectName.lowercased())
       }
+   }
+   
+   func refresh()
+   {
+      objects = getObjects()
       self.tableView.reloadData()
    }
    
@@ -50,73 +46,50 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
    {
       if searchText == ""
       {
-         objects = (Connection.sharedInstance?.getSortedRootObjects())!
+         refresh()
+         return
       }
       else
       {
-         objects = (Connection.sharedInstance?.getSortedRootObjects())!.filter { (object) -> Bool in
+         objects = getObjects().filter
+         {
+            (object) -> Bool in
             if searchText.hasPrefix(">") || searchText.hasPrefix("#") || searchText.hasPrefix("/") || searchText.hasPrefix("@")
             {
                var searchText = searchText
                if searchText.first == ">" // Search by IP
                {
-                  if object.objectClass == ObjectClass.OBJECT_NODE
+                  if let node = object as? Node
                   {
-                     searchText.remove(at: searchText.startIndex)
-                     if (object as? Node)?.primaryIP.range(of: searchText) != nil
-                     {
-                        return true
-                     }
+                     searchText.removeFirst()
+                     return node.primaryIP.localizedCaseInsensitiveContains(searchText)
                   }
                }
                else if searchText.first == "#" // Search by ID
                {
-                  searchText.remove(at: searchText.startIndex)
-                  if object.objectId.description.range(of: searchText) != nil
-                  {
-                     return true
-                  }
+                  searchText.removeFirst()
+                  return object.objectId.description.localizedCaseInsensitiveContains(searchText)
                }
                else if searchText.first == "/" // Search by comment
                {
-                  searchText.remove(at: searchText.startIndex)
-                  if object.comments.lowercased().range(of: searchText.lowercased()) != nil
-                  {
-                     return true
-                  }
+                  searchText.removeFirst()
+                  return object.comments.localizedCaseInsensitiveContains(searchText)
                }
                else if searchText.first == "@" // Search by zone ID
                {
-                  if object.objectClass == ObjectClass.OBJECT_NODE
+                  if let node = object as? Node
                   {
-                     searchText.remove(at: searchText.startIndex)
-                     if (object as? Node)?.zoneId.description.range(of: searchText) != nil
-                     {
-                        return true
-                     }
+                     searchText.removeFirst()
+                     return node.zoneId.description.localizedCaseInsensitiveContains(searchText)
                   }
                }
             }
-            else
-            {
-               if object.objectName.lowercased().range(of: searchText.lowercased()) != nil
-               {
-                  return true
-               }
-            }
-            return false
+            
+            return object.objectName.localizedCaseInsensitiveContains(searchText)
          }
       }
       self.tableView.reloadData()
    }
-   
-   override func didReceiveMemoryWarning()
-   {
-      super.didReceiveMemoryWarning()
-      // Dispose of any resources that can be recreated.
-   }
-   
-   // MARK: - Table view data source
    
    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
    {
@@ -128,15 +101,29 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
       let cell = tableView.dequeueReusableCell(withIdentifier: "ObjectCell", for: indexPath) as! ObjectBrowserViewCell
       cell.object = self.objects[indexPath.row]
       cell.objectBrowser = self
-      cell.objectName?.text = self.objects[indexPath.row].objectName//Connection.sharedInstance?.resolveObjectName(objectId: self.objects[indexPath.row].objectId)
+      cell.objectName?.text = self.objects[indexPath.row].objectName
       
       if self.objects[indexPath.row].objectClass == ObjectClass.OBJECT_NODE
       {
-         cell.button.isHidden = true
+         for c in cell.button.constraints
+         {
+            if c.identifier == "width"
+            {
+               c.constant = 0
+               cell.button.updateConstraints()
+            }
+         }
       }
       else
       {
-         cell.button.isHidden = false
+         for c in cell.button.constraints
+         {
+            if c.identifier == "width"
+            {
+               c.constant = 30
+               cell.button.updateConstraints()
+            }
+         }
       }
       
       switch self.objects[indexPath.row].objectClass
@@ -154,17 +141,23 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
       switch self.objects[indexPath.row].status
       {
       case ObjectStatus.NORMAL:
-         cell.severityLabel.backgroundColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
+         cell.severityLabel.text = "Normal"
+         cell.severityLabel.textColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
       case ObjectStatus.WARNING:
-         cell.severityLabel.backgroundColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
+         cell.severityLabel.text = "Warning"
+         cell.severityLabel.textColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
       case ObjectStatus.MINOR:
-         cell.severityLabel.backgroundColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
+         cell.severityLabel.text = "Minor"
+         cell.severityLabel.textColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
       case ObjectStatus.MAJOR:
-         cell.severityLabel.backgroundColor = UIColor(red: 255, green: 128, blue: 0, alpha: 100)
+         cell.severityLabel.text = "Major"
+         cell.severityLabel.textColor = UIColor(red: 255, green: 0, blue: 0, alpha: 100)
       case ObjectStatus.CRITICAL:
-         cell.severityLabel.backgroundColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
+         cell.severityLabel.text = "Critical"
+         cell.severityLabel.textColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
       case ObjectStatus.UNKNOWN:
-         cell.severityLabel.backgroundColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
+         cell.severityLabel.text = "Unknown"
+         cell.severityLabel.textColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
       }
       
       return cell

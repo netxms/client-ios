@@ -316,15 +316,6 @@ class Connection
       sendNotificationRequest()
    }
    
-   /*@objc func refreshObjects()
-    {
-    var requestData = RequestData(url: "\(apiUrl)/objects", method: "GET")
-    requestData.fields.updateValue(sessionDataMap["sessionId"] as! String, forKey: "Session-Id")
-    sendRequest(requestData: requestData) { jsonData in
-    print(jsonData)
-    }
-    }*/
-   
    /**
     * Fill local object list
     */
@@ -361,7 +352,10 @@ class Connection
       }
    }
    
-   func getFilteredObjects(filter: [)
+   func getFilteredObjects(filter: [ObjectClass]) -> [AbstractObject]
+   {
+      return Array(objectCache.filter { filter.contains($0.value.objectClass) }.values)
+   }
    
    func getHistoricalDataForMultipleObjects(query: String, onSuccess: @escaping ([String : Any]?) -> Void)
    {
@@ -420,7 +414,6 @@ class Connection
       {
          var requestData = RequestData(url: "\(apiUrl)/objects/\(objectId)/datacollection/\(dciId)/values", method: "GET")
          requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
-         //requestData.queryItems.append(URLQueryItem(name: "timeInterval", value: "900"))
          sendRequest(requestData: requestData, onSuccess: onSuccess)
       }
    }

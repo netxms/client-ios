@@ -1,5 +1,5 @@
 //
-//  ObjectToolsViewCell.swift
+//  ObjectToolViewCell.swift
 //  NetXMS Mobile Console
 //
 //  Created by Ēriks Jenkēvics on 19/09/2018.
@@ -8,9 +8,9 @@
 
 import UIKit
 
-class ObjectToolsViewCell: UITableViewCell
+class ObjectToolViewCell: UITableViewCell
 {
-   @IBOutlet weak var objectToolName: UILabel!
+   @IBOutlet weak var name: UILabel!
    
    override func awakeFromNib()
    {

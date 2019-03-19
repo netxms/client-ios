@@ -102,12 +102,30 @@ class ObjectTool
 class ObjectToolFolder
 {
    let name: String
-   var subFolders = [String : ObjectToolFolder]()
-   var children = [ObjectTool]()
+   let displayName: String
+   var subfolders = [ObjectToolFolder]()
+   var tools = [ObjectTool]()
    
-   init(name: String)
+   init(json: [String : Any])
    {
-      self.name = name
+      self.name = json["name"] as? String ?? ""
+      self.displayName = json["displayName"] as? String ?? ""
+      
+      if let tools = json["tools"] as? [String : Any]
+      {
+         for t in tools.values
+         {
+            self.tools.append(ObjectTool(json: t as? [String : Any] ?? [:]))
+         }
+      }
+      
+      if let subfolders = json["subfolders"] as? [String : Any]
+      {
+         for s in subfolders.values
+         {
+            self.subfolders.append(ObjectToolFolder(json: s as? [String : Any] ?? [:]))
+         }
+      }
    }
 }
 
