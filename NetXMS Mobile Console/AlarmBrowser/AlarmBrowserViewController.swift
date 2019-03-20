@@ -133,30 +133,30 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       
       switch self.filteredAlarms[indexPath.row].currentSeverity
       {
-      case Severity.NORMAL:
-        cell.severityLabel.text = "Normal"
-        cell.severityLabel.textColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
-      case Severity.WARNING:
-        cell.severityLabel.text = "Warning"
-         cell.severityLabel.textColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
-      case Severity.MINOR:
-        cell.severityLabel.text = "Minor"
-         cell.severityLabel.textColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
-      case Severity.MAJOR:
-        cell.severityLabel.text = "Major"
-         cell.severityLabel.textColor = UIColor(red: 255, green: 0, blue: 0, alpha: 100)
-      case Severity.CRITICAL:
-        cell.severityLabel.text = "Critical"
-         cell.severityLabel.textColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
-      case Severity.UNKNOWN:
-        cell.severityLabel.text = "Unknown"
-         cell.severityLabel.textColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
-      case Severity.TERMINATE:
-        cell.severityLabel.text = "Terminate"
-         cell.severityLabel.textColor = UIColor(red: 139, green: 0, blue: 0, alpha: 100)
-      case Severity.RESOLVE:
-        cell.severityLabel.text = "Resolve"
-         cell.severityLabel.textColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
+         case Severity.NORMAL:
+           cell.severityLabel.text = "Normal"
+           cell.severityLabel.textColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
+         case Severity.WARNING:
+           cell.severityLabel.text = "Warning"
+            cell.severityLabel.textColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
+         case Severity.MINOR:
+           cell.severityLabel.text = "Minor"
+            cell.severityLabel.textColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
+         case Severity.MAJOR:
+           cell.severityLabel.text = "Major"
+            cell.severityLabel.textColor = UIColor(red: 255, green: 0, blue: 0, alpha: 100)
+         case Severity.CRITICAL:
+           cell.severityLabel.text = "Critical"
+            cell.severityLabel.textColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
+         case Severity.UNKNOWN:
+           cell.severityLabel.text = "Unknown"
+            cell.severityLabel.textColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
+         case Severity.TERMINATE:
+           cell.severityLabel.text = "Terminate"
+            cell.severityLabel.textColor = UIColor(red: 139, green: 0, blue: 0, alpha: 100)
+         case Severity.RESOLVE:
+           cell.severityLabel.text = "Resolve"
+            cell.severityLabel.textColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
       }
       return cell
    }

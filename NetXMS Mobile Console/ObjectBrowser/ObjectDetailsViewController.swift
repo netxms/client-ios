@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MapKit
 
 class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
    var object: AbstractObject!
@@ -17,22 +18,26 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
    @IBOutlet weak var lastValuesTableView: UITableView!
    @IBOutlet weak var comments: UILabel!
    @IBOutlet weak var objectToolsButton: UIButton!
-   @IBOutlet weak var alarmTableViewHeight: NSLayoutConstraint!
-   @IBOutlet weak var lastValuesTableViewHeight: NSLayoutConstraint!
+   @IBOutlet weak var location: MKMapView!
+   @IBOutlet weak var locationShadow: UIView!
+   @IBOutlet weak var lastValuesHeight: NSLayoutConstraint!
+   @IBOutlet weak var alarmsHeight: NSLayoutConstraint!
    
    override func viewDidLoad()
    {
       super.viewDidLoad()
       
-      objectToolsButton.layer.masksToBounds = false
-      objectToolsButton.layer.shadowColor = UIColor.gray.cgColor
-      objectToolsButton.layer.shadowOpacity = 0.3
-      objectToolsButton.layer.shadowOffset = CGSize(width: -1, height: 2)
-      objectToolsButton.layer.shadowRadius = CGFloat(integerLiteral: 3)
+      location.layer.cornerRadius = 4
+      locationShadow.layer.shadowColor = UIColor(red:0.03, green:0.08, blue:0.15, alpha:0.15).cgColor
+      locationShadow.layer.shadowOpacity = 1
+      locationShadow.layer.shadowOffset = CGSize(width: 0, height: 4)
+      locationShadow.layer.shadowRadius = 6
       
-      objectToolsButton.layer.shadowPath = UIBezierPath(rect: objectToolsButton.bounds).cgPath
-      objectToolsButton.layer.shouldRasterize = true
-      objectToolsButton.layer.rasterizationScale = UIScreen.main.scale
+      comments.layer.cornerRadius = 4
+      comments.layer.shadowColor = UIColor(red:0.03, green:0.08, blue:0.15, alpha:0.15).cgColor
+      comments.layer.shadowOpacity = 1
+      comments.layer.shadowOffset = CGSize(width: 0, height: 4)
+      comments.layer.shadowRadius = 6
       
       self.title = Connection.sharedInstance?.resolveObjectName(objectId: object.objectId)
       self.comments.text = object.comments
@@ -58,7 +63,7 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
          }
       }
       
-      alarmTableViewHeight.constant = (self.alarms.count > 0 ? 50.0 * CGFloat(self.alarms.count) : 50.0)
+      alarmsHeight.constant = (self.alarms.count > 0 ? 70.0 * CGFloat(self.alarms.count) : 70.0)
       
       Connection.sharedInstance?.getLastValues(objectId: object.objectId, onSuccess: onGetLastValuesSuccess)
    }
@@ -93,12 +98,19 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
                   return ($0.description.lowercased()) < ($1.description.lowercased())
                }
             }
-            DispatchQueue.main.async
-            {
-               self.lastValuesTableViewHeight.constant = (self.lastValuesWithActiveThresholds.count > 0 ? 50.0 * CGFloat(self.lastValuesWithActiveThresholds.count) : 50.0)
-               self.view.setNeedsUpdateConstraints()
-               self.lastValuesTableView.reloadData()
-            }
+         }
+      }
+      
+      DispatchQueue.main.async
+      {
+         print(self.lastValuesWithActiveThresholds.count)
+         self.lastValuesHeight.constant = (self.lastValuesWithActiveThresholds.count > 0 ? 70.0 * CGFloat(self.lastValuesWithActiveThresholds.count) : 70.0)
+         print(self.lastValuesHeight.constant)
+         self.view.updateConstraints()
+         
+         if self.lastValuesWithActiveThresholds.count > 0
+         {
+            self.lastValuesTableView.reloadData()
          }
       }
    }
@@ -133,22 +145,30 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
          
          switch alarms[indexPath.row].currentSeverity
          {
-         case Severity.NORMAL:
-            cell.severityLabel.backgroundColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
-         case Severity.WARNING:
-            cell.severityLabel.backgroundColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
-         case Severity.MINOR:
-            cell.severityLabel.backgroundColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
-         case Severity.MAJOR:
-            cell.severityLabel.backgroundColor = UIColor(red: 255, green: 128, blue: 0, alpha: 100)
-         case Severity.CRITICAL:
-            cell.severityLabel.backgroundColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
-         case Severity.UNKNOWN:
-            cell.severityLabel.backgroundColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
-         case Severity.TERMINATE:
-            cell.severityLabel.backgroundColor = UIColor(red: 139, green: 0, blue: 0, alpha: 100)
-         case Severity.RESOLVE:
-            cell.severityLabel.backgroundColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
+            case Severity.NORMAL:
+               cell.severityLabel.text = "Normal"
+               cell.severityLabel.textColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
+            case Severity.WARNING:
+               cell.severityLabel.text = "Warning"
+               cell.severityLabel.textColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
+            case Severity.MINOR:
+               cell.severityLabel.text = "Minor"
+               cell.severityLabel.textColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
+            case Severity.MAJOR:
+               cell.severityLabel.text = "Major"
+               cell.severityLabel.textColor = UIColor(red: 255, green: 0, blue: 0, alpha: 100)
+            case Severity.CRITICAL:
+               cell.severityLabel.text = "Critical"
+               cell.severityLabel.textColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
+            case Severity.UNKNOWN:
+               cell.severityLabel.text = "Unknown"
+               cell.severityLabel.textColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
+            case Severity.TERMINATE:
+               cell.severityLabel.text = "Terminate"
+               cell.severityLabel.textColor = UIColor(red: 139, green: 0, blue: 0, alpha: 100)
+            case Severity.RESOLVE:
+               cell.severityLabel.text = "Resolve"
+               cell.severityLabel.textColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
          }
          
          return cell
@@ -168,21 +188,29 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
                switch activeThreshold.currentSeverity
                {
                case Severity.NORMAL:
-                  cell.statusLabel.backgroundColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
+                  cell.statusLabel.text = "Normal"
+                  cell.statusLabel.textColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
                case Severity.WARNING:
-                  cell.statusLabel.backgroundColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
+                  cell.statusLabel.text = "Warning"
+                  cell.statusLabel.textColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
                case Severity.MINOR:
-                  cell.statusLabel.backgroundColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
+                  cell.statusLabel.text = "Minor"
+                  cell.statusLabel.textColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
                case Severity.MAJOR:
-                  cell.statusLabel.backgroundColor = UIColor(red: 255, green: 128, blue: 0, alpha: 100)
+                  cell.statusLabel.text = "Major"
+                  cell.statusLabel.textColor = UIColor(red: 255, green: 0, blue: 0, alpha: 100)
                case Severity.CRITICAL:
-                  cell.statusLabel.backgroundColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
+                  cell.statusLabel.text = "Critical"
+                  cell.statusLabel.textColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
                case Severity.UNKNOWN:
-                  cell.statusLabel.backgroundColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
+                  cell.statusLabel.text = "Unknown"
+                  cell.statusLabel.textColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
                case Severity.TERMINATE:
-                  cell.statusLabel.backgroundColor = UIColor(red: 139, green: 0, blue: 0, alpha: 100)
+                  cell.statusLabel.text = "Terminate"
+                  cell.statusLabel.textColor = UIColor(red: 139, green: 0, blue: 0, alpha: 100)
                case Severity.RESOLVE:
-                  cell.statusLabel.backgroundColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
+                  cell.statusLabel.text = "Resolve"
+                  cell.statusLabel.textColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
                }
             }
          }
