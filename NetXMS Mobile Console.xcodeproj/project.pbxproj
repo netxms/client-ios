@@ -152,8 +152,8 @@
 		1125612C21368C9500F492AD /* PredefinedGraphsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredefinedGraphsViewController.swift; sourceTree = "<group>"; };
 		1125612E21368DE100F492AD /* GraphFolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphFolder.swift; sourceTree = "<group>"; };
 		1125613021368DFB00F492AD /* GraphSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphSettings.swift; sourceTree = "<group>"; };
-		1125614C213D2D9200F492AD /* KeychainItemAccessibility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KeychainItemAccessibility.swift; path = "../../../../Downloads/SwiftKeychainWrapper-develop/SwiftKeychainWrapper/KeychainItemAccessibility.swift"; sourceTree = "<group>"; };
-		1125614D213D2D9200F492AD /* KeychainWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KeychainWrapper.swift; path = "../../../../Downloads/SwiftKeychainWrapper-develop/SwiftKeychainWrapper/KeychainWrapper.swift"; sourceTree = "<group>"; };
+		1125614C213D2D9200F492AD /* KeychainItemAccessibility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainItemAccessibility.swift; sourceTree = "<group>"; };
+		1125614D213D2D9200F492AD /* KeychainWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainWrapper.swift; sourceTree = "<group>"; };
 		11283D60213EC20000EF4083 /* PredefinedGraphViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredefinedGraphViewCell.swift; sourceTree = "<group>"; };
 		11283D64213FC63A00EF4083 /* PredefinedGraphFolderViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredefinedGraphFolderViewCell.swift; sourceTree = "<group>"; };
 		11283D6621467C9E00EF4083 /* DciData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DciData.swift; sourceTree = "<group>"; };
@@ -168,7 +168,7 @@
 		113F8E8B20EF54490076A79E /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		113F8E8D20EF54570076A79E /* Cluster.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cluster.swift; sourceTree = "<group>"; };
 		113F8E9120F610C60076A79E /* DciValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DciValue.swift; sourceTree = "<group>"; };
-		1148CC41214FD9DB007005EC /* DateValueFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DateValueFormatter.swift; path = "../../../../../Downloads/Charts-master/ChartsDemo-iOS/Swift/Formatters/DateValueFormatter.swift"; sourceTree = "<group>"; };
+		1148CC41214FD9DB007005EC /* DateValueFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateValueFormatter.swift; sourceTree = "<group>"; };
 		1148CC452150F6FE007005EC /* LastValuesChartController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastValuesChartController.swift; sourceTree = "<group>"; };
 		1148CC4821510C1A007005EC /* ObjectToolsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectToolsViewController.swift; sourceTree = "<group>"; };
 		114995AB217F02BF002F2FE6 /* ObjectToolOutputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectToolOutputViewController.swift; sourceTree = "<group>"; };
