@@ -13,7 +13,8 @@ class ObjectBrowserViewCell: UITableViewCell
    @IBOutlet weak var view: UIView!
    @IBOutlet weak var severityLabel: UILabel!
    @IBOutlet weak var objectName: UILabel!
-   @IBOutlet weak var button: UIButton!
+   @IBOutlet weak var nameTrailing: NSLayoutConstraint!
+   @IBOutlet weak var buttonWidth: NSLayoutConstraint!
    @IBOutlet weak var typeImage: UIImageView!
    var object: AbstractObject?
    var objectBrowser: ObjectBrowserViewController?

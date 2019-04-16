@@ -54,8 +54,8 @@ class LastValuesViewController: UITableViewController, UISearchBarDelegate
             }
             self.filteredLastValues.append(contentsOf: self.lastValues)
             DispatchQueue.main.async
-               {
-                  self.tableView.reloadData()
+            {
+               self.tableView.reloadData()
             }
             
          }

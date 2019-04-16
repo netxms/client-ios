@@ -10,11 +10,6 @@ import UIKit
 
 class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
 {
-   static let TERMINATE_ALARM = 0
-   static let ACKNOWLEDGE_ALARM = 1
-   static let STICKY_ACKNOWLEDGE_ALARM = 2
-   static let RESOLVE_ALARM = 3
-   
    var alarms: [Alarm]!
    var filteredAlarms = [Alarm]()
    var object: AbstractObject!
@@ -63,6 +58,11 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       {
          filteredAlarms = alarms
       }
+   }
+   
+   override func viewDidDisappear(_ animated: Bool)
+   {
+      // implement pop from list
    }
    
    func refresh()
@@ -174,10 +174,10 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]?
    {
       let acknowledgeAction = UITableViewRowAction(style: .normal, title: "Acknowledge") { (rowAction, indexPath) in
-         Connection.sharedInstance?.modifyAlarm(alarmId: self.filteredAlarms[indexPath.row].id, action: AlarmBrowserViewController.ACKNOWLEDGE_ALARM)
+         Connection.sharedInstance?.modifyAlarm(alarmId: self.filteredAlarms[indexPath.row].id, action: AlarmAction.ACKNOWLEDGE)
       }
       let terminateAction = UITableViewRowAction(style: .default, title: "Terminate") { (rowAction, indexPath) in
-         Connection.sharedInstance?.modifyAlarm(alarmId: self.filteredAlarms[indexPath.row].id, action: AlarmBrowserViewController.TERMINATE_ALARM)
+         Connection.sharedInstance?.modifyAlarm(alarmId: self.filteredAlarms[indexPath.row].id, action: AlarmAction.TERMINATE)
       }
       
       return [acknowledgeAction, terminateAction]
@@ -188,7 +188,7 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       if longPressGestureRecognizer.state == UIGestureRecognizerState.began
       {
          let touchPoint = longPressGestureRecognizer.location(in: self.view)
-         if let indexPath = tableView.indexPathForRow(at: touchPoint)
+         if tableView.indexPathForRow(at: touchPoint) != nil
          {
             self.tableView.setEditing(true, animated: true)
             setCancelButtonState(enabled: true)
@@ -205,51 +205,48 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
    
    @IBAction func onAcknowledgePRessed(_ sender: Any)
    {
-      var alarmList = [[String : Int]]()
+      var alarms = [Int]()
       for cell in self.tableView.visibleCells
       {
          if let cell = cell as? AlarmBrowserViewCell,
             cell.isSelected == true
          {
-            let details = ["alarmId" : cell.alarmId, "action" : AlarmBrowserViewController.ACKNOWLEDGE_ALARM]
-            alarmList.append(details as! [String : Int])
+            alarms.append(cell.alarmId)
          }
       }
-      Connection.sharedInstance?.modifyAlarm(alarmList: alarmList)
+      Connection.sharedInstance?.modifyAlarm(alarms: alarms, action: AlarmAction.ACKNOWLEDGE)
       self.tableView.setEditing(false, animated: true)
       setCancelButtonState(enabled: false)
    }
    
    @IBAction func onResolvePressed(_ sender: Any)
    {
-      var alarmList = [[String : Int]]()
+      var alarms = [Int]()
       for cell in self.tableView.visibleCells
       {
          if let cell = cell as? AlarmBrowserViewCell,
             cell.isSelected == true
          {
-            let details = ["alarmId" : cell.alarmId, "action" : AlarmBrowserViewController.RESOLVE_ALARM]
-            alarmList.append(details as! [String : Int])
+            alarms.append(cell.alarmId)
          }
       }
-      Connection.sharedInstance?.modifyAlarm(alarmList: alarmList)
+      Connection.sharedInstance?.modifyAlarm(alarms: alarms, action: AlarmAction.RESOLVE)
       self.tableView.setEditing(false, animated: true)
       setCancelButtonState(enabled: false)
    }
    
    @IBAction func onTerminatePressed(_ sender: Any)
    {
-      var alarmList = [[String : Int]]()
+      var alarms = [Int]()
       for cell in self.tableView.visibleCells
       {
          if let cell = cell as? AlarmBrowserViewCell,
             cell.isSelected == true
          {
-            let details = ["alarmId" : cell.alarmId, "action" : AlarmBrowserViewController.TERMINATE_ALARM]
-            alarmList.append(details as! [String : Int])
+            alarms.append(cell.alarmId)
          }
       }
-      Connection.sharedInstance?.modifyAlarm(alarmList: alarmList)
+      Connection.sharedInstance?.modifyAlarm(alarms: alarms, action: AlarmAction.TERMINATE)
       self.tableView.setEditing(false, animated: true)
       setCancelButtonState(enabled: false)
    }

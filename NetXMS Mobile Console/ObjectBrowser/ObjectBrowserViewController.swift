@@ -30,10 +30,22 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
    
    func getObjects() -> [AbstractObject]
    {
-      return (Connection.sharedInstance?.getFilteredObjects(filter: [ObjectClass.OBJECT_NODE, ObjectClass.OBJECT_CLUSTER, ObjectClass.OBJECT_CONTAINER]) ?? []).sorted
+      let objectList = (Connection.sharedInstance?.getFilteredObjects(filter: [ObjectClass.OBJECT_NODE, ObjectClass.OBJECT_CLUSTER, ObjectClass.OBJECT_CONTAINER]) ?? []).sorted
       {
          return ($0.objectName.lowercased()) < ($1.objectName.lowercased())
       }
+      
+      return objectList.sorted(by: { (o1, o2) -> Bool in
+         if o1.objectClass == ObjectClass.OBJECT_NODE && o2.objectClass != ObjectClass.OBJECT_NODE
+         {
+            return false
+         }
+         if o1.objectClass != ObjectClass.OBJECT_NODE && o2.objectClass == ObjectClass.OBJECT_NODE
+         {
+            return true
+         }
+         return (o1.objectName.lowercased()) < (o2.objectName.lowercased())
+      })
    }
    
    func refresh()
@@ -105,25 +117,13 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
       
       if self.objects[indexPath.row].objectClass == ObjectClass.OBJECT_NODE
       {
-         for c in cell.button.constraints
-         {
-            if c.identifier == "width"
-            {
-               c.constant = 0
-               cell.button.updateConstraints()
-            }
-         }
+         cell.buttonWidth.constant = CGFloat(0)
+         cell.nameTrailing.constant = CGFloat(16)
       }
       else
       {
-         for c in cell.button.constraints
-         {
-            if c.identifier == "width"
-            {
-               c.constant = 30
-               cell.button.updateConstraints()
-            }
-         }
+         cell.buttonWidth.constant = CGFloat(50)
+         cell.nameTrailing.constant = CGFloat(42)
       }
       
       switch self.objects[indexPath.row].objectClass

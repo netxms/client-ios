@@ -43,25 +43,26 @@ enum DataType: Int
    
    static func resolveDataType(type: String) -> DataType
    {
-      switch type {
-      case "INT32":
-         return DataType.INT32
-      case "UINT32":
-         return DataType.UINT32
-      case "INT64":
-         return DataType.INT64
-      case "UINT64":
-         return DataType.UINT64
-      case "STRING":
-         return DataType.STRING
-      case "FLOAT":
-         return DataType.FLOAT
-      case "COUNTER32":
-         return DataType.COUNTER32
-      case "COUNTER64":
-         return DataType.COUNTER64
-      default:
-         return DataType.NULL
+      switch type
+      {
+         case "INT32":
+            return DataType.INT32
+         case "UINT32":
+            return DataType.UINT32
+         case "INT64":
+            return DataType.INT64
+         case "UINT64":
+            return DataType.UINT64
+         case "STRING":
+            return DataType.STRING
+         case "FLOAT":
+            return DataType.FLOAT
+         case "COUNTER32":
+            return DataType.COUNTER32
+         case "COUNTER64":
+            return DataType.COUNTER64
+         default:
+            return DataType.NULL
       }
    }
 }

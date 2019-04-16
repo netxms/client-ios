@@ -42,9 +42,11 @@ class ObjectToolsViewController: UITableViewController, UISearchBarDelegate {
          self.root = ObjectToolFolder(json: rootData)
          self.title = "Object Tools"
          
+         self.list = getObjectList()
+         
          DispatchQueue.main.async
          {
-            self.refresh()
+            self.tableView.reloadData()
          }
       }
    }

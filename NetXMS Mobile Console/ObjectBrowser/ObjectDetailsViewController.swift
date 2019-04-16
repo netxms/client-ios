@@ -63,7 +63,10 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
          }
       }
       
-      alarmsHeight.constant = (self.alarms.count > 0 ? 70.0 * CGFloat(self.alarms.count) : 70.0)
+      if self.alarms.count > 0
+      {
+        alarmsHeight.constant = 70.0 * CGFloat(self.alarms.count)
+      }
       
       Connection.sharedInstance?.getLastValues(objectId: object.objectId, onSuccess: onGetLastValuesSuccess)
    }
@@ -102,14 +105,11 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
       }
       
       DispatchQueue.main.async
-      {
-         print(self.lastValuesWithActiveThresholds.count)
-         self.lastValuesHeight.constant = (self.lastValuesWithActiveThresholds.count > 0 ? 70.0 * CGFloat(self.lastValuesWithActiveThresholds.count) : 70.0)
-         print(self.lastValuesHeight.constant)
-         self.view.updateConstraints()
-         
+      {         
          if self.lastValuesWithActiveThresholds.count > 0
          {
+            self.lastValuesHeight.constant = 70.0 * CGFloat(self.lastValuesWithActiveThresholds.count)
+            self.view.updateConstraints()
             self.lastValuesTableView.reloadData()
          }
       }
@@ -250,10 +250,10 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
       if tableView == self.alarmTableView
       {
          let acknowledgeAction = UITableViewRowAction(style: .normal, title: "Acknowledge") { (rowAction, indexPath) in
-            Connection.sharedInstance?.modifyAlarm(alarmId: self.alarms[indexPath.row].id, action: AlarmBrowserViewController.ACKNOWLEDGE_ALARM)
+            Connection.sharedInstance?.modifyAlarm(alarmId: self.alarms[indexPath.row].id, action: AlarmAction.ACKNOWLEDGE)
          }
          let terminateAction = UITableViewRowAction(style: .default, title: "Terminate") { (rowAction, indexPath) in
-            Connection.sharedInstance?.modifyAlarm(alarmId: self.alarms[indexPath.row].id, action: AlarmBrowserViewController.TERMINATE_ALARM)
+            Connection.sharedInstance?.modifyAlarm(alarmId: self.alarms[indexPath.row].id, action: AlarmAction.TERMINATE)
          }
          
          return [acknowledgeAction, terminateAction]

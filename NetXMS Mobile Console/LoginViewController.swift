@@ -10,7 +10,6 @@ import UIKit
 
 class LoginViewController: UIViewController
 {
-   
    @IBOutlet weak var apiUrl: UITextField!
    @IBOutlet weak var login: UITextField!
    @IBOutlet weak var password: UITextField!
@@ -18,10 +17,14 @@ class LoginViewController: UIViewController
    @IBOutlet weak var underlinePassword: UIView!
    @IBOutlet weak var underlineUsername: UIView!
    @IBOutlet weak var loginButton: UIButton!
+   @IBOutlet weak var keyboardViewHeight: NSLayoutConstraint!
    
    override func viewDidLoad()
    {
       super.viewDidLoad()
+      
+      NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+      NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
       
       loadCredentialsFromKeyChain()
       
@@ -37,6 +40,32 @@ class LoginViewController: UIViewController
       {
          underlinePassword.backgroundColor = UIColor.darkGray
       }
+      
+      let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+      tap.cancelsTouchesInView = false
+      self.view.addGestureRecognizer(tap)
+   }
+   
+   @objc func dismissKeyboard()
+   {
+      self.view.endEditing(true)
+   }
+   
+   @objc func keyboardWillChange(notification: Notification)
+   {
+      if let keyboardFrame: NSValue = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue
+      {
+         let keyboardRectangle = keyboardFrame.cgRectValue
+         if notification.name == NSNotification.Name.UIKeyboardWillShow
+         {
+            self.keyboardViewHeight.constant = keyboardRectangle.height
+         }
+         else
+         {
+            self.keyboardViewHeight.constant = 0
+         }
+         self.view.updateConstraints()
+      }
    }
    
    func onLoginSuccess(jsonData: [String : Any]?) -> Void
@@ -44,22 +73,69 @@ class LoginViewController: UIViewController
       if let jsonData = jsonData
       {
          DispatchQueue.main.async
-            {
-               Connection.sharedInstance?.session = Session(json: jsonData)
-               Connection.sharedInstance?.getAllObjects()
-               Connection.sharedInstance?.getAllAlarms()
-               Connection.sharedInstance?.getPredefinedGraphs()
-               Connection.sharedInstance?.startNotificationHandler()
-               self.storeCredentialsInKeyChain()
-               let mainNavigationController = self.storyboard?.instantiateViewController(withIdentifier: "MainNavigationController") as! MainNavigationController
-               self.present(mainNavigationController, animated: true, completion: nil)
+         {
+            Connection.sharedInstance?.session = Session(json: jsonData)
+            Connection.sharedInstance?.getAllObjects()
+            Connection.sharedInstance?.getAllAlarms()
+            Connection.sharedInstance?.getPredefinedGraphs()
+            Connection.sharedInstance?.startNotificationHandler()
+            self.storeCredentialsInKeyChain()
+            let mainNavigationController = self.storyboard?.instantiateViewController(withIdentifier: "MainNavigationController") as! MainNavigationController
+            self.present(mainNavigationController, animated: true, completion: nil)
          }
       }
    }
    
+   /**
+    * Handler for failed login to NetXMS WebAPI
+    */
+   func onLoginFailure(data: Any?)
+   {
+      if let response = data as? HTTPURLResponse
+      {
+         DispatchQueue.main.async
+         {
+            self.createErrorDialog(message: "Login failed with the code: \(response.statusCode)")
+         }
+      }
+      else if let response = data as? String
+      {
+         DispatchQueue.main.async
+         {
+            self.createErrorDialog(message: response)
+         }
+      }
+   }
+   
+   func createErrorDialog(message: String)
+   {
+      //Creating UIAlertController and
+      //Setting title and message for the alert dialog
+      let alertController = UIAlertController(title: "Login failed", message: message, preferredStyle: .alert)
+
+      //the cancel action doing nothing
+      let cancelAction = UIAlertAction(title: "OK", style: .cancel) { (_) in }
+      alertController.addAction(cancelAction)
+
+      //finally presenting the dialog box
+      self.present(alertController, animated: true, completion: nil)
+   }
+   
+   override func viewWillLayoutSubviews()
+   {
+      print("Will Layout: \(loginButton.layer.bounds)")
+      MainNavigationController.setButtonStyle(button: loginButton)
+   }
+   
    override func viewDidLayoutSubviews()
    {
+      //print("Did Layout: \(loginButton.layer.bounds)")
       MainNavigationController.setButtonStyle(button: loginButton)
+   }
+   
+   override func viewDidAppear(_ animated: Bool)
+   {
+      super.viewDidAppear(animated)
    }
    
    @IBAction func loginButtonPressed()
@@ -67,7 +143,7 @@ class LoginViewController: UIViewController
       if !(apiUrl.text?.isEmpty)! && !(login.text?.isEmpty)!
       {
          Connection.sharedInstance = Connection(login: login.text!, password: password.text ?? "", apiUrl: apiUrl.text!)
-         Connection.sharedInstance?.login(onSuccess: onLoginSuccess)
+         Connection.sharedInstance?.login(onSuccess: onLoginSuccess, onFailure: onLoginFailure)
       }
    }
    

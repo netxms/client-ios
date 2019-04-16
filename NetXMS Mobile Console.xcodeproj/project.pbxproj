@@ -66,6 +66,7 @@
 		1189A8B720F754E300510DB4 /* ObjectDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1189A8B620F754E300510DB4 /* ObjectDetailsViewController.swift */; };
 		1189A8B920F7557900510DB4 /* ObjectDetailsAlarmCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1189A8B820F7557900510DB4 /* ObjectDetailsAlarmCell.swift */; };
 		1192CCBA223FEC3800FB1DE1 /* ObjectToolFolderViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1192CCB9223FEC3800FB1DE1 /* ObjectToolFolderViewCell.swift */; };
+		11B2F5452248D7EA00E3C3EB /* SessionNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B2F5442248D7EA00E3C3EB /* SessionNotification.swift */; };
 		11B6799521088509005C8C4B /* Severity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6799421088509005C8C4B /* Severity.swift */; };
 		11B67998210B269E005C8C4B /* LastValuesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B67997210B269E005C8C4B /* LastValuesViewController.swift */; };
 		11C1B8C220456F87005B2B6D /* AlarmBrowserViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C1B8C120456F87005B2B6D /* AlarmBrowserViewCell.swift */; };
@@ -195,6 +196,7 @@
 		1189A8B620F754E300510DB4 /* ObjectDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDetailsViewController.swift; sourceTree = "<group>"; };
 		1189A8B820F7557900510DB4 /* ObjectDetailsAlarmCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDetailsAlarmCell.swift; sourceTree = "<group>"; };
 		1192CCB9223FEC3800FB1DE1 /* ObjectToolFolderViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectToolFolderViewCell.swift; sourceTree = "<group>"; };
+		11B2F5442248D7EA00E3C3EB /* SessionNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionNotification.swift; sourceTree = "<group>"; };
 		11B6799421088509005C8C4B /* Severity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Severity.swift; sourceTree = "<group>"; };
 		11B67997210B269E005C8C4B /* LastValuesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastValuesViewController.swift; sourceTree = "<group>"; };
 		11C1B8C120456F87005B2B6D /* AlarmBrowserViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmBrowserViewCell.swift; sourceTree = "<group>"; };
@@ -337,6 +339,7 @@
 				1125613021368DFB00F492AD /* GraphSettings.swift */,
 				11283D6621467C9E00EF4083 /* DciData.swift */,
 				110CE048215274E8007CED7F /* ObjectTool.swift */,
+				11B2F5442248D7EA00E3C3EB /* SessionNotification.swift */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -643,6 +646,7 @@
 				11283D61213EC20000EF4083 /* PredefinedGraphViewCell.swift in Sources */,
 				113F8E8C20EF54490076A79E /* Node.swift in Sources */,
 				113F8E8E20EF54570076A79E /* Cluster.swift in Sources */,
+				11B2F5452248D7EA00E3C3EB /* SessionNotification.swift in Sources */,
 				1161F7E8203EB03F00B9C845 /* Connection.swift in Sources */,
 				11283D6721467C9E00EF4083 /* DciData.swift in Sources */,
 				11B67998210B269E005C8C4B /* LastValuesViewController.swift in Sources */,
@@ -834,12 +838,14 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3P4TEC3UN3;
+				DEVELOPMENT_TEAM = KFFD69X4L6;
 				INFOPLIST_FILE = "NetXMS Mobile Console/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "nx.NetXMS-Mobile-Console";
+				PRODUCT_BUNDLE_IDENTIFIER = "nx.netxms-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -850,12 +856,14 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3P4TEC3UN3;
+				DEVELOPMENT_TEAM = KFFD69X4L6;
 				INFOPLIST_FILE = "NetXMS Mobile Console/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "nx.NetXMS-Mobile-Console";
+				PRODUCT_BUNDLE_IDENTIFIER = "nx.netxms-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

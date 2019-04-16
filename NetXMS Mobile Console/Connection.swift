@@ -32,15 +32,6 @@ struct RequestData
  */
 class Connection
 {
-   static private let OBJECT_CHANGED = 4
-   static private let OBJECT_DELETED = 99
-   static private let ALARM_DELETED = 1003
-   static private let NEW_ALARM = 1004
-   static private let ALARM_CHANGED = 1005
-   static private let ALARM_TERMINATED = 1011
-   static private let MULTIPLE_ALARMS_TERMINATED = 1032;
-   static private let MULTIPLE_ALARMS_RESOLVED = 1033;
-   
    static var sharedInstance: Connection?
    
    var login: String
@@ -48,8 +39,7 @@ class Connection
    var apiUrl: String
    var objectCache = [Int : AbstractObject]()
    var alarmCache = [Int : Alarm]()
-   var predefinedGraphRoot: GraphFolder?
-   var timer: Timer?
+   var predefinedGraphRoot = GraphFolder(json: [:])
    var refreshAlarmBrowser = false
    var refreshObjectBrowser = false
    var logoutStarted = false
@@ -75,7 +65,7 @@ class Connection
    /**
     * Attempt login to NetXMS WebAPI
     */
-   func login(onSuccess: @escaping ([String : Any]?) -> Void)
+   func login(onSuccess: @escaping ([String : Any]?) -> Void, onFailure: @escaping ((Any?) -> Void))
    {
       var auth = String(format: "%@:%@", login, password)
       guard let loginData = auth.data(using: .utf8)
@@ -92,15 +82,7 @@ class Connection
       let json: [String : Any] = ["attachNotificationHandler" : true]
       requestData.requestBody = try? JSONSerialization.data(withJSONObject: json)
       
-      sendRequest(requestData: requestData, onSuccess: onSuccess, onFailure: onLoginFailure)
-   }
-   
-   /**
-    * Handler for failed login to NetXMS WebAPI
-    */
-   func onLoginFailure(data: AnyObject?)
-   {
-      // Show window for failed login
+      sendRequest(requestData: requestData, onSuccess: onSuccess, onFailure: onFailure)
    }
    
    /**
@@ -119,7 +101,7 @@ class Connection
    /**
     * Send HTTP request with onFailure closure
     */
-   func sendRequest(requestData: RequestData, onSuccess: @escaping ([String : Any]?) -> Void, onFailure: ((AnyObject?) -> Void)?)
+   func sendRequest(requestData: RequestData, onSuccess: @escaping ([String : Any]?) -> Void, onFailure: ((Any?) -> Void)?)
    {
       var components = URLComponents(string: requestData.url)
       components?.queryItems = requestData.queryItems
@@ -147,7 +129,7 @@ class Connection
             print("[\(requestData.method) ERROR]: \(error)")
             if let onFailure = onFailure
             {
-               onFailure(nil)
+               onFailure(error.localizedDescription)
             }
             return
          }
@@ -206,13 +188,9 @@ class Connection
             let alarm = Alarm(json: a)
             alarmCache.updateValue(alarm, forKey: alarm.id)
          }
-         if refreshAlarmBrowser
+         DispatchQueue.main.async
          {
-            DispatchQueue.main.async
-               {
-                  self.alarmBrowser?.refresh()
-            }
-            refreshAlarmBrowser = false
+               self.alarmBrowser?.refresh()
          }
       }
    }
@@ -220,32 +198,37 @@ class Connection
    /**
     * Modify alarm
     */
-   func modifyAlarm(alarmList: [[String : Any]])
+   func modifyAlarm(alarms: [Int], action: AlarmAction, timeout: Int)
    {
       if self.session != nil
       {
          var requestData = RequestData(url: "\(apiUrl)/alarms", method: "POST")
          requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
-         let json: [String : Any] = ["alarmList" : alarmList]
+         requestData.queryItems.append(URLQueryItem(name: "command", value: action.rawValue))
+         var json: [String : Any] = ["alarms" : alarms]
+         if timeout > 0
+         {
+            json.updateValue(timeout, forKey: "timeout")
+         }
          requestData.requestBody = try? JSONSerialization.data(withJSONObject: json)
          
          sendRequest(requestData: requestData, onSuccess: onModifyAlarmSuccess)
       }
    }
    
-   func modifyAlarm(alarmId: Int, action: Int, timeout: Int)
-   {      
-      var alarmList = ["alarmId" : alarmId, "action" : action]
-      if (action == AlarmBrowserViewController.STICKY_ACKNOWLEDGE_ALARM)
-      {
-         alarmList.updateValue(timeout, forKey: "timeout")
-      }
-      modifyAlarm(alarmList: [alarmList])
+   func modifyAlarm(alarms: [Int], action: AlarmAction)
+   {
+      modifyAlarm(alarms: alarms, action: action, timeout: 0)
    }
    
-   func modifyAlarm(alarmId: Int, action: Int)
+   func modifyAlarm(alarmId: Int, action: AlarmAction)
    {
-      modifyAlarm(alarmId: alarmId, action: action, timeout: 0)
+      modifyAlarm(alarms: [alarmId], action: action, timeout: 0)
+   }
+   
+   func modifyAlarm(alarmId: Int, action: AlarmAction, timeout: Int)
+   {
+      modifyAlarm(alarms: [alarmId], action: action, timeout: timeout)
    }
    
    func onModifyAlarmSuccess(jsonData: [String : Any]?) -> Void
@@ -255,19 +238,67 @@ class Connection
    func onReceiveNotificationSuccess(jsonData: [String : Any]?) -> Void
    {
       if let jsonData = jsonData,
-         let code = jsonData["code"] as? Int
+      let notifications = jsonData["notifications"] as? [[String : Any]]
       {
-         switch code
+         for n in notifications
          {
-         case Connection.ALARM_DELETED, Connection.NEW_ALARM, Connection.ALARM_CHANGED,
-              Connection.ALARM_TERMINATED, Connection.MULTIPLE_ALARMS_RESOLVED, Connection.MULTIPLE_ALARMS_TERMINATED:
-            refreshAlarmBrowser = true
-            getAllAlarms()
-         case Connection.OBJECT_CHANGED, Connection.OBJECT_DELETED:
-            refreshObjectBrowser = true
-            getAllObjects()
-         default:
-            break
+            let n = SessionNotification(json: n)
+            switch n.code!
+            {
+            case NotificationCode.NEW_ALARM, NotificationCode.ALARM_CHANGED:
+               if let alarm = n.object as? Alarm
+               {
+                  self.alarmCache.updateValue(alarm, forKey: alarm.id)
+                  DispatchQueue.main.async
+                  {
+                     self.alarmBrowser?.refresh()
+                  }
+               }
+            case NotificationCode.MULTIPLE_ALARMS_TERMINATED:
+               if let data = n.object as? BulkAlarmStateChangeData
+               {
+                  for id in data.alarms ?? []
+                  {
+                     self.alarmCache.removeValue(forKey: id)
+                  }
+                  DispatchQueue.main.async
+                  {
+                     self.alarmBrowser?.refresh()
+                  }
+               }
+            case NotificationCode.MULTIPLE_ALARMS_RESOLVED:
+               if let data = n.object as? BulkAlarmStateChangeData
+               {
+                  for id in data.alarms ?? []
+                  {
+                     if let alarm = self.alarmCache[id]
+                     {
+                        alarm.state = Alarm.STATE_RESOLVED
+                     }
+                  }
+                  DispatchQueue.main.async
+                  {
+                     self.alarmBrowser?.refresh()
+                  }
+               }
+            case NotificationCode.OBJECT_CHANGED:
+               if let object = n.object as? AbstractObject
+               {
+                  self.objectCache.updateValue(object, forKey: object.objectId)
+                  DispatchQueue.main.async
+                  {
+                     self.objectBrowser?.refresh()
+                  }
+               }
+            case NotificationCode.OBJECT_DELETED:
+               self.objectCache.removeValue(forKey: n.subCode)
+               DispatchQueue.main.async
+               {
+                  self.objectBrowser?.refresh()
+               }
+            default:
+               break
+            }
          }
       }
       DispatchQueue.main.async
@@ -276,19 +307,13 @@ class Connection
       }
    }
    
-   func onReceiveNotificationFailure(data: AnyObject?)
+   func onReceiveNotificationFailure(data: Any?)
    {
       if let response = data as? HTTPURLResponse
       {
-         switch response.statusCode
+         if response.statusCode == 408
          {
-         case 401: // Access Denied
-            print("notification access denied")
-         case 408: // Timeout
-            print("Timeout, resend notification")
             sendNotificationRequest()
-         default:
-            print("default")
          }
       }
    }
@@ -348,6 +373,10 @@ class Connection
                object = AbstractObject(json: o)
             }
             objectCache.updateValue(object, forKey: object.objectId)
+         }
+         DispatchQueue.main.async
+         {
+            self.objectBrowser?.refresh()
          }
       }
    }
@@ -426,6 +455,7 @@ class Connection
          requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
          sendRequest(requestData: requestData, onSuccess: onGetPredefinedGraphsSuccess)
       }
+      
    }
    
    func onGetPredefinedGraphsSuccess(jsonData: [String : Any]?) -> Void
@@ -435,6 +465,7 @@ class Connection
       {
          self.predefinedGraphRoot = GraphFolder(json: rootData)
       }
+
    }
    
    func getObjectTools(objectId: Int, onSuccess: @escaping ([String : Any]?) -> Void)

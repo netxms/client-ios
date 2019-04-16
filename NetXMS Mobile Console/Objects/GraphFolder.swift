@@ -16,7 +16,7 @@ class GraphFolder
    
    init(json: [String : Any])
    {
-      self.name = json["name"] as? String ?? ""
+      self.name = json["name"] as? String ?? "[root]"
       
       if let graphs = json["graphs"] as? [String : Any]
       {

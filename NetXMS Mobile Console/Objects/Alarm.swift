@@ -38,7 +38,7 @@ class Alarm
    let sourceEventCode: Int
    let sourceEventId: Int
    let sourceObjectId: Int
-   let state: Int
+   var state: Int
    let sticky: Int
    let terminatedByUser: Int
    let timeout: Int
@@ -70,4 +70,12 @@ class Alarm
       self.timeout = json["timeout"] as? Int ?? 0
       self.timeoutEvent = json["timeoutEvent"] as? Int ?? 0
    }
+}
+
+enum AlarmAction: String
+{
+   case ACKNOWLEDGE = "acknowledge"
+   case RESOLVE = "resolve"
+   case TERMINATE = "terminate"
+   case STICKY_ACKNOWLEDGE = "sticky_acknowledge"
 }

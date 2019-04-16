@@ -120,7 +120,7 @@ class AlarmDetailsViewController : UIViewController
    
    @IBAction func acknowledgePressed(_ sender: Any)
    {
-      Connection.sharedInstance?.modifyAlarm(alarmId: alarm.id, action: AlarmBrowserViewController.ACKNOWLEDGE_ALARM)
+      Connection.sharedInstance?.modifyAlarm(alarmId: alarm.id, action: AlarmAction.ACKNOWLEDGE)
       self.navigationController?.popViewController(animated: true)
    }
    
@@ -132,13 +132,13 @@ class AlarmDetailsViewController : UIViewController
    
    @IBAction func resolvePressed(_ sender: Any)
    {
-      Connection.sharedInstance?.modifyAlarm(alarmId: alarm.id, action: AlarmBrowserViewController.RESOLVE_ALARM)
+      Connection.sharedInstance?.modifyAlarm(alarmId: alarm.id, action: AlarmAction.RESOLVE)
       self.navigationController?.popViewController(animated: true)
    }
    
    @IBAction func terminatePressed(_ sender: Any)
    {
-      Connection.sharedInstance?.modifyAlarm(alarmId: alarm.id, action: AlarmBrowserViewController.TERMINATE_ALARM)
+      Connection.sharedInstance?.modifyAlarm(alarmId: alarm.id, action: AlarmAction.TERMINATE)
       self.navigationController?.popViewController(animated: true)
    }
    
@@ -165,7 +165,7 @@ class AlarmDetailsViewController : UIViewController
             var timeout = Int(timeoutString)
          {
             timeout = timeout * 3600 // To convert in hours
-            Connection.sharedInstance?.modifyAlarm(alarmId: self.alarm.id, action: AlarmBrowserViewController.STICKY_ACKNOWLEDGE_ALARM, timeout: timeout)
+            Connection.sharedInstance?.modifyAlarm(alarmId: self.alarm.id, action: AlarmAction.STICKY_ACKNOWLEDGE, timeout: timeout)
          }
       }
       
