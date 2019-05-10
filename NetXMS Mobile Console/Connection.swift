@@ -30,7 +30,7 @@ struct RequestData
 /**
  * Connection handler class
  */
-class Connection
+class Connection: NSObject, URLSessionDelegate
 {
    static var sharedInstance: Connection?
    
@@ -122,8 +122,8 @@ class Connection
       {
          request.setValue(value, forHTTPHeaderField: key)
       }
-      
-      let task = URLSession.shared.dataTask(with: request) { data, response, error in
+      let session = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: OperationQueue.main)
+      let task = session.dataTask(with: request) { data, response, error in
          if let error = error
          {
             print("[\(requestData.method) ERROR]: \(error)")
@@ -136,7 +136,7 @@ class Connection
          if let response = response as? HTTPURLResponse,
             (400...511).contains(response.statusCode)
          {
-            print("[\(requestData.method) ERROR RESPONSE]: \(response.statusCode)")
+            print("[\(requestData.method) ERROR RESPONSE]: \(response)")
             if let onFailure = onFailure
             {
                onFailure(response)
@@ -154,6 +154,37 @@ class Connection
          }
       }
       task.resume()
+   }
+   
+   func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
+   {
+      let serverTrust = challenge.protectionSpace.serverTrust
+      let certificate = SecTrustGetCertificateAtIndex(serverTrust!, 0)
+      
+      let policies = NSMutableArray()
+      policies.add(SecPolicyCreateSSL(true, (challenge.protectionSpace.host as CFString)))
+      SecTrustSetPolicies(serverTrust!, policies)
+      
+      var result: SecTrustResultType = SecTrustResultType(rawValue: 0)!
+      SecTrustEvaluate(serverTrust!, &result)
+      let isServerTrusted:Bool = result == SecTrustResultType.unspecified || result == SecTrustResultType.proceed
+      
+      // Get local and remote cert data
+      let remoteCertificateData:NSData = SecCertificateCopyData(certificate!)
+      let host = challenge.protectionSpace.host
+      if let pathToCert = Bundle.main.path(forResource: host, ofType: "cer"),
+         let localCertificate:NSData = NSData(contentsOfFile: pathToCert)
+      {
+         if (isServerTrusted && remoteCertificateData.isEqual(to: localCertificate as Data))
+         {
+            let credential:URLCredential = URLCredential(trust: serverTrust!)
+            completionHandler(.useCredential, credential)
+         } else
+         {
+            completionHandler(.cancelAuthenticationChallenge, nil)
+         }
+      }
+
    }
    
    /**
