@@ -170,7 +170,7 @@ class LastValuesViewController: UITableViewController, UISearchBarDelegate
       if longPressGestureRecognizer.state == UIGestureRecognizerState.began
       {
          let touchPoint = longPressGestureRecognizer.location(in: self.view)
-         if let indexPath = tableView.indexPathForRow(at: touchPoint)
+         if tableView.indexPathForRow(at: touchPoint) != nil
          {
             self.tableView.setEditing(true, animated: true)
             setCancelButtonState(enabled: true)

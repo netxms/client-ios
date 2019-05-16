@@ -27,8 +27,6 @@
 		1125612D21368C9500F492AD /* PredefinedGraphsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1125612C21368C9500F492AD /* PredefinedGraphsViewController.swift */; };
 		1125612F21368DE100F492AD /* GraphFolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1125612E21368DE100F492AD /* GraphFolder.swift */; };
 		1125613121368DFB00F492AD /* GraphSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1125613021368DFB00F492AD /* GraphSettings.swift */; };
-		1125614E213D2D9200F492AD /* KeychainItemAccessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1125614C213D2D9200F492AD /* KeychainItemAccessibility.swift */; };
-		1125614F213D2D9200F492AD /* KeychainWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1125614D213D2D9200F492AD /* KeychainWrapper.swift */; };
 		11283D61213EC20000EF4083 /* PredefinedGraphViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11283D60213EC20000EF4083 /* PredefinedGraphViewCell.swift */; };
 		11283D65213FC63A00EF4083 /* PredefinedGraphFolderViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11283D64213FC63A00EF4083 /* PredefinedGraphFolderViewCell.swift */; };
 		11283D6721467C9E00EF4083 /* DciData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11283D6621467C9E00EF4083 /* DciData.swift */; };
@@ -61,8 +59,6 @@
 		1161F7EF203EFC1C00B9C845 /* AlarmBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161F7EE203EFC1C00B9C845 /* AlarmBrowserViewController.swift */; };
 		1161F7F1203F0B8B00B9C845 /* Alarm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161F7F0203F0B8B00B9C845 /* Alarm.swift */; };
 		116F027220F761E200056C7F /* ObjectDetailsLastValuesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116F027120F761E200056C7F /* ObjectDetailsLastValuesCell.swift */; };
-		1170F3C421B9124200A6FF27 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1170F3C121B9123700A6FF27 /* Charts.framework */; };
-		1170F3C521B9124200A6FF27 /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1170F3C121B9123700A6FF27 /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1189A8B720F754E300510DB4 /* ObjectDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1189A8B620F754E300510DB4 /* ObjectDetailsViewController.swift */; };
 		1189A8B920F7557900510DB4 /* ObjectDetailsAlarmCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1189A8B820F7557900510DB4 /* ObjectDetailsAlarmCell.swift */; };
 		1192CCBA223FEC3800FB1DE1 /* ObjectToolFolderViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1192CCB9223FEC3800FB1DE1 /* ObjectToolFolderViewCell.swift */; };
@@ -75,6 +71,13 @@
 		11C1B8CA204570A1005B2B6D /* critical.png in Resources */ = {isa = PBXBuildFile; fileRef = 11C1B8C5204570A1005B2B6D /* critical.png */; };
 		11C1B8CB204570A1005B2B6D /* major.png in Resources */ = {isa = PBXBuildFile; fileRef = 11C1B8C6204570A1005B2B6D /* major.png */; };
 		11C1B8CC204570A1005B2B6D /* minor.png in Resources */ = {isa = PBXBuildFile; fileRef = 11C1B8C7204570A1005B2B6D /* minor.png */; };
+		11C2DA122289772F0087C0F6 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11C2DA0F228977140087C0F6 /* Charts.framework */; };
+		11C2DA132289772F0087C0F6 /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 11C2DA0F228977140087C0F6 /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		11C2DA222289776F0087C0F6 /* SwiftKeychainWrapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11C2DA1D228977620087C0F6 /* SwiftKeychainWrapper.framework */; };
+		11C2DA232289776F0087C0F6 /* SwiftKeychainWrapper.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 11C2DA1D228977620087C0F6 /* SwiftKeychainWrapper.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		11C2DA28228C290F0087C0F6 /* CertificateDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C2DA27228C290F0087C0F6 /* CertificateDetailsViewController.swift */; };
+		11C2DA32228C311D0087C0F6 /* ASN1Decoder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11C2DA2F228C30D90087C0F6 /* ASN1Decoder.framework */; };
+		11C2DA33228C311D0087C0F6 /* ASN1Decoder.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 11C2DA2F228C30D90087C0F6 /* ASN1Decoder.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		11DDCE6420D2561700CF2BB1 /* ObjectBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DDCE6320D2561700CF2BB1 /* ObjectBrowserViewController.swift */; };
 		11DDCE6620D257ED00CF2BB1 /* ObjectBrowserViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DDCE6520D257ED00CF2BB1 /* ObjectBrowserViewCell.swift */; };
 /* End PBXBuildFile section */
@@ -94,26 +97,75 @@
 			remoteGlobalIDString = 1161F7AE203EAFE700B9C845;
 			remoteInfo = "NetXMS Mobile Console";
 		};
-		1170F3C021B9123700A6FF27 /* PBXContainerItemProxy */ = {
+		11C2DA0E228977140087C0F6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 1170F3BB21B9123700A6FF27 /* Charts.xcodeproj */;
+			containerPortal = 11C2DA09228977140087C0F6 /* Charts.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 65AD9E95D9ED4DC0BD73A743;
 			remoteInfo = Charts;
 		};
-		1170F3C221B9123700A6FF27 /* PBXContainerItemProxy */ = {
+		11C2DA10228977140087C0F6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 1170F3BB21B9123700A6FF27 /* Charts.xcodeproj */;
+			containerPortal = 11C2DA09228977140087C0F6 /* Charts.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 1CBBC58C6CE1EBEE9852CE41;
 			remoteInfo = ChartsTests;
 		};
-		1170F3C621B9124200A6FF27 /* PBXContainerItemProxy */ = {
+		11C2DA142289772F0087C0F6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 1170F3BB21B9123700A6FF27 /* Charts.xcodeproj */;
+			containerPortal = 11C2DA09228977140087C0F6 /* Charts.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = A58A4ED274A941CA248EA921;
 			remoteInfo = Charts;
+		};
+		11C2DA1C228977620087C0F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 11C2DA16228977620087C0F6 /* SwiftKeychainWrapper.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9694C2B01A66097F005B3030;
+			remoteInfo = SwiftKeychainWrapper;
+		};
+		11C2DA1E228977620087C0F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 11C2DA16228977620087C0F6 /* SwiftKeychainWrapper.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9694C2BA1A66097F005B3030;
+			remoteInfo = SwiftKeychainWrapperTests;
+		};
+		11C2DA20228977620087C0F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 11C2DA16228977620087C0F6 /* SwiftKeychainWrapper.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 47E429C61DCCE2FD002BE498;
+			remoteInfo = TestHostApp;
+		};
+		11C2DA242289776F0087C0F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 11C2DA16228977620087C0F6 /* SwiftKeychainWrapper.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 9694C2AF1A66097F005B3030;
+			remoteInfo = SwiftKeychainWrapper;
+		};
+		11C2DA2E228C30D90087C0F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 11C2DA29228C30D90087C0F6 /* ASN1Decoder.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 412A9E381F55C6500099110C;
+			remoteInfo = ASN1Decoder;
+		};
+		11C2DA30228C30D90087C0F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 11C2DA29228C30D90087C0F6 /* ASN1Decoder.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 412A9E411F55C6500099110C;
+			remoteInfo = ASN1DecoderTests;
+		};
+		11C2DA34228C311D0087C0F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 11C2DA29228C30D90087C0F6 /* ASN1Decoder.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 412A9E371F55C6500099110C;
+			remoteInfo = ASN1Decoder;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -124,7 +176,9 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				1170F3C521B9124200A6FF27 /* Charts.framework in Embed Frameworks */,
+				11C2DA33228C311D0087C0F6 /* ASN1Decoder.framework in Embed Frameworks */,
+				11C2DA232289776F0087C0F6 /* SwiftKeychainWrapper.framework in Embed Frameworks */,
+				11C2DA132289772F0087C0F6 /* Charts.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -152,8 +206,6 @@
 		1125612C21368C9500F492AD /* PredefinedGraphsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredefinedGraphsViewController.swift; sourceTree = "<group>"; };
 		1125612E21368DE100F492AD /* GraphFolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphFolder.swift; sourceTree = "<group>"; };
 		1125613021368DFB00F492AD /* GraphSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphSettings.swift; sourceTree = "<group>"; };
-		1125614C213D2D9200F492AD /* KeychainItemAccessibility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainItemAccessibility.swift; sourceTree = "<group>"; };
-		1125614D213D2D9200F492AD /* KeychainWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainWrapper.swift; sourceTree = "<group>"; };
 		11283D60213EC20000EF4083 /* PredefinedGraphViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredefinedGraphViewCell.swift; sourceTree = "<group>"; };
 		11283D64213FC63A00EF4083 /* PredefinedGraphFolderViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredefinedGraphFolderViewCell.swift; sourceTree = "<group>"; };
 		11283D6621467C9E00EF4083 /* DciData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DciData.swift; sourceTree = "<group>"; };
@@ -192,7 +244,6 @@
 		1161F7EE203EFC1C00B9C845 /* AlarmBrowserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmBrowserViewController.swift; sourceTree = "<group>"; };
 		1161F7F0203F0B8B00B9C845 /* Alarm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alarm.swift; sourceTree = "<group>"; };
 		116F027120F761E200056C7F /* ObjectDetailsLastValuesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDetailsLastValuesCell.swift; sourceTree = "<group>"; };
-		1170F3BB21B9123700A6FF27 /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Charts.xcodeproj; path = ../Charts/Charts.xcodeproj; sourceTree = "<group>"; };
 		1189A8B620F754E300510DB4 /* ObjectDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDetailsViewController.swift; sourceTree = "<group>"; };
 		1189A8B820F7557900510DB4 /* ObjectDetailsAlarmCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDetailsAlarmCell.swift; sourceTree = "<group>"; };
 		1192CCB9223FEC3800FB1DE1 /* ObjectToolFolderViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectToolFolderViewCell.swift; sourceTree = "<group>"; };
@@ -205,6 +256,10 @@
 		11C1B8C5204570A1005B2B6D /* critical.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = critical.png; sourceTree = "<group>"; };
 		11C1B8C6204570A1005B2B6D /* major.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = major.png; sourceTree = "<group>"; };
 		11C1B8C7204570A1005B2B6D /* minor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = minor.png; sourceTree = "<group>"; };
+		11C2DA09228977140087C0F6 /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Charts.xcodeproj; path = "Charts-3.3.0/Charts.xcodeproj"; sourceTree = "<group>"; };
+		11C2DA16228977620087C0F6 /* SwiftKeychainWrapper.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SwiftKeychainWrapper.xcodeproj; path = "SwiftKeychainWrapper-3.3.0/SwiftKeychainWrapper.xcodeproj"; sourceTree = "<group>"; };
+		11C2DA27228C290F0087C0F6 /* CertificateDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificateDetailsViewController.swift; sourceTree = "<group>"; };
+		11C2DA29228C30D90087C0F6 /* ASN1Decoder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASN1Decoder.xcodeproj; path = "ASN1Decoder-1.3/ASN1Decoder.xcodeproj"; sourceTree = "<group>"; };
 		11DDCE6320D2561700CF2BB1 /* ObjectBrowserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectBrowserViewController.swift; sourceTree = "<group>"; };
 		11DDCE6520D257ED00CF2BB1 /* ObjectBrowserViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectBrowserViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -214,7 +269,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1170F3C421B9124200A6FF27 /* Charts.framework in Frameworks */,
+				11C2DA32228C311D0087C0F6 /* ASN1Decoder.framework in Frameworks */,
+				11C2DA222289776F0087C0F6 /* SwiftKeychainWrapper.framework in Frameworks */,
+				11C2DA122289772F0087C0F6 /* Charts.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,15 +355,6 @@
 			path = Images;
 			sourceTree = "<group>";
 		};
-		1137427A20A591E100A80679 /* KeychainWrapper */ = {
-			isa = PBXGroup;
-			children = (
-				1125614C213D2D9200F492AD /* KeychainItemAccessibility.swift */,
-				1125614D213D2D9200F492AD /* KeychainWrapper.swift */,
-			);
-			path = KeychainWrapper;
-			sourceTree = "<group>";
-		};
 		1137427B20A5920C00A80679 /* AlarmBrowser */ = {
 			isa = PBXGroup;
 			children = (
@@ -329,6 +377,7 @@
 		113F8E8A20EF54240076A79E /* Objects */ = {
 			isa = PBXGroup;
 			children = (
+				11B6799421088509005C8C4B /* Severity.swift */,
 				112ADAA5205BB82B00FAB36D /* AbstractObject.swift */,
 				1161F7F0203F0B8B00B9C845 /* Alarm.swift */,
 				113F8E8B20EF54490076A79E /* Node.swift */,
@@ -347,7 +396,9 @@
 		1161F7A6203EAFE700B9C845 = {
 			isa = PBXGroup;
 			children = (
-				1170F3BB21B9123700A6FF27 /* Charts.xcodeproj */,
+				11C2DA29228C30D90087C0F6 /* ASN1Decoder.xcodeproj */,
+				11C2DA16228977620087C0F6 /* SwiftKeychainWrapper.xcodeproj */,
+				11C2DA09228977140087C0F6 /* Charts.xcodeproj */,
 				1161F7B1203EAFE700B9C845 /* NetXMS Mobile Console */,
 				1161F7C6203EAFE800B9C845 /* NetXMS Mobile ConsoleTests */,
 				1161F7D1203EAFE800B9C845 /* NetXMS Mobile ConsoleUITests */,
@@ -369,6 +420,7 @@
 		1161F7B1203EAFE700B9C845 /* NetXMS Mobile Console */ = {
 			isa = PBXGroup;
 			children = (
+				11C2DA26228C28EB0087C0F6 /* LoginView */,
 				1125612921368C7300F492AD /* PredefinedGraphs */,
 				1104347921105A94003DB91A /* Charts */,
 				11B67996210B2678005C8C4B /* LastValues */,
@@ -376,8 +428,6 @@
 				11AF174320CFEFCC005607FD /* ObjectBrowser */,
 				1161F7E3203EB03F00B9C845 /* Connection.swift */,
 				1137427920A591C500A80679 /* Images */,
-				1137427A20A591E100A80679 /* KeychainWrapper */,
-				1161F7E2203EB03E00B9C845 /* LoginViewController.swift */,
 				1161F7B2203EAFE700B9C845 /* AppDelegate.swift */,
 				1161F7B6203EAFE700B9C845 /* Main.storyboard */,
 				1161F7B9203EAFE700B9C845 /* Assets.xcassets */,
@@ -385,7 +435,6 @@
 				1161F7BE203EAFE700B9C845 /* Info.plist */,
 				1137427B20A5920C00A80679 /* AlarmBrowser */,
 				1137427C20A5922A00A80679 /* MainView */,
-				11B6799421088509005C8C4B /* Severity.swift */,
 			);
 			path = "NetXMS Mobile Console";
 			sourceTree = "<group>";
@@ -406,15 +455,6 @@
 				1161F7D4203EAFE800B9C845 /* Info.plist */,
 			);
 			path = "NetXMS Mobile ConsoleUITests";
-			sourceTree = "<group>";
-		};
-		1170F3BC21B9123700A6FF27 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1170F3C121B9123700A6FF27 /* Charts.framework */,
-				1170F3C321B9123700A6FF27 /* ChartsTests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		11AF174320CFEFCC005607FD /* ObjectBrowser */ = {
@@ -445,6 +485,43 @@
 			path = LastValues;
 			sourceTree = "<group>";
 		};
+		11C2DA0A228977140087C0F6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				11C2DA0F228977140087C0F6 /* Charts.framework */,
+				11C2DA11228977140087C0F6 /* ChartsTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		11C2DA17228977620087C0F6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				11C2DA1D228977620087C0F6 /* SwiftKeychainWrapper.framework */,
+				11C2DA1F228977620087C0F6 /* SwiftKeychainWrapperTests.xctest */,
+				11C2DA21228977620087C0F6 /* TestHostApp.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		11C2DA26228C28EB0087C0F6 /* LoginView */ = {
+			isa = PBXGroup;
+			children = (
+				1161F7E2203EB03E00B9C845 /* LoginViewController.swift */,
+				11C2DA27228C290F0087C0F6 /* CertificateDetailsViewController.swift */,
+			);
+			path = LoginView;
+			sourceTree = "<group>";
+		};
+		11C2DA2A228C30D90087C0F6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				11C2DA2F228C30D90087C0F6 /* ASN1Decoder.framework */,
+				11C2DA31228C30D90087C0F6 /* ASN1DecoderTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -460,7 +537,9 @@
 			buildRules = (
 			);
 			dependencies = (
-				1170F3C721B9124200A6FF27 /* PBXTargetDependency */,
+				11C2DA152289772F0087C0F6 /* PBXTargetDependency */,
+				11C2DA252289776F0087C0F6 /* PBXTargetDependency */,
+				11C2DA35228C311D0087C0F6 /* PBXTargetDependency */,
 			);
 			name = "NetXMS Mobile Console";
 			productName = "NetXMS Mobile Console";
@@ -510,7 +589,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "Raden Solutions";
 				TargetAttributes = {
 					1161F7AE203EAFE700B9C845 = {
@@ -542,8 +621,16 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 1170F3BC21B9123700A6FF27 /* Products */;
-					ProjectRef = 1170F3BB21B9123700A6FF27 /* Charts.xcodeproj */;
+					ProductGroup = 11C2DA2A228C30D90087C0F6 /* Products */;
+					ProjectRef = 11C2DA29228C30D90087C0F6 /* ASN1Decoder.xcodeproj */;
+				},
+				{
+					ProductGroup = 11C2DA0A228977140087C0F6 /* Products */;
+					ProjectRef = 11C2DA09228977140087C0F6 /* Charts.xcodeproj */;
+				},
+				{
+					ProductGroup = 11C2DA17228977620087C0F6 /* Products */;
+					ProjectRef = 11C2DA16228977620087C0F6 /* SwiftKeychainWrapper.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -556,18 +643,53 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		1170F3C121B9123700A6FF27 /* Charts.framework */ = {
+		11C2DA0F228977140087C0F6 /* Charts.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = Charts.framework;
-			remoteRef = 1170F3C021B9123700A6FF27 /* PBXContainerItemProxy */;
+			remoteRef = 11C2DA0E228977140087C0F6 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		1170F3C321B9123700A6FF27 /* ChartsTests.xctest */ = {
+		11C2DA11228977140087C0F6 /* ChartsTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = ChartsTests.xctest;
-			remoteRef = 1170F3C221B9123700A6FF27 /* PBXContainerItemProxy */;
+			remoteRef = 11C2DA10228977140087C0F6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		11C2DA1D228977620087C0F6 /* SwiftKeychainWrapper.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SwiftKeychainWrapper.framework;
+			remoteRef = 11C2DA1C228977620087C0F6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		11C2DA1F228977620087C0F6 /* SwiftKeychainWrapperTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = SwiftKeychainWrapperTests.xctest;
+			remoteRef = 11C2DA1E228977620087C0F6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		11C2DA21228977620087C0F6 /* TestHostApp.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = TestHostApp.app;
+			remoteRef = 11C2DA20228977620087C0F6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		11C2DA2F228C30D90087C0F6 /* ASN1Decoder.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ASN1Decoder.framework;
+			remoteRef = 11C2DA2E228C30D90087C0F6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		11C2DA31228C30D90087C0F6 /* ASN1DecoderTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ASN1DecoderTests.xctest;
+			remoteRef = 11C2DA30228C30D90087C0F6 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -623,7 +745,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1125614E213D2D9200F492AD /* KeychainItemAccessibility.swift in Sources */,
 				1160B6C021B53A690078EF27 /* ObjectToolsURLOutputViewController.swift in Sources */,
 				1137427620A4957600A80679 /* MainNavigationController.swift in Sources */,
 				1137427820A49C9D00A80679 /* MainViewController.swift in Sources */,
@@ -634,7 +755,6 @@
 				110CE04521525086007CED7F /* ObjectToolViewCell.swift in Sources */,
 				11DDCE6420D2561700CF2BB1 /* ObjectBrowserViewController.swift in Sources */,
 				112B7FEE21AE98C0009AAD52 /* ObjectDetailsNoDataCell.swift in Sources */,
-				1125614F213D2D9200F492AD /* KeychainWrapper.swift in Sources */,
 				11C1B8C220456F87005B2B6D /* AlarmBrowserViewCell.swift in Sources */,
 				11B6799521088509005C8C4B /* Severity.swift in Sources */,
 				1161F7E7203EB03F00B9C845 /* LoginViewController.swift in Sources */,
@@ -649,6 +769,7 @@
 				11B2F5452248D7EA00E3C3EB /* SessionNotification.swift in Sources */,
 				1161F7E8203EB03F00B9C845 /* Connection.swift in Sources */,
 				11283D6721467C9E00EF4083 /* DciData.swift in Sources */,
+				11C2DA28228C290F0087C0F6 /* CertificateDetailsViewController.swift in Sources */,
 				11B67998210B269E005C8C4B /* LastValuesViewController.swift in Sources */,
 				1161F7B3203EAFE700B9C845 /* AppDelegate.swift in Sources */,
 				11043454210F3543003DB91A /* LastValuesCell.swift in Sources */,
@@ -699,10 +820,20 @@
 			target = 1161F7AE203EAFE700B9C845 /* NetXMS Mobile Console */;
 			targetProxy = 1161F7CF203EAFE800B9C845 /* PBXContainerItemProxy */;
 		};
-		1170F3C721B9124200A6FF27 /* PBXTargetDependency */ = {
+		11C2DA152289772F0087C0F6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Charts;
-			targetProxy = 1170F3C621B9124200A6FF27 /* PBXContainerItemProxy */;
+			targetProxy = 11C2DA142289772F0087C0F6 /* PBXContainerItemProxy */;
+		};
+		11C2DA252289776F0087C0F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SwiftKeychainWrapper;
+			targetProxy = 11C2DA242289776F0087C0F6 /* PBXContainerItemProxy */;
+		};
+		11C2DA35228C311D0087C0F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ASN1Decoder;
+			targetProxy = 11C2DA34228C311D0087C0F6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -740,6 +871,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -747,6 +879,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -774,12 +907,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -797,6 +932,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -804,6 +940,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -825,10 +962,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -843,6 +982,7 @@
 				DEVELOPMENT_TEAM = KFFD69X4L6;
 				INFOPLIST_FILE = "NetXMS Mobile Console/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "nx.netxms-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -861,6 +1001,7 @@
 				DEVELOPMENT_TEAM = KFFD69X4L6;
 				INFOPLIST_FILE = "NetXMS Mobile Console/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "nx.netxms-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

@@ -58,7 +58,7 @@ class LineChartViewController: UIViewController, ChartViewDelegate
             let dataEntry = ChartDataEntry(x: Double(n), y: dataPoints[i][n])
             dataEntries.append(dataEntry)
          }
-         let chartDataSet = LineChartDataSet(values: dataEntries, label: labels[i])
+         let chartDataSet = LineChartDataSet(entries: dataEntries, label: labels[i])
          chartDataSet.colors = [LineChartViewController.colors[i]]
          chartDataSet.drawValuesEnabled = false
          chartDataSet.drawCirclesEnabled = false

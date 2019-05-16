@@ -7,6 +7,9 @@
 //
 
 import Foundation
+import UIKit
+import SwiftKeychainWrapper
+import ASN1Decoder
 
 /**
  * Data used to create request
@@ -49,6 +52,7 @@ class Connection: NSObject, URLSessionDelegate
    var alarmBrowser: AlarmBrowserViewController?
    var objectBrowser: ObjectBrowserViewController?
    var predefinedGraphsBrowser: PredefinedGraphsViewController?
+   var loginView: LoginViewController?
    
    /**
     * Connection object constructor
@@ -58,7 +62,6 @@ class Connection: NSObject, URLSessionDelegate
       self.login = login
       self.password = password
       self.apiUrl = apiUrl
-      self.alarmBrowser = nil
       self.session = nil
    }
    
@@ -156,36 +159,80 @@ class Connection: NSObject, URLSessionDelegate
       task.resume()
    }
    
-   func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
+   func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
    {
-      let serverTrust = challenge.protectionSpace.serverTrust
-      let certificate = SecTrustGetCertificateAtIndex(serverTrust!, 0)
+      guard let serverTrust = challenge.protectionSpace.serverTrust
+         else
+      {
+         completionHandler(.cancelAuthenticationChallenge, nil)
+         return
+      }
       
-      let policies = NSMutableArray()
-      policies.add(SecPolicyCreateSSL(true, (challenge.protectionSpace.host as CFString)))
-      SecTrustSetPolicies(serverTrust!, policies)
+      var certificateStore: [SecCertificate]
+      if KeychainWrapper.standard.hasValue(forKey: "NetXMSApiCertificates")
+      {
+         certificateStore = KeychainWrapper.standard.object(forKey: "NetXMSApiCertificates") as? [SecCertificate] ?? []
+      }
+      else
+      {
+         certificateStore = [SecCertificate]()
+      }
+      
+      SecTrustSetAnchorCertificates(serverTrust, certificateStore as CFArray)
+      SecTrustSetAnchorCertificatesOnly(serverTrust, false)
       
       var result: SecTrustResultType = SecTrustResultType(rawValue: 0)!
-      SecTrustEvaluate(serverTrust!, &result)
-      let isServerTrusted:Bool = result == SecTrustResultType.unspecified || result == SecTrustResultType.proceed
+      SecTrustEvaluate(serverTrust, &result)
+      let isServerTrusted:Bool = (result == SecTrustResultType.unspecified || result == SecTrustResultType.proceed)
       
-      // Get local and remote cert data
-      let remoteCertificateData:NSData = SecCertificateCopyData(certificate!)
-      let host = challenge.protectionSpace.host
-      if let pathToCert = Bundle.main.path(forResource: host, ofType: "cer"),
-         let localCertificate:NSData = NSData(contentsOfFile: pathToCert)
+      if !isServerTrusted
       {
-         if (isServerTrusted && remoteCertificateData.isEqual(to: localCertificate as Data))
-         {
-            let credential:URLCredential = URLCredential(trust: serverTrust!)
-            completionHandler(.useCredential, credential)
-         } else
-         {
+         let alertController = UIAlertController(title: "Untrusted certificate received", message: "The server is presenting an untrusted certificate, would you like to accept it?", preferredStyle: .alert)
+         
+         //the confirm action taking the inputs
+         let confirmAction = UIAlertAction(title: "Accept", style: .default) { (_) in
+            if let certificate = SecTrustGetCertificateAtIndex(serverTrust, 0)
+            {
+               certificateStore.append(certificate)
+               KeychainWrapper.standard.set(certificateStore as NSCoding, forKey: "NetXMSApiCertificates")
+               completionHandler(.useCredential, URLCredential(trust: serverTrust))
+            }
+         }
+         
+         //the cancel action doing nothing
+         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (_) in
             completionHandler(.cancelAuthenticationChallenge, nil)
          }
+         
+         let showCertificateAction = UIAlertAction(title: "Show certificate", style: .default) { (_) in
+            if self.loginView != nil,
+               let certificateDetailsVC = self.loginView?.storyboard?.instantiateViewController(withIdentifier: "CertificateDetailsView") as? CertificateDetailsViewController,
+               let certificate = SecTrustGetCertificateAtIndex(serverTrust, 0),
+               let subject = SecCertificateCopySubjectSummary(certificate),
+               let key = SecCertificateCopyKey(certificate).debugDescription as? String
+            {
+               certificateDetailsVC.subject = subject as String
+               certificateDetailsVC.pubKey = key
+               
+               self.loginView?.navigationController?.pushViewController(certificateDetailsVC, animated: true)
+            }
+         }
+         
+         //adding the action to dialogbox
+         alertController.addAction(confirmAction)
+         alertController.addAction(cancelAction)
+         alertController.addAction(showCertificateAction)
+         
+         //finally presenting the dialog box
+         self.loginView?.present(alertController, animated: true)
+         print("present")
       }
-
+      else
+      {
+         completionHandler(isServerTrusted ? .useCredential : .cancelAuthenticationChallenge, nil)
+      }
    }
+
    
    /**
     * Send HTTP request without onFailure closure

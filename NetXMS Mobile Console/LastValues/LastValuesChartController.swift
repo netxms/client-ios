@@ -96,7 +96,7 @@ class LastValuesChartController: LineChartViewController
          dataEntries.append(dataEntry)
       }
       
-      let chartDataSet = LineChartDataSet(values: dataEntries, label: label)
+      let chartDataSet = LineChartDataSet(entries: dataEntries, label: label)
       chartDataSet.colors = [NSUIColor.blue]
       chartDataSet.drawValuesEnabled = false
       chartDataSet.drawCirclesEnabled = false

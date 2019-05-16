@@ -44,7 +44,7 @@ class ObjectToolOutputViewController: UIViewController
          DispatchQueue.main.async
             {
                self.textArea.text.append(contentsOf: message)
-               let range = NSMakeRange(self.textArea.text.characters.count - 1, 1)
+               let range = NSMakeRange(self.textArea.text.count - 1, 1)
                self.textArea.scrollRangeToVisible(range)
          }
          if !completed
