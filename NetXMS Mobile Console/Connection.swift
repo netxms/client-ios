@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 import SwiftKeychainWrapper
-import ASN1Decoder
 
 /**
  * Data used to create request
@@ -168,18 +167,13 @@ class Connection: NSObject, URLSessionDelegate
          return
       }
       
-      var certificateStore: [SecCertificate]
-      if KeychainWrapper.standard.hasValue(forKey: "NetXMSApiCertificates")
-      {
-         certificateStore = KeychainWrapper.standard.object(forKey: "NetXMSApiCertificates") as? [SecCertificate] ?? []
-      }
-      else
-      {
-         certificateStore = [SecCertificate]()
-      }
-      
-      SecTrustSetAnchorCertificates(serverTrust, certificateStore as CFArray)
-      SecTrustSetAnchorCertificatesOnly(serverTrust, false)
+      let getQuery: [String : Any] = [kSecClass as String : kSecClassCertificate,
+                                      kSecAttrLabel as String : challenge.protectionSpace.host,
+                                      kSecReturnRef as String : kCFBooleanTrue]
+      var item: CFTypeRef?
+      let status = SecItemCopyMatching(getQuery as CFDictionary, &item)
+      if status != errSecSuccess { print("Error load") }
+      let localCert = item as! SecCertificate
       
       var result: SecTrustResultType = SecTrustResultType(rawValue: 0)!
       SecTrustEvaluate(serverTrust, &result)
@@ -187,14 +181,27 @@ class Connection: NSObject, URLSessionDelegate
       
       if !isServerTrusted
       {
-         let alertController = UIAlertController(title: "Untrusted certificate received", message: "The server is presenting an untrusted certificate, would you like to accept it?", preferredStyle: .alert)
+         if let remoteCert = SecTrustGetCertificateAtIndex(serverTrust, 0),
+            let remoteCertData = SecCertificateCopyData(remoteCert) as NSData?,
+            let localCertData = SecCertificateCopyData(localCert) as Data?,
+            remoteCertData.isEqual(to: localCertData)
+         {
+            completionHandler(.useCredential, URLCredential(trust: serverTrust))
+            return
+         }
+         
+         let alertController = UIAlertController(title: "Untrusted certificate from \(challenge.protectionSpace.host) received", message: "The server is presenting an untrusted certificate, would you like to accept it?", preferredStyle: .alert)
          
          //the confirm action taking the inputs
          let confirmAction = UIAlertAction(title: "Accept", style: .default) { (_) in
-            if let certificate = SecTrustGetCertificateAtIndex(serverTrust, 0)
+            if let remoteCert = SecTrustGetCertificateAtIndex(serverTrust, 0)
             {
-               certificateStore.append(certificate)
-               KeychainWrapper.standard.set(certificateStore as NSCoding, forKey: "NetXMSApiCertificates")
+               let addQuery: [String : Any] = [kSecClass as String : kSecClassCertificate,
+                                               kSecValueRef as String : remoteCert,
+                                               kSecAttrLabel as String : challenge.protectionSpace.host]
+               let status = SecItemAdd(addQuery as CFDictionary, nil)
+               print(status)
+               if status != errSecSuccess { print("Error cert save") }
                completionHandler(.useCredential, URLCredential(trust: serverTrust))
             }
          }
@@ -209,7 +216,7 @@ class Connection: NSObject, URLSessionDelegate
                let certificateDetailsVC = self.loginView?.storyboard?.instantiateViewController(withIdentifier: "CertificateDetailsView") as? CertificateDetailsViewController,
                let certificate = SecTrustGetCertificateAtIndex(serverTrust, 0),
                let subject = SecCertificateCopySubjectSummary(certificate),
-               let key = SecCertificateCopyKey(certificate).debugDescription as? String
+               let key = SecCertificateCopyKey(certificate).debugDescription as String?
             {
                certificateDetailsVC.subject = subject as String
                certificateDetailsVC.pubKey = key
@@ -225,7 +232,6 @@ class Connection: NSObject, URLSessionDelegate
          
          //finally presenting the dialog box
          self.loginView?.present(alertController, animated: true)
-         print("present")
       }
       else
       {
