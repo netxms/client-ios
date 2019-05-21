@@ -77,6 +77,7 @@
 		11C2DA222289776F0087C0F6 /* SwiftKeychainWrapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11C2DA1D228977620087C0F6 /* SwiftKeychainWrapper.framework */; };
 		11C2DA232289776F0087C0F6 /* SwiftKeychainWrapper.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 11C2DA1D228977620087C0F6 /* SwiftKeychainWrapper.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		11C2DA28228C290F0087C0F6 /* CertificateDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C2DA27228C290F0087C0F6 /* CertificateDetailsViewController.swift */; };
+		11C4257B229438EF00008308 /* SearchTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4257A229438EF00008308 /* SearchTextField.swift */; };
 		11DDCE6420D2561700CF2BB1 /* ObjectBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DDCE6320D2561700CF2BB1 /* ObjectBrowserViewController.swift */; };
 		11DDCE6620D257ED00CF2BB1 /* ObjectBrowserViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DDCE6520D257ED00CF2BB1 /* ObjectBrowserViewCell.swift */; };
 /* End PBXBuildFile section */
@@ -237,6 +238,7 @@
 		11C2DA09228977140087C0F6 /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Charts.xcodeproj; path = "Charts-3.3.0/Charts.xcodeproj"; sourceTree = "<group>"; };
 		11C2DA16228977620087C0F6 /* SwiftKeychainWrapper.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SwiftKeychainWrapper.xcodeproj; path = "SwiftKeychainWrapper-3.3.0/SwiftKeychainWrapper.xcodeproj"; sourceTree = "<group>"; };
 		11C2DA27228C290F0087C0F6 /* CertificateDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificateDetailsViewController.swift; sourceTree = "<group>"; };
+		11C4257A229438EF00008308 /* SearchTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTextField.swift; sourceTree = "<group>"; };
 		11DDCE6320D2561700CF2BB1 /* ObjectBrowserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectBrowserViewController.swift; sourceTree = "<group>"; };
 		11DDCE6520D257ED00CF2BB1 /* ObjectBrowserViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectBrowserViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -396,6 +398,7 @@
 		1161F7B1203EAFE700B9C845 /* NetXMS Mobile Console */ = {
 			isa = PBXGroup;
 			children = (
+				119DDFFF2293E6980055D4A4 /* SearchTextField */,
 				11C2DA26228C28EB0087C0F6 /* LoginView */,
 				1125612921368C7300F492AD /* PredefinedGraphs */,
 				1104347921105A94003DB91A /* Charts */,
@@ -431,6 +434,14 @@
 				1161F7D4203EAFE800B9C845 /* Info.plist */,
 			);
 			path = "NetXMS Mobile ConsoleUITests";
+			sourceTree = "<group>";
+		};
+		119DDFFF2293E6980055D4A4 /* SearchTextField */ = {
+			isa = PBXGroup;
+			children = (
+				11C4257A229438EF00008308 /* SearchTextField.swift */,
+			);
+			path = SearchTextField;
 			sourceTree = "<group>";
 		};
 		11AF174320CFEFCC005607FD /* ObjectBrowser */ = {
@@ -717,6 +728,7 @@
 				113F8E8E20EF54570076A79E /* Cluster.swift in Sources */,
 				11B2F5452248D7EA00E3C3EB /* SessionNotification.swift in Sources */,
 				1161F7E8203EB03F00B9C845 /* Connection.swift in Sources */,
+				11C4257B229438EF00008308 /* SearchTextField.swift in Sources */,
 				11283D6721467C9E00EF4083 /* DciData.swift in Sources */,
 				11C2DA28228C290F0087C0F6 /* CertificateDetailsViewController.swift in Sources */,
 				11B67998210B269E005C8C4B /* LastValuesViewController.swift in Sources */,

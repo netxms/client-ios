@@ -89,7 +89,7 @@
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="8Fc-2p-4WF">
                                                         <rect key="frame" x="0.0" y="0.0" width="288" height="42"/>
                                                         <subviews>
-                                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" placeholder="API URL" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="nTh-m0-teF">
+                                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" placeholder="API URL" textAlignment="natural" minimumFontSize="16" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="nTh-m0-teF" customClass="SearchTextField" customModule="NetXMS_Mobile_Console" customModuleProvider="target">
                                                                 <rect key="frame" x="0.0" y="0.0" width="288" height="41"/>
                                                                 <nil key="textColor"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
@@ -263,7 +263,7 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <size key="freeformSize" width="320" height="800"/>
                     <connections>
-                        <outlet property="apiUrl" destination="nTh-m0-teF" id="vxI-nv-TNC"/>
+                        <outlet property="apiUrl" destination="nTh-m0-teF" id="Gyu-Lz-jGH"/>
                         <outlet property="keyboardViewHeight" destination="8Lq-qr-LfU" id="0rj-Pa-Ykt"/>
                         <outlet property="login" destination="83e-cb-fUd" id="95k-vq-bUd"/>
                         <outlet property="loginButton" destination="pif-ak-yyN" id="76C-NN-HRp"/>

@@ -9,9 +9,9 @@
 import UIKit
 import SwiftKeychainWrapper
 
-class LoginViewController: UIViewController
+class LoginViewController: UIViewController, UITextFieldDelegate
 {
-   @IBOutlet weak var apiUrl: UITextField!
+   @IBOutlet var apiUrl: SearchTextField!
    @IBOutlet weak var login: UITextField!
    @IBOutlet weak var password: UITextField!
    @IBOutlet weak var underlineURL: UIView!
@@ -19,6 +19,7 @@ class LoginViewController: UIViewController
    @IBOutlet weak var underlineUsername: UIView!
    @IBOutlet weak var loginButton: UIButton!
    @IBOutlet weak var keyboardViewHeight: NSLayoutConstraint!
+   var apiUrlHistory: Set<String>!
    
    override func viewDidLoad()
    {
@@ -28,6 +29,14 @@ class LoginViewController: UIViewController
       NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
       
       loadCredentialsFromKeyChain()
+      
+      apiUrl.startVisible = true
+      apiUrl.theme.bgColor = UIColor(red: 0.92, green: 0.94, blue: 0.96, alpha: 0.95)
+      
+      self.apiUrl.delegate = self
+      self.login.delegate = self
+      self.password.delegate = self
+      
       
       if apiUrl.text?.isEmpty == false
       {
@@ -45,6 +54,12 @@ class LoginViewController: UIViewController
       let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
       tap.cancelsTouchesInView = false
       self.view.addGestureRecognizer(tap)
+   }
+   
+   func textFieldShouldReturn(_ textField: UITextField) -> Bool
+   {
+      loginButtonPressed()
+      return true
    }
    
    override func viewWillAppear(_ animated: Bool)
@@ -134,13 +149,11 @@ class LoginViewController: UIViewController
    
    override func viewWillLayoutSubviews()
    {
-      print("Will Layout: \(loginButton.layer.bounds)")
       MainNavigationController.setButtonStyle(button: loginButton)
    }
    
    override func viewDidLayoutSubviews()
    {
-      //print("Did Layout: \(loginButton.layer.bounds)")
       MainNavigationController.setButtonStyle(button: loginButton)
    }
    
@@ -161,21 +174,25 @@ class LoginViewController: UIViewController
    
    func storeCredentialsInKeyChain()
    {
-      if !(apiUrl.text?.isEmpty)! && !(login.text?.isEmpty)!
+      if let apiUrl = self.apiUrl.text,
+         let login = self.login.text,
+         let pass = self.password.text
       {
-         KeychainWrapper.standard.set(apiUrl.text!, forKey: "NetXMSApiUrl")
-         KeychainWrapper.standard.set(login.text!, forKey: "NetXMSLogin")
-         KeychainWrapper.standard.set(password.text ?? "", forKey: "NetXMSPassword")
+         apiUrlHistory.insert(apiUrl)
+         UserDefaults.standard.set(Array(apiUrlHistory), forKey: "NetXMSApiURLs")
+         KeychainWrapper.standard.set(login, forKey: "NetXMSLogin")
+         KeychainWrapper.standard.set(pass, forKey: "NetXMSPassword")
       }
    }
    
    func loadCredentialsFromKeyChain()
    {
-      if let retreivedApiUrl = KeychainWrapper.standard.string(forKey: "NetXMSApiUrl"),
-         let retreivedLogin = KeychainWrapper.standard.string(forKey: "NetXMSLogin"),
+      apiUrlHistory = Set<String>(UserDefaults.standard.object(forKey: "NetXMSApiURLs") as? [String] ?? [String]())
+      if let retreivedLogin = KeychainWrapper.standard.string(forKey: "NetXMSLogin"),
          let retreivedPassword = KeychainWrapper.standard.string(forKey: "NetXMSPassword")
       {
-         self.apiUrl.insertText(retreivedApiUrl)
+         self.apiUrl.filterStrings(Array(apiUrlHistory))
+         self.apiUrl.insertText(apiUrlHistory.first ?? "")
          self.login.insertText(retreivedLogin)
          self.password.insertText(retreivedPassword)
          

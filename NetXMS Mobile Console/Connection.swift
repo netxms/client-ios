@@ -158,6 +158,40 @@ class Connection: NSObject, URLSessionDelegate
       task.resume()
    }
    
+   func storeCertificate(cert: SecCertificate, key: String)
+   {
+      var query: [String : Any] = [kSecClass as String : kSecClassCertificate,
+                                   kSecValueRef as String : cert]
+      
+      SecItemDelete(query as CFDictionary)
+      query.updateValue(kSecAttrLabel as String, forKey: key)
+      let status = SecItemAdd(query as CFDictionary, nil)
+      if status != errSecSuccess { print("Error cert save") }
+   }
+   
+   func loadCertificate(key: String) -> SecCertificate?
+   {
+      let query: [String : Any] = [kSecClass as String : kSecClassCertificate,
+                                   kSecAttrLabel as String : key,
+                                   kSecReturnRef as String : kCFBooleanTrue]
+      var item: CFTypeRef?
+      let status = SecItemCopyMatching(query as CFDictionary, &item)
+      if status != errSecSuccess { print("Error cert load") }
+      
+      return (item != nil ? (item as! SecCertificate) : nil)
+   }
+   
+   func validateCertificate(localCert: SecCertificate, remoteCert: SecCertificate) -> Bool
+   {
+      if let remoteCertData = SecCertificateCopyData(remoteCert) as NSData?,
+         let localCertData = SecCertificateCopyData(localCert) as Data?
+      {
+         return remoteCertData.isEqual(to: localCertData)
+      }
+      
+      return false
+   }
+   
    func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
    {
       guard let serverTrust = challenge.protectionSpace.serverTrust
@@ -167,24 +201,15 @@ class Connection: NSObject, URLSessionDelegate
          return
       }
       
-      let getQuery: [String : Any] = [kSecClass as String : kSecClassCertificate,
-                                      kSecAttrLabel as String : challenge.protectionSpace.host,
-                                      kSecReturnRef as String : kCFBooleanTrue]
-      var item: CFTypeRef?
-      let status = SecItemCopyMatching(getQuery as CFDictionary, &item)
-      if status != errSecSuccess { print("Error load") }
-      let localCert = item as! SecCertificate
-      
       var result: SecTrustResultType = SecTrustResultType(rawValue: 0)!
       SecTrustEvaluate(serverTrust, &result)
       let isServerTrusted:Bool = (result == SecTrustResultType.unspecified || result == SecTrustResultType.proceed)
       
-      if !isServerTrusted
+      if !isServerTrusted,
+         let remoteCert = SecTrustGetCertificateAtIndex(serverTrust, 0)
       {
-         if let remoteCert = SecTrustGetCertificateAtIndex(serverTrust, 0),
-            let remoteCertData = SecCertificateCopyData(remoteCert) as NSData?,
-            let localCertData = SecCertificateCopyData(localCert) as Data?,
-            remoteCertData.isEqual(to: localCertData)
+         if let localCert: SecCertificate = loadCertificate(key: challenge.protectionSpace.host),
+            validateCertificate(localCert: localCert, remoteCert: remoteCert)
          {
             completionHandler(.useCredential, URLCredential(trust: serverTrust))
             return
@@ -194,16 +219,8 @@ class Connection: NSObject, URLSessionDelegate
          
          //the confirm action taking the inputs
          let confirmAction = UIAlertAction(title: "Accept", style: .default) { (_) in
-            if let remoteCert = SecTrustGetCertificateAtIndex(serverTrust, 0)
-            {
-               let addQuery: [String : Any] = [kSecClass as String : kSecClassCertificate,
-                                               kSecValueRef as String : remoteCert,
-                                               kSecAttrLabel as String : challenge.protectionSpace.host]
-               let status = SecItemAdd(addQuery as CFDictionary, nil)
-               print(status)
-               if status != errSecSuccess { print("Error cert save") }
-               completionHandler(.useCredential, URLCredential(trust: serverTrust))
-            }
+            self.storeCertificate(cert: remoteCert, key: challenge.protectionSpace.host)
+            completionHandler(.useCredential, URLCredential(trust: serverTrust))
          }
          
          //the cancel action doing nothing
