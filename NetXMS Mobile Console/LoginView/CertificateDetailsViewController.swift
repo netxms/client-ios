@@ -7,10 +7,14 @@
 //
 
 import UIKit
+import Foundation
 
 class CertificateDetailsViewController: UIViewController {
    var subject: String!
    var pubKey: String!
+   var completionHandler: ((URLSession.AuthChallengeDisposition, URLCredential?) -> Void)!
+   var trust: SecTrust!
+   var certData: Data!
    @IBOutlet weak var subjectLabel: UILabel!
    @IBOutlet weak var pubKeyLabel: UILabel!
    
@@ -21,15 +25,16 @@ class CertificateDetailsViewController: UIViewController {
       pubKeyLabel.text = pubKey
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+   @IBAction func cancelPressed(_ sender: Any)
+   {
+      completionHandler(.cancelAuthenticationChallenge, nil)
+      self.dismiss(animated: true, completion: nil)
+   }
+   
+   @IBAction func acceptPRessed(_ sender: Any)
+   {
+      try? AppDelegate.keychain.set(certData, key: Connection.sharedInstance!.apiUrl)
+      completionHandler(.useCredential, URLCredential(trust: trust))
+      self.dismiss(animated: true, completion: nil)
+   }
 }

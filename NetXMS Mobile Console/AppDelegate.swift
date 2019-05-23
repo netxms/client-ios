@@ -6,16 +6,17 @@
 //  Copyright © 2018 Raden Solutions. All rights reserved.
 //
 
+import KeychainAccess
 import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate
 {
+   static var keychain = Keychain(service: "nx.netxms-ios")
    var window: UIWindow?
    
    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool
    {
-      // Override point for customization after application launch.
       return true
    }
    

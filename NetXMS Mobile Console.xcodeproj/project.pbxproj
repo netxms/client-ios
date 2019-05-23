@@ -77,7 +77,10 @@
 		11C2DA222289776F0087C0F6 /* SwiftKeychainWrapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11C2DA1D228977620087C0F6 /* SwiftKeychainWrapper.framework */; };
 		11C2DA232289776F0087C0F6 /* SwiftKeychainWrapper.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 11C2DA1D228977620087C0F6 /* SwiftKeychainWrapper.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		11C2DA28228C290F0087C0F6 /* CertificateDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C2DA27228C290F0087C0F6 /* CertificateDetailsViewController.swift */; };
-		11C4257B229438EF00008308 /* SearchTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4257A229438EF00008308 /* SearchTextField.swift */; };
+		11C4258B22953C2900008308 /* KeychainAccess.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11C4258522953C0800008308 /* KeychainAccess.framework */; };
+		11C4258C22953C2900008308 /* KeychainAccess.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 11C4258522953C0800008308 /* KeychainAccess.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		11C42593229550FD00008308 /* CredentialHistoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C42592229550FD00008308 /* CredentialHistoryCell.swift */; };
+		11C425952296A8BF00008308 /* MenuItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C425942296A8BF00008308 /* MenuItemCell.swift */; };
 		11DDCE6420D2561700CF2BB1 /* ObjectBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DDCE6320D2561700CF2BB1 /* ObjectBrowserViewController.swift */; };
 		11DDCE6620D257ED00CF2BB1 /* ObjectBrowserViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DDCE6520D257ED00CF2BB1 /* ObjectBrowserViewCell.swift */; };
 /* End PBXBuildFile section */
@@ -146,6 +149,34 @@
 			remoteGlobalIDString = 9694C2AF1A66097F005B3030;
 			remoteInfo = SwiftKeychainWrapper;
 		};
+		11C4258422953C0800008308 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 11C4257E22953C0800008308 /* KeychainAccess.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 140F195C1A49D79400B0016A;
+			remoteInfo = KeychainAccess;
+		};
+		11C4258622953C0800008308 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 11C4257E22953C0800008308 /* KeychainAccess.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 140F19671A49D79500B0016A;
+			remoteInfo = KeychainAccessTests;
+		};
+		11C4258822953C0800008308 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 11C4257E22953C0800008308 /* KeychainAccess.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 14A630151D3293C700809B3F;
+			remoteInfo = TestHost;
+		};
+		11C4258D22953C2900008308 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 11C4257E22953C0800008308 /* KeychainAccess.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 140F195B1A49D79400B0016A;
+			remoteInfo = KeychainAccess;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -155,6 +186,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				11C4258C22953C2900008308 /* KeychainAccess.framework in Embed Frameworks */,
 				11C2DA232289776F0087C0F6 /* SwiftKeychainWrapper.framework in Embed Frameworks */,
 				11C2DA132289772F0087C0F6 /* Charts.framework in Embed Frameworks */,
 			);
@@ -238,7 +270,9 @@
 		11C2DA09228977140087C0F6 /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Charts.xcodeproj; path = "Charts-3.3.0/Charts.xcodeproj"; sourceTree = "<group>"; };
 		11C2DA16228977620087C0F6 /* SwiftKeychainWrapper.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SwiftKeychainWrapper.xcodeproj; path = "SwiftKeychainWrapper-3.3.0/SwiftKeychainWrapper.xcodeproj"; sourceTree = "<group>"; };
 		11C2DA27228C290F0087C0F6 /* CertificateDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificateDetailsViewController.swift; sourceTree = "<group>"; };
-		11C4257A229438EF00008308 /* SearchTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTextField.swift; sourceTree = "<group>"; };
+		11C4257E22953C0800008308 /* KeychainAccess.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = KeychainAccess.xcodeproj; path = "KeychainAccess-master/Lib/KeychainAccess.xcodeproj"; sourceTree = "<group>"; };
+		11C42592229550FD00008308 /* CredentialHistoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialHistoryCell.swift; sourceTree = "<group>"; };
+		11C425942296A8BF00008308 /* MenuItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemCell.swift; sourceTree = "<group>"; };
 		11DDCE6320D2561700CF2BB1 /* ObjectBrowserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectBrowserViewController.swift; sourceTree = "<group>"; };
 		11DDCE6520D257ED00CF2BB1 /* ObjectBrowserViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectBrowserViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -248,6 +282,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11C4258B22953C2900008308 /* KeychainAccess.framework in Frameworks */,
 				11C2DA222289776F0087C0F6 /* SwiftKeychainWrapper.framework in Frameworks */,
 				11C2DA122289772F0087C0F6 /* Charts.framework in Frameworks */,
 			);
@@ -349,6 +384,7 @@
 			children = (
 				1137427520A4957600A80679 /* MainNavigationController.swift */,
 				1137427720A49C9D00A80679 /* MainViewController.swift */,
+				11C425942296A8BF00008308 /* MenuItemCell.swift */,
 			);
 			path = MainView;
 			sourceTree = "<group>";
@@ -375,6 +411,7 @@
 		1161F7A6203EAFE700B9C845 = {
 			isa = PBXGroup;
 			children = (
+				11C4257E22953C0800008308 /* KeychainAccess.xcodeproj */,
 				11C2DA16228977620087C0F6 /* SwiftKeychainWrapper.xcodeproj */,
 				11C2DA09228977140087C0F6 /* Charts.xcodeproj */,
 				1161F7B1203EAFE700B9C845 /* NetXMS Mobile Console */,
@@ -398,7 +435,6 @@
 		1161F7B1203EAFE700B9C845 /* NetXMS Mobile Console */ = {
 			isa = PBXGroup;
 			children = (
-				119DDFFF2293E6980055D4A4 /* SearchTextField */,
 				11C2DA26228C28EB0087C0F6 /* LoginView */,
 				1125612921368C7300F492AD /* PredefinedGraphs */,
 				1104347921105A94003DB91A /* Charts */,
@@ -434,14 +470,6 @@
 				1161F7D4203EAFE800B9C845 /* Info.plist */,
 			);
 			path = "NetXMS Mobile ConsoleUITests";
-			sourceTree = "<group>";
-		};
-		119DDFFF2293E6980055D4A4 /* SearchTextField */ = {
-			isa = PBXGroup;
-			children = (
-				11C4257A229438EF00008308 /* SearchTextField.swift */,
-			);
-			path = SearchTextField;
 			sourceTree = "<group>";
 		};
 		11AF174320CFEFCC005607FD /* ObjectBrowser */ = {
@@ -496,8 +524,19 @@
 			children = (
 				1161F7E2203EB03E00B9C845 /* LoginViewController.swift */,
 				11C2DA27228C290F0087C0F6 /* CertificateDetailsViewController.swift */,
+				11C42592229550FD00008308 /* CredentialHistoryCell.swift */,
 			);
 			path = LoginView;
+			sourceTree = "<group>";
+		};
+		11C4257F22953C0800008308 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				11C4258522953C0800008308 /* KeychainAccess.framework */,
+				11C4258722953C0800008308 /* KeychainAccessTests.xctest */,
+				11C4258922953C0800008308 /* TestHost.app */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -517,6 +556,7 @@
 			dependencies = (
 				11C2DA152289772F0087C0F6 /* PBXTargetDependency */,
 				11C2DA252289776F0087C0F6 /* PBXTargetDependency */,
+				11C4258E22953C2900008308 /* PBXTargetDependency */,
 			);
 			name = "NetXMS Mobile Console";
 			productName = "NetXMS Mobile Console";
@@ -602,6 +642,10 @@
 					ProjectRef = 11C2DA09228977140087C0F6 /* Charts.xcodeproj */;
 				},
 				{
+					ProductGroup = 11C4257F22953C0800008308 /* Products */;
+					ProjectRef = 11C4257E22953C0800008308 /* KeychainAccess.xcodeproj */;
+				},
+				{
 					ProductGroup = 11C2DA17228977620087C0F6 /* Products */;
 					ProjectRef = 11C2DA16228977620087C0F6 /* SwiftKeychainWrapper.xcodeproj */;
 				},
@@ -649,6 +693,27 @@
 			fileType = wrapper.application;
 			path = TestHostApp.app;
 			remoteRef = 11C2DA20228977620087C0F6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		11C4258522953C0800008308 /* KeychainAccess.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = KeychainAccess.framework;
+			remoteRef = 11C4258422953C0800008308 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		11C4258722953C0800008308 /* KeychainAccessTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = KeychainAccessTests.xctest;
+			remoteRef = 11C4258622953C0800008308 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		11C4258922953C0800008308 /* TestHost.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = TestHost.app;
+			remoteRef = 11C4258822953C0800008308 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -728,19 +793,20 @@
 				113F8E8E20EF54570076A79E /* Cluster.swift in Sources */,
 				11B2F5452248D7EA00E3C3EB /* SessionNotification.swift in Sources */,
 				1161F7E8203EB03F00B9C845 /* Connection.swift in Sources */,
-				11C4257B229438EF00008308 /* SearchTextField.swift in Sources */,
 				11283D6721467C9E00EF4083 /* DciData.swift in Sources */,
 				11C2DA28228C290F0087C0F6 /* CertificateDetailsViewController.swift in Sources */,
 				11B67998210B269E005C8C4B /* LastValuesViewController.swift in Sources */,
 				1161F7B3203EAFE700B9C845 /* AppDelegate.swift in Sources */,
 				11043454210F3543003DB91A /* LastValuesCell.swift in Sources */,
 				11283D6B214A759300EF4083 /* TimestampFormatter.swift in Sources */,
+				11C42593229550FD00008308 /* CredentialHistoryCell.swift in Sources */,
 				1192CCBA223FEC3800FB1DE1 /* ObjectToolFolderViewCell.swift in Sources */,
 				11283D6D214A7B1200EF4083 /* PredefinedGraphChartController.swift in Sources */,
 				1104348F211199B7003DB91A /* LargeValueFormatter.swift in Sources */,
 				1125612D21368C9500F492AD /* PredefinedGraphsViewController.swift in Sources */,
 				1189A8B720F754E300510DB4 /* ObjectDetailsViewController.swift in Sources */,
 				116F027220F761E200056C7F /* ObjectDetailsLastValuesCell.swift in Sources */,
+				11C425952296A8BF00008308 /* MenuItemCell.swift in Sources */,
 				11043452210EF075003DB91A /* Session.swift in Sources */,
 				114995AC217F02BF002F2FE6 /* ObjectToolOutputViewController.swift in Sources */,
 				1189A8B920F7557900510DB4 /* ObjectDetailsAlarmCell.swift in Sources */,
@@ -790,6 +856,11 @@
 			isa = PBXTargetDependency;
 			name = SwiftKeychainWrapper;
 			targetProxy = 11C2DA242289776F0087C0F6 /* PBXContainerItemProxy */;
+		};
+		11C4258E22953C2900008308 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = KeychainAccess;
+			targetProxy = 11C4258D22953C2900008308 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

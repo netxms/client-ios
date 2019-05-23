@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import SwiftKeychainWrapper
+import KeychainAccess
+
 
 /**
  * Data used to create request
@@ -158,40 +160,6 @@ class Connection: NSObject, URLSessionDelegate
       task.resume()
    }
    
-   func storeCertificate(cert: SecCertificate, key: String)
-   {
-      var query: [String : Any] = [kSecClass as String : kSecClassCertificate,
-                                   kSecValueRef as String : cert]
-      
-      SecItemDelete(query as CFDictionary)
-      query.updateValue(kSecAttrLabel as String, forKey: key)
-      let status = SecItemAdd(query as CFDictionary, nil)
-      if status != errSecSuccess { print("Error cert save") }
-   }
-   
-   func loadCertificate(key: String) -> SecCertificate?
-   {
-      let query: [String : Any] = [kSecClass as String : kSecClassCertificate,
-                                   kSecAttrLabel as String : key,
-                                   kSecReturnRef as String : kCFBooleanTrue]
-      var item: CFTypeRef?
-      let status = SecItemCopyMatching(query as CFDictionary, &item)
-      if status != errSecSuccess { print("Error cert load") }
-      
-      return (item != nil ? (item as! SecCertificate) : nil)
-   }
-   
-   func validateCertificate(localCert: SecCertificate, remoteCert: SecCertificate) -> Bool
-   {
-      if let remoteCertData = SecCertificateCopyData(remoteCert) as NSData?,
-         let localCertData = SecCertificateCopyData(localCert) as Data?
-      {
-         return remoteCertData.isEqual(to: localCertData)
-      }
-      
-      return false
-   }
-   
    func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
    {
       guard let serverTrust = challenge.protectionSpace.serverTrust
@@ -201,15 +169,16 @@ class Connection: NSObject, URLSessionDelegate
          return
       }
       
-      var result: SecTrustResultType = SecTrustResultType(rawValue: 0)!
+      var result: SecTrustResultType = SecTrustResultType.invalid
       SecTrustEvaluate(serverTrust, &result)
       let isServerTrusted:Bool = (result == SecTrustResultType.unspecified || result == SecTrustResultType.proceed)
       
       if !isServerTrusted,
-         let remoteCert = SecTrustGetCertificateAtIndex(serverTrust, 0)
+         let remoteCert = SecTrustGetCertificateAtIndex(serverTrust, 0),
+         let remoteCertData = SecCertificateCopyData(remoteCert) as Data?
       {
-         if let localCert: SecCertificate = loadCertificate(key: challenge.protectionSpace.host),
-            validateCertificate(localCert: localCert, remoteCert: remoteCert)
+         if let localCertData = try? AppDelegate.keychain.getData(apiUrl),
+            localCertData == remoteCertData
          {
             completionHandler(.useCredential, URLCredential(trust: serverTrust))
             return
@@ -219,7 +188,7 @@ class Connection: NSObject, URLSessionDelegate
          
          //the confirm action taking the inputs
          let confirmAction = UIAlertAction(title: "Accept", style: .default) { (_) in
-            self.storeCertificate(cert: remoteCert, key: challenge.protectionSpace.host)
+            try? AppDelegate.keychain.set(remoteCertData, key: self.apiUrl)
             completionHandler(.useCredential, URLCredential(trust: serverTrust))
          }
          
@@ -237,8 +206,11 @@ class Connection: NSObject, URLSessionDelegate
             {
                certificateDetailsVC.subject = subject as String
                certificateDetailsVC.pubKey = key
-               
-               self.loginView?.navigationController?.pushViewController(certificateDetailsVC, animated: true)
+               certificateDetailsVC.completionHandler = completionHandler
+               certificateDetailsVC.trust = serverTrust
+               certificateDetailsVC.certData = remoteCertData
+               self.loginView?.alert.dismiss(animated: true, completion: nil)
+               self.loginView?.navigationController?.present(certificateDetailsVC, animated: true)
             }
          }
          
@@ -248,15 +220,14 @@ class Connection: NSObject, URLSessionDelegate
          alertController.addAction(showCertificateAction)
          
          //finally presenting the dialog box
-         self.loginView?.present(alertController, animated: true)
+         //self.loginView?.alert = alertController
+         self.loginView?.alert.present(alertController, animated: true)
       }
       else
       {
          completionHandler(isServerTrusted ? .useCredential : .cancelAuthenticationChallenge, nil)
       }
    }
-
-   
    /**
     * Send HTTP request without onFailure closure
     */
