@@ -10,13 +10,12 @@ import UIKit
 
 class PredefinedGraphFolderViewCell: UITableViewCell
 {
-   @IBOutlet weak var folderIcon: UIImageView!
+   @IBOutlet var icon: UIImageView!
    @IBOutlet weak var folderName: UILabel!
    
    override func awakeFromNib()
    {
       super.awakeFromNib()
-      // Initialization code
    }
    
    override func setSelected(_ selected: Bool, animated: Bool)

@@ -36,7 +36,6 @@
 		1160B6C021B53A690078EF27 /* ObjectToolsURLOutputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1160B6BF21B53A690078EF27 /* ObjectToolsURLOutputViewController.swift */; };
 		1161F7B3203EAFE700B9C845 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161F7B2203EAFE700B9C845 /* AppDelegate.swift */; };
 		1161F7B8203EAFE700B9C845 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1161F7B6203EAFE700B9C845 /* Main.storyboard */; };
-		1161F7BA203EAFE700B9C845 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1161F7B9203EAFE700B9C845 /* Assets.xcassets */; };
 		1161F7BD203EAFE700B9C845 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1161F7BB203EAFE700B9C845 /* LaunchScreen.storyboard */; };
 		1161F7C8203EAFE800B9C845 /* NetXMS_Mobile_ConsoleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161F7C7203EAFE800B9C845 /* NetXMS_Mobile_ConsoleTests.swift */; };
 		1161F7D3203EAFE800B9C845 /* NetXMS_Mobile_ConsoleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161F7D2203EAFE800B9C845 /* NetXMS_Mobile_ConsoleUITests.swift */; };
@@ -81,6 +80,8 @@
 		11C4258C22953C2900008308 /* KeychainAccess.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 11C4258522953C0800008308 /* KeychainAccess.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		11C42593229550FD00008308 /* CredentialHistoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C42592229550FD00008308 /* CredentialHistoryCell.swift */; };
 		11C425952296A8BF00008308 /* MenuItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C425942296A8BF00008308 /* MenuItemCell.swift */; };
+		11C4259F2297E11F00008308 /* StatusCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4259E2297E11F00008308 /* StatusCodes.swift */; };
+		11C425A12297EC0500008308 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11C425A02297EC0500008308 /* Assets.xcassets */; };
 		11DDCE6420D2561700CF2BB1 /* ObjectBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DDCE6320D2561700CF2BB1 /* ObjectBrowserViewController.swift */; };
 		11DDCE6620D257ED00CF2BB1 /* ObjectBrowserViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DDCE6520D257ED00CF2BB1 /* ObjectBrowserViewCell.swift */; };
 /* End PBXBuildFile section */
@@ -226,7 +227,6 @@
 		1161F7AF203EAFE700B9C845 /* NetXMS Mobile Console.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "NetXMS Mobile Console.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1161F7B2203EAFE700B9C845 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1161F7B7203EAFE700B9C845 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		1161F7B9203EAFE700B9C845 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1161F7BC203EAFE700B9C845 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1161F7BE203EAFE700B9C845 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1161F7C3203EAFE800B9C845 /* NetXMS Mobile ConsoleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "NetXMS Mobile ConsoleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -273,6 +273,8 @@
 		11C4257E22953C0800008308 /* KeychainAccess.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = KeychainAccess.xcodeproj; path = "KeychainAccess-master/Lib/KeychainAccess.xcodeproj"; sourceTree = "<group>"; };
 		11C42592229550FD00008308 /* CredentialHistoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialHistoryCell.swift; sourceTree = "<group>"; };
 		11C425942296A8BF00008308 /* MenuItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemCell.swift; sourceTree = "<group>"; };
+		11C4259E2297E11F00008308 /* StatusCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusCodes.swift; sourceTree = "<group>"; };
+		11C425A02297EC0500008308 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		11DDCE6320D2561700CF2BB1 /* ObjectBrowserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectBrowserViewController.swift; sourceTree = "<group>"; };
 		11DDCE6520D257ED00CF2BB1 /* ObjectBrowserViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectBrowserViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -444,12 +446,13 @@
 				1161F7E3203EB03F00B9C845 /* Connection.swift */,
 				1137427920A591C500A80679 /* Images */,
 				1161F7B2203EAFE700B9C845 /* AppDelegate.swift */,
+				11C425A02297EC0500008308 /* Assets.xcassets */,
 				1161F7B6203EAFE700B9C845 /* Main.storyboard */,
-				1161F7B9203EAFE700B9C845 /* Assets.xcassets */,
 				1161F7BB203EAFE700B9C845 /* LaunchScreen.storyboard */,
 				1161F7BE203EAFE700B9C845 /* Info.plist */,
 				1137427B20A5920C00A80679 /* AlarmBrowser */,
 				1137427C20A5922A00A80679 /* MainView */,
+				11C4259E2297E11F00008308 /* StatusCodes.swift */,
 			);
 			path = "NetXMS Mobile Console";
 			sourceTree = "<group>";
@@ -727,10 +730,10 @@
 				119DDFE8229290470055D4A4 /* major.png in Resources */,
 				119DDFE4229290470055D4A4 /* Aknowledge.png in Resources */,
 				1161F7BD203EAFE700B9C845 /* LaunchScreen.storyboard in Resources */,
+				11C425A12297EC0500008308 /* Assets.xcassets in Resources */,
 				119DDFF3229290470055D4A4 /* minor.png in Resources */,
 				119DDFE7229290470055D4A4 /* filter.png in Resources */,
 				119DDFEB229290470055D4A4 /* node.png in Resources */,
-				1161F7BA203EAFE700B9C845 /* Assets.xcassets in Resources */,
 				119DDFF2229290470055D4A4 /* critical.png in Resources */,
 				1161F7B8203EAFE700B9C845 /* Main.storyboard in Resources */,
 				119DDFFC229290F80055D4A4 /* PredefinedGraphs.png in Resources */,
@@ -798,6 +801,7 @@
 				11B67998210B269E005C8C4B /* LastValuesViewController.swift in Sources */,
 				1161F7B3203EAFE700B9C845 /* AppDelegate.swift in Sources */,
 				11043454210F3543003DB91A /* LastValuesCell.swift in Sources */,
+				11C4259F2297E11F00008308 /* StatusCodes.swift in Sources */,
 				11283D6B214A759300EF4083 /* TimestampFormatter.swift in Sources */,
 				11C42593229550FD00008308 /* CredentialHistoryCell.swift in Sources */,
 				1192CCBA223FEC3800FB1DE1 /* ObjectToolFolderViewCell.swift in Sources */,

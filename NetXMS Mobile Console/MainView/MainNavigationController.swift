@@ -20,7 +20,7 @@ class MainNavigationController : UINavigationController
       self.navigationBar.layer.shadowOffset = CGSize(width: 0, height: 2)
       self.navigationBar.layer.shadowColor = UIColor(red:0.2, green:0.03, blue:0, alpha:0.3).cgColor
       self.navigationBar.layer.shadowOpacity = 0.8
-      self.navigationBar.layer.shadowRadius = 6
+      self.navigationBar.layer.shadowRadius = 4
     
       self.toolbar.tintColor = UIColor.white
       self.toolbar.barTintColor = UIColor.white
@@ -28,7 +28,7 @@ class MainNavigationController : UINavigationController
       self.toolbar.layer.shadowOffset = CGSize(width: 0, height: 2)
       self.toolbar.layer.shadowColor = UIColor(red:0.2, green:0.03, blue:0, alpha:0.3).cgColor
       self.toolbar.layer.shadowOpacity = 0.8
-      self.toolbar.layer.shadowRadius = 6
+      self.toolbar.layer.shadowRadius = 4
       
       let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
       tap.cancelsTouchesInView = false

@@ -453,6 +453,15 @@ class Connection: NSObject, URLSessionDelegate
       }
    }
    
+   func getTopLevelObjects() -> [AbstractObject]
+   {
+      if let serviceRoot = objectCache[2]
+      {
+         return Array(objectCache.filter { serviceRoot.children.contains($0.value.objectId) }.values)
+      }
+      return []
+   }
+   
    func getFilteredObjects(filter: [ObjectClass]) -> [AbstractObject]
    {
       return Array(objectCache.filter { filter.contains($0.value.objectClass) }.values)

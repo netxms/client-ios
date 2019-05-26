@@ -10,7 +10,7 @@ import UIKit
 
 class PredefinedGraphViewCell: UITableViewCell
 {
-   @IBOutlet weak var graphIcon: UIImageView!
+   @IBOutlet var icon: UIImageView!
    @IBOutlet weak var graphName: UILabel!
    
    override func awakeFromNib()

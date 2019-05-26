@@ -130,16 +130,16 @@ enum ObjectClass: Int
 struct Geolocation
 {
    var accuracy: Int
-   var latitude: Int
-   var longitude: Int
+   var latitude: Double
+   var longitude: Double
    var timestamp: Int
    var type: Int
    
    init(json: [String : Any])
    {
       self.accuracy = json["accuracy"] as? Int ?? 0
-      self.latitude = json["latitude"] as? Int ?? 0
-      self.longitude = json["longitude"] as? Int ?? 0
+      self.latitude = json["latitude"] as? Double ?? 0.0
+      self.longitude = json["longitude"] as? Double ?? 0.0
       self.timestamp = json["timestamp"] as? Int ?? 0
       self.type = json["type"] as? Int ?? 0
    }

@@ -9,6 +9,22 @@
 import UIKit
 import MapKit
 
+extension UIView
+{
+   func roundCorners(corners:UIRectCorner, radius: CGFloat) {
+      
+      DispatchQueue.main.async {
+         let path = UIBezierPath(roundedRect: self.bounds,
+                                 byRoundingCorners: corners,
+                                 cornerRadii: CGSize(width: radius, height: radius))
+         let maskLayer = CAShapeLayer()
+         maskLayer.frame = self.bounds
+         maskLayer.path = path.cgPath
+         self.layer.mask = maskLayer
+      }
+   }
+}
+
 class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
    var object: AbstractObject!
    var alarms = [Alarm]()
@@ -16,28 +32,78 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
    var lastValuesWithActiveThresholds = [DciValue]()
    @IBOutlet weak var alarmTableView: UITableView!
    @IBOutlet weak var lastValuesTableView: UITableView!
-   @IBOutlet weak var comments: UILabel!
    @IBOutlet weak var objectToolsButton: UIButton!
-   @IBOutlet weak var location: MKMapView!
-   @IBOutlet weak var locationShadow: UIView!
    @IBOutlet weak var lastValuesHeight: NSLayoutConstraint!
    @IBOutlet weak var alarmsHeight: NSLayoutConstraint!
+   @IBOutlet var alarmsHeader: UIView!
+   @IBOutlet var alarmsShadow: UIView!
+   @IBOutlet var alarmsStack: UIStackView!
+   @IBOutlet var valuesHeader: UIView!
+   @IBOutlet var valuesShadow: UIView!
+   @IBOutlet var valuesStack: UIStackView!
+   @IBOutlet var location: MKMapView!
+   @IBOutlet var locationShadow: UIView!
+   @IBOutlet var locationLabel: UIView!
+   @IBOutlet var commentsLabel: UIView!
+   @IBOutlet var comments: UILabel!
+   @IBOutlet var commentsShadow: UIView!
+   
+   func centerMapOnLocation(location: CLLocation)
+   {
+      let regionRadius: CLLocationDistance = 1000
+      let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, regionRadius, regionRadius)
+      let pin = MKPointAnnotation()
+      pin.coordinate = location.coordinate
+      self.location.setRegion(coordinateRegion, animated: true)
+      self.location.addAnnotation(pin)
+   }
    
    override func viewDidLoad()
    {
       super.viewDidLoad()
       
-      location.layer.cornerRadius = 4
+      let geoLocation = object.geolocation
+      
+      if geoLocation.longitude != 0 && geoLocation.latitude != 0
+      {
+         let initialLocation = CLLocation(latitude: geoLocation.latitude, longitude: geoLocation.longitude)
+         centerMapOnLocation(location: initialLocation)
+      }
+      
+      lastValuesTableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: lastValuesTableView.frame.size.width, height: 10))
+      alarmTableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: lastValuesTableView.frame.size.width, height: 10))
+      
+      locationLabel.roundCorners(corners: [.topLeft, .topRight], radius: 4)
+      location.roundCorners(corners: [.bottomRight, .bottomLeft], radius: 4)
+      locationShadow.layer.cornerRadius = 4
       locationShadow.layer.shadowColor = UIColor(red:0.03, green:0.08, blue:0.15, alpha:0.15).cgColor
       locationShadow.layer.shadowOpacity = 1
       locationShadow.layer.shadowOffset = CGSize(width: 0, height: 4)
       locationShadow.layer.shadowRadius = 6
       
-      comments.layer.cornerRadius = 4
-      comments.layer.shadowColor = UIColor(red:0.03, green:0.08, blue:0.15, alpha:0.15).cgColor
-      comments.layer.shadowOpacity = 1
-      comments.layer.shadowOffset = CGSize(width: 0, height: 4)
-      comments.layer.shadowRadius = 6
+      commentsLabel.roundCorners(corners: [.topLeft, .topRight], radius: 4)
+      comments.roundCorners(corners: [.bottomRight, .bottomLeft], radius: 4)
+      commentsShadow.layer.cornerRadius = 4
+      commentsShadow.layer.shadowColor = UIColor(red:0.03, green:0.08, blue:0.15, alpha:0.15).cgColor
+      commentsShadow.layer.shadowOpacity = 1
+      commentsShadow.layer.shadowOffset = CGSize(width: 0, height: 4)
+      commentsShadow.layer.shadowRadius = 6
+      
+      alarmsHeader.roundCorners(corners: [.topRight, .topLeft], radius: 4)
+      alarmTableView.roundCorners(corners: [.bottomRight, .bottomLeft], radius: 4)
+      alarmsShadow.layer.cornerRadius = 4
+      alarmsShadow.layer.shadowColor = UIColor(red:0.03, green:0.08, blue:0.15, alpha:0.15).cgColor
+      alarmsShadow.layer.shadowOpacity = 1
+      alarmsShadow.layer.shadowOffset = CGSize(width: 0, height: 4)
+      alarmsShadow.layer.shadowRadius = 6
+      
+      valuesHeader.roundCorners(corners: [.topLeft, .topRight], radius: 4)
+      lastValuesTableView.roundCorners(corners: [.bottomLeft, .bottomRight], radius: 4)
+      valuesShadow.layer.cornerRadius = 4
+      valuesShadow.layer.shadowColor = UIColor(red:0.03, green:0.08, blue:0.15, alpha:0.15).cgColor
+      valuesShadow.layer.shadowOpacity = 1
+      valuesShadow.layer.shadowOffset = CGSize(width: 0, height: 4)
+      valuesShadow.layer.shadowRadius = 6
       
       self.title = Connection.sharedInstance?.resolveObjectName(objectId: object.objectId)
       self.comments.text = object.comments
@@ -69,6 +135,11 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
       }
       
       Connection.sharedInstance?.getLastValues(objectId: object.objectId, onSuccess: onGetLastValuesSuccess)
+   }
+   
+   override func viewDidLayoutSubviews() {
+      super.viewDidLayoutSubviews()
+      commentsLabel.sizeToFit()
    }
    
    func onGetLastValuesSuccess(jsonData: [String : Any]?) -> Void
@@ -279,10 +350,8 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
          navigationController?.pushViewController(alarmBrowserVC, animated: true)
       }
    }
-   
-   @IBAction func onObjectToolsButtonPressed(_ sender: Any)
+   @IBAction func onObjectToolsPressed(_ sender: Any)
    {
-      
       if let objectToolsVC = storyboard?.instantiateViewController(withIdentifier: "ObjectToolsViewController") as? ObjectToolsViewController
       {
          objectToolsVC.objectId = self.object.objectId

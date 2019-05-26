@@ -23,7 +23,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
       self.tableView.delegate = self
       self.tableView.dataSource = self
       
-      self.tableView.setContentOffset(CGPoint(x: 0, y: 20), animated: false)
       super.viewDidLoad()
    }
    
@@ -39,17 +38,17 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
          if indexPath.row == 0
          {
             cell.name.text = "Objects"
-            cell.label.image = #imageLiteral(resourceName: "ObjectBrowser.png")
+            cell.label.image = UIImage(imageLiteralResourceName: "ObjectBrowser")
          }
          else if indexPath.row == 1
          {
             cell.name.text = "Alarms"
-            cell.label.image = #imageLiteral(resourceName: "AlarmBrowser.png")
+            cell.label.image = UIImage(imageLiteralResourceName: "AlarmBrowser")
          }
          else if indexPath.row == 2
          {
             cell.name.text = "Graphs"
-            cell.label.image = #imageLiteral(resourceName: "PredefinedGraphs.png")
+            cell.label.image = UIImage(imageLiteralResourceName: "PredefinedGraphs")
          }
          
          return cell

@@ -30,17 +30,17 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
    
    func getObjects() -> [AbstractObject]
    {
-      let objectList = (Connection.sharedInstance?.getFilteredObjects(filter: [ObjectClass.OBJECT_NODE, ObjectClass.OBJECT_CLUSTER, ObjectClass.OBJECT_CONTAINER]) ?? []).sorted
+      let objectList = (Connection.sharedInstance?.getTopLevelObjects().sorted
       {
          return ($0.objectName.lowercased()) < ($1.objectName.lowercased())
-      }
+      }) ?? []
       
       return objectList.sorted(by: { (o1, o2) -> Bool in
-         if o1.objectClass == ObjectClass.OBJECT_NODE && o2.objectClass != ObjectClass.OBJECT_NODE
+         if (o1.objectClass == ObjectClass.OBJECT_NODE && o2.objectClass != ObjectClass.OBJECT_NODE) || (o1.objectClass == ObjectClass.OBJECT_CLUSTER && o2.objectClass != ObjectClass.OBJECT_CLUSTER)
          {
             return false
          }
-         if o1.objectClass != ObjectClass.OBJECT_NODE && o2.objectClass == ObjectClass.OBJECT_NODE
+         if (o1.objectClass != ObjectClass.OBJECT_NODE && o2.objectClass == ObjectClass.OBJECT_NODE) || (o1.objectClass != ObjectClass.OBJECT_CLUSTER && o2.objectClass == ObjectClass.OBJECT_CLUSTER)
          {
             return true
          }
@@ -129,11 +129,11 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
       switch self.objects[indexPath.row].objectClass
       {
       case ObjectClass.OBJECT_NODE:
-         cell.typeImage.image = #imageLiteral(resourceName: "node.png")
+         cell.typeImage.image = UIImage(imageLiteralResourceName: "node")
       case ObjectClass.OBJECT_CLUSTER:
-         cell.typeImage.image = #imageLiteral(resourceName: "cluster.png")
+         cell.typeImage.image = UIImage(imageLiteralResourceName: "cluster")
       case ObjectClass.OBJECT_CONTAINER:
-         cell.typeImage.image = #imageLiteral(resourceName: "container.png")
+         cell.typeImage.image = UIImage(imageLiteralResourceName: "rack")
       default:
          break
       }

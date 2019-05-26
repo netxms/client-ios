@@ -21,6 +21,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UITableViewDel
    @IBOutlet weak var keyboardViewHeight: NSLayoutConstraint!
    @IBOutlet var historyTable: UITableView!
    @IBOutlet var historyTableHeight: NSLayoutConstraint!
+   @IBOutlet var errorLabel: UILabel!
    var credentialHistory: [String]!
    var filteredCredentialHistory: [String]!
    var alert: UIAlertController!
@@ -269,8 +270,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UITableViewDel
                Connection.sharedInstance?.getPredefinedGraphs()
                Connection.sharedInstance?.startNotificationHandler()
                self.storeCredentialsInKeyChain()
-               self.stopLoading(completition: nil)
-               self.presentMainNavigationController()
+               self.stopLoading(completition: self.presentMainNavigationController)
          }
       }
    }
@@ -284,15 +284,15 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UITableViewDel
       if let response = data as? HTTPURLResponse
       {
          DispatchQueue.main.async
-            {
-               self.createErrorDialog(message: "Login failed with the code: \(response.statusCode)")
+         {
+            self.errorLabel.text = "Error \(response.statusCode): " + resolveErrorStatusCode(code: response.statusCode)
          }
       }
       else if let response = data as? String
       {
          DispatchQueue.main.async
-            {
-               self.createErrorDialog(message: response)
+         {
+            self.errorLabel.text = response
          }
       }
    }
@@ -310,7 +310,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UITableViewDel
    
    func stopLoading(completition: (() -> Void)?)
    {
-      alert.dismiss(animated: true, completion: completition)
+      if alert.isBeingDismissed
+      {
+         presentMainNavigationController()
+      }
+      else
+      {
+         alert.dismiss(animated: true, completion: completition)
+      }
    }
    
    func clearPersistantData()
@@ -328,29 +335,24 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UITableViewDel
       self.present(mainNavigationController, animated: true, completion: nil)
    }
    
-   func createErrorDialog(message: String)
-   {
-      //Creating UIAlertController and
-      //Setting title and message for the alert dialog
-      let alertController = UIAlertController(title: "Login failed", message: message, preferredStyle: .alert)
-
-      //the cancel action doing nothing
-      let cancelAction = UIAlertAction(title: "OK", style: .cancel) { (_) in }
-      alertController.addAction(cancelAction)
-
-      //finally presenting the dialog box
-      self.present(alertController, animated: true, completion: nil)
-   }
-   
    func storeCredentialsInKeyChain()
    {
       if let apiUrl = self.apiUrl.text,
          let login = self.login.text,
          let pass = self.password.text
       {
-         var credentialHistorySet = Set<String>(credentialHistory)
-         credentialHistorySet.insert(login + "@" + apiUrl)
-         credentialHistory = Array(credentialHistorySet)
+         let credentials = login + "@" + apiUrl
+         let credentialHistorySet = NSMutableOrderedSet(array: credentialHistory)
+         if credentialHistorySet.contains(credentials)
+         {
+            let index = credentialHistorySet.index(of: credentials)
+            credentialHistorySet.moveObjects(at: [index], to: 0)
+         }
+         else
+         {
+            credentialHistorySet.add(credentials)
+         }
+         credentialHistory = credentialHistorySet.array as? [String]
          UserDefaults.standard.set(credentialHistory, forKey: "NetXMSApiURLs")
          KeychainWrapper.standard.set(pass, forKey: login)
       }
