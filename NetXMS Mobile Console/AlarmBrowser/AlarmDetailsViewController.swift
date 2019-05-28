@@ -24,13 +24,15 @@ class AlarmDetailsViewController : UIViewController
    let blackView = UIView()
    @IBOutlet weak var buttonStack: UIStackView!
    @IBOutlet weak var contentView: UIView!
+   var buttonStackFrame: CGRect!
+   var menuOpen = false
    
    override func viewDidLoad()
    {
       super.viewDidLoad()
       
       objectName.text = Connection.sharedInstance?.resolveObjectName(objectId: alarm.sourceObjectId)
-      self.title = objectName.text
+      self.title = "Alarm Details"
       createdOn.text = DateFormatter.localizedString(from: Date(timeIntervalSince1970: alarm.creationTime), dateStyle: DateFormatter.Style.short, timeStyle: DateFormatter.Style.short)
       message.text = alarm.message
 
@@ -76,36 +78,44 @@ class AlarmDetailsViewController : UIViewController
       
       let actionsBarButtonItem = UIBarButtonItem(title: "Actions", style: .plain, target: self, action: #selector(openMenu))
       self.navigationItem.rightBarButtonItem = actionsBarButtonItem
+      self.buttonStackFrame = self.buttonStack.frame
       self.buttonStack.isHidden = true
    }
    
    @objc func openMenu()
    {
-      self.buttonStack.isHidden = false
-      blackView.backgroundColor = UIColor(white: 0, alpha: 0.5)
-      
-      blackView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleDismiss)))
-      
-      contentView.addSubview(blackView)
-      //view.addSubview(collectionView)
-      let height: CGFloat = self.buttonStack.frame.height + 16
-      let y = self.view.frame.height - height
-      buttonStack.frame = CGRect(x: 16, y: self.view.frame.height, width: self.view.frame.width, height: height)
-      
-      blackView.frame = view.frame
-      blackView.alpha = 0
-      
-      UIView.animate(withDuration: 0.5, animations: {
-         self.blackView.alpha = 1
-         self.buttonStack.frame = CGRect(x: 16, y: y, width: self.view.frame.width, height: self.view.frame.height)
-         })
+      if !menuOpen
+      {
+         menuOpen = true
+         
+         self.buttonStack.isHidden = false
+         blackView.backgroundColor = UIColor(white: 0, alpha: 0.5)
+         
+         blackView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleDismiss)))
+         
+         contentView.addSubview(blackView)
+         self.buttonStack.frame = self.buttonStackFrame
+         let height: CGFloat = self.buttonStack.frame.height + 16
+         let y = self.view.frame.height - height
+         buttonStack.frame = CGRect(x: 16, y: self.view.frame.height, width: self.view.frame.width, height: height)
+         
+         blackView.frame = view.frame
+         blackView.alpha = 0
+         
+         UIView.animate(withDuration: 0.5, animations: {
+            self.blackView.alpha = 1
+            self.buttonStack.frame = CGRect(x: 16, y: y, width: self.view.frame.width, height: self.view.frame.height)
+            })
+      }
    }
    
    @objc func handleDismiss()
    {
-      UIView.animate(withDuration: 0.5, animations: {
+      UIView.animate(withDuration: 0.5, animations:
+      {
          self.blackView.alpha = 0
          self.buttonStack.frame = CGRect(x: 16, y: self.view.frame.height, width: self.buttonStack.frame.width, height: self.buttonStack.frame.height)
+         self.menuOpen = false
       })
    }
    

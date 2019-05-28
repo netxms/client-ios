@@ -119,11 +119,15 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
       {
          cell.buttonWidth.constant = CGFloat(0)
          cell.nameTrailing.constant = CGFloat(16)
+         cell.nextImage.isHidden = true
+      }
+      else if self.objects[indexPath.row].objectClass == ObjectClass.OBJECT_CLUSTER
+      {
+         cell.buttonWidth.constant = CGFloat(70)
       }
       else
       {
-         cell.buttonWidth.constant = CGFloat(50)
-         cell.nameTrailing.constant = CGFloat(42)
+         cell.buttonWidth.constant = CGFloat(320)
       }
       
       switch self.objects[indexPath.row].objectClass
@@ -165,10 +169,13 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
    
    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
    {
-      if let objectDetailsVC = storyboard?.instantiateViewController(withIdentifier: "ObjectDetailsViewController")
+      if self.objects[indexPath.row].objectClass == ObjectClass.OBJECT_NODE || self.objects[indexPath.row].objectClass == ObjectClass.OBJECT_CLUSTER
       {
-         (objectDetailsVC as? ObjectDetailsViewController)?.object = self.objects[indexPath.row]
-         navigationController?.pushViewController(objectDetailsVC, animated: true)
+         if let objectDetailsVC = storyboard?.instantiateViewController(withIdentifier: "ObjectDetailsViewController")
+         {
+            (objectDetailsVC as? ObjectDetailsViewController)?.object = self.objects[indexPath.row]
+            navigationController?.pushViewController(objectDetailsVC, animated: true)
+         }
       }
    }
 }

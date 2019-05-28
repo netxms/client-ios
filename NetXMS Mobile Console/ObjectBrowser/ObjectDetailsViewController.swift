@@ -9,11 +9,31 @@
 import UIKit
 import MapKit
 
+extension String{
+   // calculate label size to show
+   func size(for label:UILabel) -> CGSize{
+      let alabel = label.clone()
+      alabel.text = self
+      alabel.sizeToFit()
+      
+      return alabel.bounds.size
+   }
+}
+
+extension UILabel{
+   // clone UILabel object
+   func clone() -> UILabel{
+      let data = NSKeyedArchiver.archivedData(withRootObject: self)
+      return NSKeyedUnarchiver.unarchiveObject(with: data) as! UILabel
+   }
+}
+
 extension UIView
 {
-   func roundCorners(corners:UIRectCorner, radius: CGFloat) {
-      
-      DispatchQueue.main.async {
+   func roundCorners(corners:UIRectCorner, radius: CGFloat)
+   {
+      DispatchQueue.main.async
+      {
          let path = UIBezierPath(roundedRect: self.bounds,
                                  byRoundingCorners: corners,
                                  cornerRadii: CGSize(width: radius, height: radius))
@@ -47,6 +67,8 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
    @IBOutlet var commentsLabel: UIView!
    @IBOutlet var comments: UILabel!
    @IBOutlet var commentsShadow: UIView!
+   @IBOutlet var commentsHeight: NSLayoutConstraint!
+   @IBOutlet var commentsView: UIView!
    
    func centerMapOnLocation(location: CLLocation)
    {
@@ -82,7 +104,7 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
       locationShadow.layer.shadowRadius = 6
       
       commentsLabel.roundCorners(corners: [.topLeft, .topRight], radius: 4)
-      comments.roundCorners(corners: [.bottomRight, .bottomLeft], radius: 4)
+      commentsView.roundCorners(corners: [.bottomRight, .bottomLeft], radius: 4)
       commentsShadow.layer.cornerRadius = 4
       commentsShadow.layer.shadowColor = UIColor(red:0.03, green:0.08, blue:0.15, alpha:0.15).cgColor
       commentsShadow.layer.shadowOpacity = 1
@@ -105,9 +127,15 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
       valuesShadow.layer.shadowOffset = CGSize(width: 0, height: 4)
       valuesShadow.layer.shadowRadius = 6
       
+      
       self.title = Connection.sharedInstance?.resolveObjectName(objectId: object.objectId)
+      
+      let height = object.comments.size(for: self.comments).height
+      self.commentsHeight.constant = height > 0 ? (height + 16) : 0
       self.comments.text = object.comments
-      let sortedAlarms = (Connection.sharedInstance?.getSortedAlarms())!
+      
+      let sortedAlarms =
+         (Connection.sharedInstance?.getSortedAlarms())!
       var i = 0
       for alarm in sortedAlarms
       {
@@ -139,7 +167,6 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
    
    override func viewDidLayoutSubviews() {
       super.viewDidLayoutSubviews()
-      commentsLabel.sizeToFit()
    }
    
    func onGetLastValuesSuccess(jsonData: [String : Any]?) -> Void
