@@ -31,6 +31,12 @@ struct RequestData
    }
 }
 
+extension Notification.Name
+{
+   static let alarmsChanged = Notification.Name("alarmsChanged")
+   static let objectChanged = Notification.Name("objectChanged")
+}
+
 /**
  * Connection handler class
  */
@@ -50,9 +56,6 @@ class Connection: NSObject, URLSessionDelegate
    var session: Session?
    
    // Views
-   var alarmBrowser: AlarmBrowserViewController?
-   var objectBrowser: ObjectBrowserViewController?
-   var predefinedGraphsBrowser: PredefinedGraphsViewController?
    var loginView: LoginViewController?
    
    /**
@@ -260,10 +263,7 @@ class Connection: NSObject, URLSessionDelegate
             let alarm = Alarm(json: a)
             alarmCache.updateValue(alarm, forKey: alarm.id)
          }
-         DispatchQueue.main.async
-         {
-               self.alarmBrowser?.refresh()
-         }
+         NotificationCenter.default.post(name: .alarmsChanged, object: nil)
       }
    }
    
@@ -321,10 +321,7 @@ class Connection: NSObject, URLSessionDelegate
                if let alarm = n.object as? Alarm
                {
                   self.alarmCache.updateValue(alarm, forKey: alarm.id)
-                  DispatchQueue.main.async
-                  {
-                     self.alarmBrowser?.refresh()
-                  }
+                  NotificationCenter.default.post(name: .alarmsChanged, object: nil)
                }
             case NotificationCode.MULTIPLE_ALARMS_TERMINATED:
                if let data = n.object as? BulkAlarmStateChangeData
@@ -333,10 +330,7 @@ class Connection: NSObject, URLSessionDelegate
                   {
                      self.alarmCache.removeValue(forKey: id)
                   }
-                  DispatchQueue.main.async
-                  {
-                     self.alarmBrowser?.refresh()
-                  }
+                  NotificationCenter.default.post(name: .alarmsChanged, object: nil)
                }
             case NotificationCode.MULTIPLE_ALARMS_RESOLVED:
                if let data = n.object as? BulkAlarmStateChangeData
@@ -348,26 +342,17 @@ class Connection: NSObject, URLSessionDelegate
                         alarm.state = Alarm.STATE_RESOLVED
                      }
                   }
-                  DispatchQueue.main.async
-                  {
-                     self.alarmBrowser?.refresh()
-                  }
+                  NotificationCenter.default.post(name: .alarmsChanged, object: nil)
                }
             case NotificationCode.OBJECT_CHANGED:
                if let object = n.object as? AbstractObject
                {
                   self.objectCache.updateValue(object, forKey: object.objectId)
-                  DispatchQueue.main.async
-                  {
-                     self.objectBrowser?.refresh()
-                  }
+                  NotificationCenter.default.post(name: .alarmsChanged, object: nil)
                }
             case NotificationCode.OBJECT_DELETED:
                self.objectCache.removeValue(forKey: n.subCode)
-               DispatchQueue.main.async
-               {
-                  self.objectBrowser?.refresh()
-               }
+               NotificationCenter.default.post(name: .alarmsChanged, object: nil)
             default:
                break
             }
@@ -446,10 +431,7 @@ class Connection: NSObject, URLSessionDelegate
             }
             objectCache.updateValue(object, forKey: object.objectId)
          }
-         DispatchQueue.main.async
-         {
-            self.objectBrowser?.refresh()
-         }
+         NotificationCenter.default.post(name: .objectChanged, object: nil)
       }
    }
    

@@ -76,6 +76,15 @@ class AlarmDetailsViewController : UIViewController
          resolveButton.isHidden = true
       }
       
+      for button in [acknowledgeButton, stickyAcknowledgeButton, resolveButton, terminateButton, lastValuesButton]
+      {
+         button?.layer.cornerRadius = 4
+         button?.layer.shadowColor = UIColor(red:0.2, green:0.03, blue:0, alpha:0.3).cgColor
+         button?.layer.shadowOpacity = 1
+         button?.layer.shadowOffset = CGSize(width: 0, height: 4)
+         button?.layer.shadowRadius = 6
+      }
+      
       let actionsBarButtonItem = UIBarButtonItem(title: "Actions", style: .plain, target: self, action: #selector(openMenu))
       self.navigationItem.rightBarButtonItem = actionsBarButtonItem
       self.buttonStackFrame = self.buttonStack.frame
@@ -117,15 +126,6 @@ class AlarmDetailsViewController : UIViewController
          self.buttonStack.frame = CGRect(x: 16, y: self.view.frame.height, width: self.buttonStack.frame.width, height: self.buttonStack.frame.height)
          self.menuOpen = false
       })
-   }
-   
-   override func viewDidLayoutSubviews()
-   {
-      let buttonList = [acknowledgeButton, stickyAcknowledgeButton, resolveButton, terminateButton, lastValuesButton]
-      for button in buttonList
-      {
-         MainNavigationController.setButtonStyle(button: button!)
-      }
    }
    
    @IBAction func acknowledgePressed(_ sender: Any)

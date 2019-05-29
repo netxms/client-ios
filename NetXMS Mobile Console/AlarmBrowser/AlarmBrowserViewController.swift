@@ -29,7 +29,6 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressOnCell))
       self.view.addGestureRecognizer(longPressRecognizer)
       
-      Connection.sharedInstance?.alarmBrowser = self
       self.searchBar.delegate = self
       let searchBarHeight = searchBar.frame.size.height
       tableView.setContentOffset(CGPoint(x: 0, y: searchBarHeight), animated: false)
@@ -58,11 +57,13 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       {
          filteredAlarms = alarms
       }
+      
+      NotificationCenter.default.addObserver(self, selector: #selector(onAlarmChanged), name: .alarmsChanged, object: nil)
    }
    
-   override func viewDidDisappear(_ animated: Bool)
+   @objc func onAlarmChanged()
    {
-      // implement pop from list
+      refresh()
    }
    
    func refresh()

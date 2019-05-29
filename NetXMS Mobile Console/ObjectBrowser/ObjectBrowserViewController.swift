@@ -17,30 +17,37 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
    {
       super.viewDidLoad()
       
-      Connection.sharedInstance?.objectBrowser = self
       if objects == nil
       {
-         objects = getObjects()
+         objects = Connection.sharedInstance?.getTopLevelObjects()
          title = "Root"
       }
+      objects = sortObjects(objects: objects)
       self.searchBar.delegate = self
       let searchBarHeight = searchBar.frame.size.height
       tableView.setContentOffset(CGPoint(x: 0, y: searchBarHeight), animated: false)
+      
+      NotificationCenter.default.addObserver(self, selector: #selector(onObjectChange), name: .objectChanged, object: nil)
    }
    
-   func getObjects() -> [AbstractObject]
+   @objc func onObjectChange()
    {
-      let objectList = (Connection.sharedInstance?.getTopLevelObjects().sorted
+      refresh()
+   }
+   
+   func sortObjects(objects: [AbstractObject]) -> [AbstractObject]
+   {
+      let objectList = (objects.sorted
       {
          return ($0.objectName.lowercased()) < ($1.objectName.lowercased())
-      }) ?? []
+      })
       
       return objectList.sorted(by: { (o1, o2) -> Bool in
-         if (o1.objectClass == ObjectClass.OBJECT_NODE && o2.objectClass != ObjectClass.OBJECT_NODE) || (o1.objectClass == ObjectClass.OBJECT_CLUSTER && o2.objectClass != ObjectClass.OBJECT_CLUSTER)
+         if (o1.objectClass == ObjectClass.OBJECT_NODE && o2.objectClass != ObjectClass.OBJECT_NODE) || (o1.objectClass == ObjectClass.OBJECT_CLUSTER && o2.objectClass != ObjectClass.OBJECT_CLUSTER) || (o1.objectClass == ObjectClass.OBJECT_RACK && o2.objectClass != ObjectClass.OBJECT_RACK)
          {
             return false
          }
-         if (o1.objectClass != ObjectClass.OBJECT_NODE && o2.objectClass == ObjectClass.OBJECT_NODE) || (o1.objectClass != ObjectClass.OBJECT_CLUSTER && o2.objectClass == ObjectClass.OBJECT_CLUSTER)
+         if (o1.objectClass != ObjectClass.OBJECT_NODE && o2.objectClass == ObjectClass.OBJECT_NODE) || (o1.objectClass != ObjectClass.OBJECT_CLUSTER && o2.objectClass == ObjectClass.OBJECT_CLUSTER) || (o1.objectClass != ObjectClass.OBJECT_RACK && o2.objectClass == ObjectClass.OBJECT_RACK)
          {
             return true
          }
@@ -50,7 +57,7 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
    
    func refresh()
    {
-      objects = getObjects()
+      objects = sortObjects(objects: Connection.sharedInstance?.getTopLevelObjects() ?? [])
       self.tableView.reloadData()
    }
    
@@ -63,7 +70,7 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
       }
       else
       {
-         objects = getObjects().filter
+         objects = objects.filter
          {
             (object) -> Bool in
             if searchText.hasPrefix(">") || searchText.hasPrefix("#") || searchText.hasPrefix("/") || searchText.hasPrefix("@")
@@ -121,13 +128,9 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
          cell.nameTrailing.constant = CGFloat(16)
          cell.nextImage.isHidden = true
       }
-      else if self.objects[indexPath.row].objectClass == ObjectClass.OBJECT_CLUSTER
-      {
-         cell.buttonWidth.constant = CGFloat(70)
-      }
       else
       {
-         cell.buttonWidth.constant = CGFloat(320)
+         cell.buttonWidth.constant = CGFloat(100)
       }
       
       switch self.objects[indexPath.row].objectClass
@@ -137,6 +140,8 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
       case ObjectClass.OBJECT_CLUSTER:
          cell.typeImage.image = UIImage(imageLiteralResourceName: "cluster")
       case ObjectClass.OBJECT_CONTAINER:
+         cell.typeImage.image = UIImage(imageLiteralResourceName: "container")
+      case ObjectClass.OBJECT_RACK:
          cell.typeImage.image = UIImage(imageLiteralResourceName: "rack")
       default:
          break
@@ -169,13 +174,10 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
    
    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
    {
-      if self.objects[indexPath.row].objectClass == ObjectClass.OBJECT_NODE || self.objects[indexPath.row].objectClass == ObjectClass.OBJECT_CLUSTER
+      if let objectDetailsVC = storyboard?.instantiateViewController(withIdentifier: "ObjectDetailsViewController")
       {
-         if let objectDetailsVC = storyboard?.instantiateViewController(withIdentifier: "ObjectDetailsViewController")
-         {
-            (objectDetailsVC as? ObjectDetailsViewController)?.object = self.objects[indexPath.row]
-            navigationController?.pushViewController(objectDetailsVC, animated: true)
-         }
+         (objectDetailsVC as? ObjectDetailsViewController)?.object = self.objects[indexPath.row]
+         navigationController?.pushViewController(objectDetailsVC, animated: true)
       }
    }
 }

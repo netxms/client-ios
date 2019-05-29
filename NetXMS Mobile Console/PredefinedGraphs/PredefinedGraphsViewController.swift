@@ -18,7 +18,6 @@ class PredefinedGraphsViewController: UITableViewController, UISearchBarDelegate
    {
       super.viewDidLoad()
       
-      Connection.sharedInstance?.predefinedGraphsBrowser = self
       if self.root == nil,
       let root = Connection.sharedInstance?.predefinedGraphRoot
       {

@@ -45,15 +45,16 @@ extension UIView
    }
 }
 
-class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate
+{
    var object: AbstractObject!
    var alarms = [Alarm]()
    var lastValues = [DciValue]()
    var lastValuesWithActiveThresholds = [DciValue]()
-   @IBOutlet weak var alarmTableView: UITableView!
-   @IBOutlet weak var lastValuesTableView: UITableView!
+   @IBOutlet var lastValuesTable: UITableView!
+   @IBOutlet var alarmsTable: UITableView!
    @IBOutlet weak var objectToolsButton: UIButton!
-   @IBOutlet weak var lastValuesHeight: NSLayoutConstraint!
+   @IBOutlet var lastValuesHeight: NSLayoutConstraint!
    @IBOutlet weak var alarmsHeight: NSLayoutConstraint!
    @IBOutlet var alarmsHeader: UIView!
    @IBOutlet var alarmsShadow: UIView!
@@ -69,6 +70,11 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
    @IBOutlet var commentsShadow: UIView!
    @IBOutlet var commentsHeight: NSLayoutConstraint!
    @IBOutlet var commentsView: UIView!
+   @IBOutlet var commentsLabelHeight: NSLayoutConstraint!
+   @IBOutlet var locationHeight: NSLayoutConstraint!
+   @IBOutlet var locationLabelHeight: NSLayoutConstraint!
+   @IBOutlet var commentsStackBottom: NSLayoutConstraint!
+   @IBOutlet var commentsStackTop: NSLayoutConstraint!
    
    func centerMapOnLocation(location: CLLocation)
    {
@@ -78,11 +84,31 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
       pin.coordinate = location.coordinate
       self.location.setRegion(coordinateRegion, animated: true)
       self.location.addAnnotation(pin)
+      let region = MKCoordinateRegionMakeWithDistance(location.coordinate, CLLocationDistance(exactly: 200)!, CLLocationDistance(exactly: 200)!)
+      self.location.setRegion(self.location.regionThatFits(region), animated: true)
+   }
+   
+   @objc func locationTapped()
+   {
+      location.isScrollEnabled = true
+      location.isZoomEnabled = true
+   }
+   
+   @objc func mainTapped()
+   {
+      location.isScrollEnabled = false
+      location.isZoomEnabled = false
    }
    
    override func viewDidLoad()
    {
       super.viewDidLoad()
+      
+      let locationTap = UITapGestureRecognizer(target: self, action: #selector(locationTapped))
+      location.addGestureRecognizer(locationTap)
+      
+      let mainTap = UITapGestureRecognizer(target: self, action: #selector(mainTapped))
+      self.view.addGestureRecognizer(mainTap)
       
       let geoLocation = object.geolocation
       
@@ -90,10 +116,19 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
       {
          let initialLocation = CLLocation(latitude: geoLocation.latitude, longitude: geoLocation.longitude)
          centerMapOnLocation(location: initialLocation)
+         location.isScrollEnabled = false
+         location.isZoomEnabled = false
+      }
+      else
+      {
+         self.locationHeight.constant = 0
+         self.locationLabelHeight.constant = 0
+         self.commentsStackTop.constant = 0
       }
       
-      lastValuesTableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: lastValuesTableView.frame.size.width, height: 10))
-      alarmTableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: lastValuesTableView.frame.size.width, height: 10))
+      
+      lastValuesTable.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: lastValuesTable.frame.size.width, height: 10))
+      alarmsTable.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: alarmsTable.frame.size.width, height: 10))
       
       locationLabel.roundCorners(corners: [.topLeft, .topRight], radius: 4)
       location.roundCorners(corners: [.bottomRight, .bottomLeft], radius: 4)
@@ -112,7 +147,7 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
       commentsShadow.layer.shadowRadius = 6
       
       alarmsHeader.roundCorners(corners: [.topRight, .topLeft], radius: 4)
-      alarmTableView.roundCorners(corners: [.bottomRight, .bottomLeft], radius: 4)
+      alarmsTable.roundCorners(corners: [.bottomRight, .bottomLeft], radius: 4)
       alarmsShadow.layer.cornerRadius = 4
       alarmsShadow.layer.shadowColor = UIColor(red:0.03, green:0.08, blue:0.15, alpha:0.15).cgColor
       alarmsShadow.layer.shadowOpacity = 1
@@ -120,22 +155,42 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
       alarmsShadow.layer.shadowRadius = 6
       
       valuesHeader.roundCorners(corners: [.topLeft, .topRight], radius: 4)
-      lastValuesTableView.roundCorners(corners: [.bottomLeft, .bottomRight], radius: 4)
+      lastValuesTable.roundCorners(corners: [.bottomLeft, .bottomRight], radius: 4)
       valuesShadow.layer.cornerRadius = 4
       valuesShadow.layer.shadowColor = UIColor(red:0.03, green:0.08, blue:0.15, alpha:0.15).cgColor
       valuesShadow.layer.shadowOpacity = 1
       valuesShadow.layer.shadowOffset = CGSize(width: 0, height: 4)
       valuesShadow.layer.shadowRadius = 6
       
+      self.alarmsTable.delegate = self
+      self.alarmsTable.dataSource = self
+      self.lastValuesTable.delegate = self
+      self.lastValuesTable.dataSource = self
       
       self.title = Connection.sharedInstance?.resolveObjectName(objectId: object.objectId)
       
-      let height = object.comments.size(for: self.comments).height
-      self.commentsHeight.constant = height > 0 ? (height + 16) : 0
-      self.comments.text = object.comments
+      if !object.comments.isEmpty
+      {
+         let height = object.comments.size(for: self.comments).height
+         self.commentsHeight.constant = height > 0 ? (height + 16) : 0
+         self.comments.text = object.comments
+      }
+      else
+      {
+         commentsLabelHeight.constant = 0
+         self.commentsStackBottom.constant = 0
+      }
       
-      let sortedAlarms =
-         (Connection.sharedInstance?.getSortedAlarms())!
+      populateAlarmTable()
+      
+      Connection.sharedInstance?.getLastValues(objectId: object.objectId, onSuccess: onGetLastValuesSuccess)
+      NotificationCenter.default.addObserver(self, selector: #selector(onAlarmChanged), name: .alarmsChanged, object: nil)
+   }
+   
+   func populateAlarmTable()
+   {
+      let sortedAlarms = (Connection.sharedInstance?.getSortedAlarms())!
+      alarms.removeAll()
       var i = 0
       for alarm in sortedAlarms
       {
@@ -159,14 +214,14 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
       
       if self.alarms.count > 0
       {
-        alarmsHeight.constant = 70.0 * CGFloat(self.alarms.count)
+         alarmsHeight.constant = 70.0 * CGFloat(self.alarms.count)
       }
-      
-      Connection.sharedInstance?.getLastValues(objectId: object.objectId, onSuccess: onGetLastValuesSuccess)
    }
    
-   override func viewDidLayoutSubviews() {
-      super.viewDidLayoutSubviews()
+   @objc func onAlarmChanged()
+   {
+      populateAlarmTable()
+      self.alarmsTable.reloadData()
    }
    
    func onGetLastValuesSuccess(jsonData: [String : Any]?) -> Void
@@ -208,20 +263,14 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
          {
             self.lastValuesHeight.constant = 70.0 * CGFloat(self.lastValuesWithActiveThresholds.count)
             self.view.updateConstraints()
-            self.lastValuesTableView.reloadData()
+            self.lastValuesTable.reloadData()
          }
       }
    }
    
-   override func didReceiveMemoryWarning()
-   {
-      super.didReceiveMemoryWarning()
-      // Dispose of any resources that can be recreated.
-   }
-   
    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
    {
-      if tableView == self.alarmTableView
+      if tableView == self.alarmsTable
       {
          return (alarms.count > 0 ? alarms.count : 1)
       }
@@ -233,7 +282,7 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
    
    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
    {
-      if tableView == self.alarmTableView && self.alarms.count > 0
+      if tableView == self.alarmsTable && self.alarms.count > 0
       {
          let cell: ObjectDetailsAlarmCell = tableView.dequeueReusableCell(withIdentifier: "ObjectDetailsAlarmCell", for: indexPath) as! ObjectDetailsAlarmCell
          
@@ -243,76 +292,72 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
          
          switch alarms[indexPath.row].currentSeverity
          {
-            case Severity.NORMAL:
-               cell.severityLabel.text = "Normal"
-               cell.severityLabel.textColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
-            case Severity.WARNING:
-               cell.severityLabel.text = "Warning"
-               cell.severityLabel.textColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
-            case Severity.MINOR:
-               cell.severityLabel.text = "Minor"
-               cell.severityLabel.textColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
-            case Severity.MAJOR:
-               cell.severityLabel.text = "Major"
-               cell.severityLabel.textColor = UIColor(red: 255, green: 0, blue: 0, alpha: 100)
-            case Severity.CRITICAL:
-               cell.severityLabel.text = "Critical"
-               cell.severityLabel.textColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
-            case Severity.UNKNOWN:
-               cell.severityLabel.text = "Unknown"
-               cell.severityLabel.textColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
-            case Severity.TERMINATE:
-               cell.severityLabel.text = "Terminate"
-               cell.severityLabel.textColor = UIColor(red: 139, green: 0, blue: 0, alpha: 100)
-            case Severity.RESOLVE:
-               cell.severityLabel.text = "Resolve"
-               cell.severityLabel.textColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
+         case Severity.NORMAL:
+            cell.severityLabel.text = "Normal"
+            cell.severityLabel.textColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
+         case Severity.WARNING:
+            cell.severityLabel.text = "Warning"
+            cell.severityLabel.textColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
+         case Severity.MINOR:
+            cell.severityLabel.text = "Minor"
+            cell.severityLabel.textColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
+         case Severity.MAJOR:
+            cell.severityLabel.text = "Major"
+            cell.severityLabel.textColor = UIColor(red: 255, green: 0, blue: 0, alpha: 100)
+         case Severity.CRITICAL:
+            cell.severityLabel.text = "Critical"
+            cell.severityLabel.textColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
+         case Severity.UNKNOWN:
+            cell.severityLabel.text = "Unknown"
+            cell.severityLabel.textColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
+         case Severity.TERMINATE:
+            cell.severityLabel.text = "Terminate"
+            cell.severityLabel.textColor = UIColor(red: 139, green: 0, blue: 0, alpha: 100)
+         case Severity.RESOLVE:
+            cell.severityLabel.text = "Resolve"
+            cell.severityLabel.textColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
          }
          
          return cell
       }
-      else if tableView == self.lastValuesTableView && self.lastValuesWithActiveThresholds.count > 0
+      else if tableView == self.lastValuesTable && self.lastValuesWithActiveThresholds.count > 0
       {
-         let cell: ObjectDetailsLastValuesCell = tableView.dequeueReusableCell(withIdentifier: "ObjectBrowserLastValuesCell", for: indexPath) as! ObjectDetailsLastValuesCell
+         let cell: ObjectDetailsLastValuesCell = tableView.dequeueReusableCell(withIdentifier: "ObjectDetailsLastValuesCell", for: indexPath) as! ObjectDetailsLastValuesCell
+
+         cell.name.text = lastValuesWithActiveThresholds[indexPath.row].description
+         cell.value.text = lastValuesWithActiveThresholds[indexPath.row].value.description
+         cell.timestamp.text = DateFormatter.localizedString(from: Date(timeIntervalSince1970: lastValuesWithActiveThresholds[indexPath.row].timestamp), dateStyle: DateFormatter.Style.short, timeStyle: DateFormatter.Style.short)
          
-         if lastValues.count > 0
+         if let activeThreshold = lastValuesWithActiveThresholds[indexPath.row].activeThreshold
          {
-            cell.name.text = lastValuesWithActiveThresholds[indexPath.row].description
-            cell.value.text = lastValuesWithActiveThresholds[indexPath.row].value.description
-            cell.timestamp.text = DateFormatter.localizedString(from: Date(timeIntervalSince1970: lastValuesWithActiveThresholds[indexPath.row].timestamp), dateStyle: DateFormatter.Style.short, timeStyle: DateFormatter.Style.short)
-            
-            if let activeThreshold = lastValuesWithActiveThresholds[indexPath.row].activeThreshold
+            switch activeThreshold.currentSeverity
             {
-               switch activeThreshold.currentSeverity
-               {
-               case Severity.NORMAL:
-                  cell.statusLabel.text = "Normal"
-                  cell.statusLabel.textColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
-               case Severity.WARNING:
-                  cell.statusLabel.text = "Warning"
-                  cell.statusLabel.textColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
-               case Severity.MINOR:
-                  cell.statusLabel.text = "Minor"
-                  cell.statusLabel.textColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
-               case Severity.MAJOR:
-                  cell.statusLabel.text = "Major"
-                  cell.statusLabel.textColor = UIColor(red: 255, green: 0, blue: 0, alpha: 100)
-               case Severity.CRITICAL:
-                  cell.statusLabel.text = "Critical"
-                  cell.statusLabel.textColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
-               case Severity.UNKNOWN:
-                  cell.statusLabel.text = "Unknown"
-                  cell.statusLabel.textColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
-               case Severity.TERMINATE:
-                  cell.statusLabel.text = "Terminate"
-                  cell.statusLabel.textColor = UIColor(red: 139, green: 0, blue: 0, alpha: 100)
-               case Severity.RESOLVE:
-                  cell.statusLabel.text = "Resolve"
-                  cell.statusLabel.textColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
-               }
+            case Severity.NORMAL:
+               cell.statusLabel.text = "Normal"
+               cell.statusLabel.textColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
+            case Severity.WARNING:
+               cell.statusLabel.text = "Warning"
+               cell.statusLabel.textColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
+            case Severity.MINOR:
+               cell.statusLabel.text = "Minor"
+               cell.statusLabel.textColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
+            case Severity.MAJOR:
+               cell.statusLabel.text = "Major"
+               cell.statusLabel.textColor = UIColor(red: 255, green: 0, blue: 0, alpha: 100)
+            case Severity.CRITICAL:
+               cell.statusLabel.text = "Critical"
+               cell.statusLabel.textColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
+            case Severity.UNKNOWN:
+               cell.statusLabel.text = "Unknown"
+               cell.statusLabel.textColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
+            case Severity.TERMINATE:
+               cell.statusLabel.text = "Terminate"
+               cell.statusLabel.textColor = UIColor(red: 139, green: 0, blue: 0, alpha: 100)
+            case Severity.RESOLVE:
+               cell.statusLabel.text = "Resolve"
+               cell.statusLabel.textColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
             }
          }
-         
          return cell
       }
       else
@@ -325,7 +370,7 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
    
    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
    {
-      if tableView == self.alarmTableView
+      if tableView == self.alarmsTable
       {
          if let alarmDetailsVC = storyboard?.instantiateViewController(withIdentifier: "AlarmDetailsViewController")
          {
@@ -341,11 +386,12 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
             navigationController?.pushViewController(lineChartVC, animated: true)
          }
       }
+      tableView.deselectRow(at: indexPath, animated: true)
    }
    
    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]?
    {
-      if tableView == self.alarmTableView
+      if tableView == self.alarmsTable
       {
          let acknowledgeAction = UITableViewRowAction(style: .normal, title: "Acknowledge") { (rowAction, indexPath) in
             Connection.sharedInstance?.modifyAlarm(alarmId: self.alarms[indexPath.row].id, action: AlarmAction.ACKNOWLEDGE)

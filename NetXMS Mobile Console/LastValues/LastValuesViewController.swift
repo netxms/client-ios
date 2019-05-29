@@ -114,7 +114,7 @@ class LastValuesViewController: UITableViewController, UISearchBarDelegate
       {
          let formatter = LargeValueFormatter()
          cell.value.text = formatter.stringForValue(Double(filteredLastValues[indexPath.row].value)!, axis: nil)
-         //cell.value.sizeToFit()
+         cell.value.textColor = UIColor.black
       }
       
       if let activeThreshold = filteredLastValues[indexPath.row].activeThreshold
@@ -157,6 +157,11 @@ class LastValuesViewController: UITableViewController, UISearchBarDelegate
    
    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
    {
+      if filteredLastValues[indexPath.row].value.isEmpty
+      {
+         self.tableView.deselectRow(at: indexPath, animated: false)
+         return
+      }
       if let lineChartVC = storyboard?.instantiateViewController(withIdentifier: "LastValuesChartController"),
          self.tableView.isEditing == false
       {
