@@ -54,6 +54,9 @@ class Connection: NSObject, URLSessionDelegate
    var refreshObjectBrowser = false
    var logoutStarted = false
    var session: Session?
+   var failedRequest: URLRequest?
+   var handler: (([String : Any]?) -> Void)?
+   var notificationWorkItem: DispatchWorkItem?
    
    // Views
    var loginView: LoginViewController?
@@ -72,7 +75,7 @@ class Connection: NSObject, URLSessionDelegate
    /**
     * Attempt login to NetXMS WebAPI
     */
-   func login(onSuccess: @escaping ([String : Any]?) -> Void, onFailure: @escaping ((Any?) -> Void))
+   func login(onSuccess: @escaping ([String : Any]?) -> Void, onFailure: ((Any?) -> Void)? = nil)
    {
       var auth = String(format: "%@:%@", login, password)
       guard let loginData = auth.data(using: .utf8)
@@ -89,7 +92,17 @@ class Connection: NSObject, URLSessionDelegate
       let json: [String : Any] = ["attachNotificationHandler" : true]
       requestData.requestBody = try? JSONSerialization.data(withJSONObject: json)
       
-      sendRequest(requestData: requestData, onSuccess: onSuccess, onFailure: onFailure)
+      if let request = createRequest(requestData: requestData)
+      {
+         sendRequest(request: request, onSuccess: onSuccess, onFailure: onFailure)
+      }
+   }
+   
+   func relogin(request: URLRequest, handler: @escaping ([String : Any]?) -> Void)
+   {
+      self.failedRequest = request
+      self.handler = handler
+      login(onSuccess: onReloginSuccess)
    }
    
    /**
@@ -101,14 +114,14 @@ class Connection: NSObject, URLSessionDelegate
       {
          logoutStarted = true
          let requestData = RequestData(url: "\(apiUrl)/sessions/\(self.session?.handle.description.lowercased() ?? "")", method: "DELETE")
-         sendRequest(requestData: requestData, onSuccess: onSuccess, onFailure: nil)
+         if let request = createRequest(requestData: requestData)
+         {
+            sendRequest(request: request, onSuccess: onSuccess)
+         }
       }
    }
    
-   /**
-    * Send HTTP request with onFailure closure
-    */
-   func sendRequest(requestData: RequestData, onSuccess: @escaping ([String : Any]?) -> Void, onFailure: ((Any?) -> Void)?)
+   func createRequest(requestData: RequestData) -> URLRequest?
    {
       var components = URLComponents(string: requestData.url)
       components?.queryItems = requestData.queryItems
@@ -116,7 +129,7 @@ class Connection: NSObject, URLSessionDelegate
       guard let url = components?.url
          else
       {
-         return
+         return nil
       }
       
       var request = URLRequest(url: url)
@@ -129,38 +142,67 @@ class Connection: NSObject, URLSessionDelegate
       {
          request.setValue(value, forHTTPHeaderField: key)
       }
+      
+      return request
+   }
+   
+   /**
+    * Send HTTP request with onFailure closure
+    */
+   func sendRequest(request: URLRequest, onSuccess: @escaping ([String : Any]?) -> Void, onFailure: ((Any?) -> Void)? = nil)
+   {
       let session = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: OperationQueue.main)
       let task = session.dataTask(with: request) { data, response, error in
-         if let error = error
+         if let data = data,
+            let response = response as? HTTPURLResponse
          {
-            print("[\(requestData.method) ERROR]: \(error)")
-            if let onFailure = onFailure
+            if (400...511).contains(response.statusCode)
             {
-               onFailure(error.localizedDescription)
+               print("[\(String(describing: request.httpMethod)) ERROR RESPONSE]: \(response)")
+               if response.statusCode == 401 // Unauthorized
+               {
+                  self.relogin(request: request, handler: onSuccess)
+               }
+               else if let onFailure = onFailure
+               {
+                  onFailure(response)
+               }
             }
-            return
-         }
-         if let response = response as? HTTPURLResponse,
-            (400...511).contains(response.statusCode)
-         {
-            print("[\(requestData.method) ERROR RESPONSE]: \(response)")
-            if let onFailure = onFailure
-            {
-               onFailure(response)
-            }
-            return
-         }
-         
-         if let data = data
-         {
+            
             let jsonData = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String : Any]
             if let jsonData = jsonData
             {
                onSuccess(jsonData)
             }
          }
+         else if let error = error
+         {
+            print("error: " + error.localizedDescription)
+            if let onFailure = onFailure
+            {
+               onFailure(error.localizedDescription)
+            }
+         }
       }
       task.resume()
+   }
+   
+   func onReloginSuccess(jsonData: [String : Any]?) -> Void
+   {
+      if let jsonData = jsonData,
+         let request = failedRequest,
+         let handler = handler
+      {
+         session = Session(json: jsonData)
+         sendRequest(request: request, onSuccess: handler)
+         getAllObjects()
+         getAllAlarms()
+         getPredefinedGraphs()
+         if notificationWorkItem?.isCancelled ?? false
+         {
+            startNotificationHandler()
+         }
+      }
    }
    
    func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
@@ -231,13 +273,6 @@ class Connection: NSObject, URLSessionDelegate
          completionHandler(isServerTrusted ? .useCredential : .cancelAuthenticationChallenge, nil)
       }
    }
-   /**
-    * Send HTTP request without onFailure closure
-    */
-   func sendRequest(requestData: RequestData, onSuccess: @escaping ([String : Any]?) -> Void)
-   {
-      sendRequest(requestData: requestData, onSuccess: onSuccess, onFailure: nil)
-   }
    
    /**
     * Get list of all active alarms from NetXMS WebAPI
@@ -248,7 +283,10 @@ class Connection: NSObject, URLSessionDelegate
       {
          var requestData = RequestData(url: "\(apiUrl)/alarms", method: "GET")
          requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
-         sendRequest(requestData: requestData, onSuccess: onGetAllAlarmsSuccess)
+         if let request = createRequest(requestData: requestData)
+         {
+            sendRequest(request: request, onSuccess: onGetAllAlarmsSuccess)
+         }
       }
    }
    
@@ -284,7 +322,10 @@ class Connection: NSObject, URLSessionDelegate
          }
          requestData.requestBody = try? JSONSerialization.data(withJSONObject: json)
          
-         sendRequest(requestData: requestData, onSuccess: onModifyAlarmSuccess)
+         if let request = createRequest(requestData: requestData)
+         {
+            sendRequest(request: request, onSuccess: onModifyAlarmSuccess)
+         }
       }
    }
    
@@ -348,11 +389,11 @@ class Connection: NSObject, URLSessionDelegate
                if let object = n.object as? AbstractObject
                {
                   self.objectCache.updateValue(object, forKey: object.objectId)
-                  NotificationCenter.default.post(name: .alarmsChanged, object: nil)
+                  NotificationCenter.default.post(name: .objectChanged, object: nil)
                }
             case NotificationCode.OBJECT_DELETED:
                self.objectCache.removeValue(forKey: n.subCode)
-               NotificationCenter.default.post(name: .alarmsChanged, object: nil)
+               NotificationCenter.default.post(name: .objectChanged, object: nil)
             default:
                break
             }
@@ -377,6 +418,7 @@ class Connection: NSObject, URLSessionDelegate
    
    func sendNotificationRequest()
    {
+      print("send")
       if logoutStarted == true
       {
          return
@@ -386,7 +428,10 @@ class Connection: NSObject, URLSessionDelegate
       {
          var requestData = RequestData(url: "\(apiUrl)/notifications", method: "GET")
          requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
-         sendRequest(requestData: requestData, onSuccess: onReceiveNotificationSuccess, onFailure: onReceiveNotificationFailure)
+         if let request = createRequest(requestData: requestData)
+         {
+            sendRequest(request: request, onSuccess: onReceiveNotificationSuccess, onFailure: onReceiveNotificationFailure)
+         }
       }
    }
    
@@ -395,7 +440,12 @@ class Connection: NSObject, URLSessionDelegate
     */
    func startNotificationHandler()
    {
-      sendNotificationRequest()
+      notificationWorkItem = DispatchWorkItem {
+         self.sendNotificationRequest()
+      }
+      
+      let queue = DispatchQueue(label: "NotificationThread", qos: .background)
+      queue.async(execute: notificationWorkItem!)
    }
    
    /**
@@ -407,7 +457,10 @@ class Connection: NSObject, URLSessionDelegate
       {
          var requestData = RequestData(url: "\(apiUrl)/objects", method: "GET")
          requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
-         sendRequest(requestData: requestData, onSuccess: onGetAllObjectsSuccess)
+         if let request = createRequest(requestData: requestData)
+         {
+            sendRequest(request: request, onSuccess: onGetAllObjectsSuccess)
+         }
       }
    }
    
@@ -457,7 +510,10 @@ class Connection: NSObject, URLSessionDelegate
          requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
          requestData.queryItems.append(URLQueryItem(name: "dciList", value: query))
          
-         sendRequest(requestData: requestData, onSuccess: onSuccess)
+         if let request = createRequest(requestData: requestData)
+         {
+            sendRequest(request: request, onSuccess: onSuccess)
+         }
       }
    }
    
@@ -496,7 +552,10 @@ class Connection: NSObject, URLSessionDelegate
       {
          var requestData = RequestData(url: "\(apiUrl)/objects/\(objectId)/lastvalues", method: "GET")
          requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
-         sendRequest(requestData: requestData, onSuccess: onSuccess)
+         if let request = createRequest(requestData: requestData)
+         {
+            sendRequest(request: request, onSuccess: onSuccess)
+         }
       }
    }
    
@@ -506,7 +565,10 @@ class Connection: NSObject, URLSessionDelegate
       {
          var requestData = RequestData(url: "\(apiUrl)/objects/\(objectId)/datacollection/\(dciId)/values", method: "GET")
          requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
-         sendRequest(requestData: requestData, onSuccess: onSuccess)
+         if let request = createRequest(requestData: requestData)
+         {
+            sendRequest(request: request, onSuccess: onSuccess)
+         }
       }
    }
    
@@ -516,7 +578,10 @@ class Connection: NSObject, URLSessionDelegate
       {
          var requestData = RequestData(url: "\(apiUrl)/predefinedgraphs", method: "GET")
          requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
-         sendRequest(requestData: requestData, onSuccess: onGetPredefinedGraphsSuccess)
+         if let request = createRequest(requestData: requestData)
+         {
+            sendRequest(request: request, onSuccess: onGetPredefinedGraphsSuccess)
+         }
       }
       
    }
@@ -537,7 +602,10 @@ class Connection: NSObject, URLSessionDelegate
       {
          var requestData = RequestData(url: "\(apiUrl)/objects/\(objectId)/objecttools", method: "GET")
          requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
-         sendRequest(requestData: requestData, onSuccess: onSuccess)
+         if let request = createRequest(requestData: requestData)
+         {
+            sendRequest(request: request, onSuccess: onSuccess)
+         }
       }
    }
    
@@ -550,7 +618,10 @@ class Connection: NSObject, URLSessionDelegate
          let json: [String : Any] = ["toolData" : details]
          requestData.requestBody = try? JSONSerialization.data(withJSONObject: json)
          
-         sendRequest(requestData: requestData, onSuccess: onSuccess)
+         if let request = createRequest(requestData: requestData)
+         {
+            sendRequest(request: request, onSuccess: onSuccess)
+         }
       }
    }
    
@@ -561,7 +632,10 @@ class Connection: NSObject, URLSessionDelegate
          var requestData = RequestData(url: "\(apiUrl)/objects/\(objectId)/objecttools/output/\(uuid)", method: "GET")
          requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
          
-         sendRequest(requestData: requestData, onSuccess: onSuccess)
+         if let request = createRequest(requestData: requestData)
+         {
+            sendRequest(request: request, onSuccess: onSuccess)
+         }
       }
    }
    
@@ -574,7 +648,10 @@ class Connection: NSObject, URLSessionDelegate
          let json: [String : Any] = ["streamId" : streamId, "uuid" : uuid.uuidString]
          requestData.requestBody = try? JSONSerialization.data(withJSONObject: json)
          
-         sendRequest(requestData: requestData, onSuccess: onStopObjectToolSuccess)
+         if let request = createRequest(requestData: requestData)
+         {
+            sendRequest(request: request, onSuccess: onStopObjectToolSuccess)
+         }
       }
    }
    

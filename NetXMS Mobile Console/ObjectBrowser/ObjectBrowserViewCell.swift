@@ -17,7 +17,7 @@ class ObjectBrowserViewCell: UITableViewCell
    @IBOutlet var buttonWidth: NSLayoutConstraint!
    @IBOutlet var nameTrailing: NSLayoutConstraint!
    @IBOutlet var nextImage: UIImageView!
-   var object: AbstractObject?
+   var parentId: Int?
    var objectBrowser: ObjectBrowserViewController?
    
    override func awakeFromNib()
@@ -39,11 +39,9 @@ class ObjectBrowserViewCell: UITableViewCell
    
    @IBAction func onButtonPressed(_ sender: Any)
    {
-      if let objectBrowserVC = objectBrowser?.storyboard?.instantiateViewController(withIdentifier: "ObjectBrowserViewController")
+      if let objectBrowserVC = objectBrowser?.storyboard?.instantiateViewController(withIdentifier: "ObjectBrowserViewController") as? ObjectBrowserViewController
       {
-         var children = Connection.sharedInstance?.objectCache.filter { return (object?.children.contains($0.key))! }
-         objectBrowserVC.title = object?.objectName
-         (objectBrowserVC as? ObjectBrowserViewController)?.objects = Array(children!.values)
+         objectBrowserVC.parentId = parentId!
          objectBrowser?.navigationController?.pushViewController(objectBrowserVC, animated: true)
       }
    }

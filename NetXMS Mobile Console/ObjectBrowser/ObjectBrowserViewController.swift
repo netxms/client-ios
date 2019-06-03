@@ -12,52 +12,63 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
 {
    @IBOutlet weak var searchBar: UISearchBar!
    var objects: [AbstractObject]!
+   var parentId = 0
    
    override func viewDidLoad()
    {
       super.viewDidLoad()
       
-      if objects == nil
+      if parentId == 0
       {
-         objects = Connection.sharedInstance?.getTopLevelObjects()
+         objects = Connection.sharedInstance?.getTopLevelObjects() ?? []
          title = "Root"
       }
-      objects = sortObjects(objects: objects)
+      else
+      {
+         let parent = Connection.sharedInstance?.objectCache[parentId]
+         objects = Array((Connection.sharedInstance?.objectCache.filter { return (parent?.children.contains($0.key))! })!.values)
+         title = parent?.objectName
+      }
+      sortObjects()
+      NotificationCenter.default.addObserver(self, selector: #selector(refresh), name: .objectChanged, object: nil)
+      
       self.searchBar.delegate = self
       let searchBarHeight = searchBar.frame.size.height
       tableView.setContentOffset(CGPoint(x: 0, y: searchBarHeight), animated: false)
-      
-      NotificationCenter.default.addObserver(self, selector: #selector(onObjectChange), name: .objectChanged, object: nil)
    }
    
-   @objc func onObjectChange()
+   func sortObjects()
    {
-      refresh()
-   }
-   
-   func sortObjects(objects: [AbstractObject]) -> [AbstractObject]
-   {
-      let objectList = (objects.sorted
-      {
-         return ($0.objectName.lowercased()) < ($1.objectName.lowercased())
-      })
-      
-      return objectList.sorted(by: { (o1, o2) -> Bool in
-         if (o1.objectClass == ObjectClass.OBJECT_NODE && o2.objectClass != ObjectClass.OBJECT_NODE) || (o1.objectClass == ObjectClass.OBJECT_CLUSTER && o2.objectClass != ObjectClass.OBJECT_CLUSTER) || (o1.objectClass == ObjectClass.OBJECT_RACK && o2.objectClass != ObjectClass.OBJECT_RACK)
-         {
-            return false
-         }
-         if (o1.objectClass != ObjectClass.OBJECT_NODE && o2.objectClass == ObjectClass.OBJECT_NODE) || (o1.objectClass != ObjectClass.OBJECT_CLUSTER && o2.objectClass == ObjectClass.OBJECT_CLUSTER) || (o1.objectClass != ObjectClass.OBJECT_RACK && o2.objectClass == ObjectClass.OBJECT_RACK)
+       self.objects = self.objects.sorted(by: { (o1, o2) -> Bool in
+         if o1.objectClass == .OBJECT_CONTAINER && o2.objectClass != .OBJECT_CONTAINER
          {
             return true
          }
-         return (o1.objectName.lowercased()) < (o2.objectName.lowercased())
+         if o1.objectName.lowercased() > o2.objectName.lowercased()
+         {
+            return false
+         }
+         if o1.objectName.lowercased() < o2.objectName.lowercased()
+         {
+            return true
+         }
+         return false
       })
    }
    
-   func refresh()
+   @objc func refresh()
    {
-      objects = sortObjects(objects: Connection.sharedInstance?.getTopLevelObjects() ?? [])
+      if parentId == 0
+      {
+         objects = Connection.sharedInstance?.getTopLevelObjects() ?? []
+      }
+      else
+      {
+         let parent = Connection.sharedInstance?.objectCache[parentId]
+         objects = Array((Connection.sharedInstance?.objectCache.filter { return (parent?.children.contains($0.key))! })!.values)
+         self.title = parent?.objectName
+      }
+      sortObjects()
       self.tableView.reloadData()
    }
    
@@ -118,31 +129,31 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
    {
       let cell = tableView.dequeueReusableCell(withIdentifier: "ObjectCell", for: indexPath) as! ObjectBrowserViewCell
-      cell.object = self.objects[indexPath.row]
+      cell.parentId = self.objects[indexPath.row].objectId
       cell.objectBrowser = self
       cell.objectName?.text = self.objects[indexPath.row].objectName
       
       if self.objects[indexPath.row].objectClass == ObjectClass.OBJECT_NODE
       {
          cell.buttonWidth.constant = CGFloat(0)
-         cell.nameTrailing.constant = CGFloat(16)
          cell.nextImage.isHidden = true
       }
       else
       {
-         cell.buttonWidth.constant = CGFloat(100)
+         cell.buttonWidth.constant = CGFloat(80)
+         cell.nameTrailing.constant = CGFloat(42)
       }
       
       switch self.objects[indexPath.row].objectClass
       {
-      case ObjectClass.OBJECT_NODE:
-         cell.typeImage.image = UIImage(imageLiteralResourceName: "node")
-      case ObjectClass.OBJECT_CLUSTER:
-         cell.typeImage.image = UIImage(imageLiteralResourceName: "cluster")
-      case ObjectClass.OBJECT_CONTAINER:
-         cell.typeImage.image = UIImage(imageLiteralResourceName: "container")
-      case ObjectClass.OBJECT_RACK:
-         cell.typeImage.image = UIImage(imageLiteralResourceName: "rack")
+      case .OBJECT_NODE:
+         cell.typeImage.image = UIImage(named: "node")
+      case .OBJECT_CLUSTER:
+         cell.typeImage.image = UIImage(named: "cluster")
+      case .OBJECT_CONTAINER:
+         cell.typeImage.image = UIImage(named: "container")
+      case .OBJECT_RACK:
+         cell.typeImage.image = UIImage(named: "rack")
       default:
          break
       }

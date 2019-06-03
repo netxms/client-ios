@@ -477,8 +477,8 @@
                                 <action selector="onResolvePressed:" destination="rHf-dn-mdo" id="K1h-7B-k50"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem systemItem="stop" id="b0u-JH-xtE">
-                            <color key="tintColor" red="0.99946624040603638" green="0.23659738898277283" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <barButtonItem title="Terminate" id="b0u-JH-xtE">
+                            <color key="tintColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
                                 <action selector="onTerminatePressed:" destination="rHf-dn-mdo" id="zNa-fb-VbA"/>
                             </connections>
@@ -513,7 +513,7 @@
         <scene sceneID="aVj-O6-53O">
             <objects>
                 <tableViewController storyboardIdentifier="PredefinedGraphsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="8hy-2m-Eoh" customClass="PredefinedGraphsViewController" customModule="NetXMS_Mobile_Console" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="48" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="VtY-Oc-h3i">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="48" sectionHeaderHeight="28" sectionFooterHeight="28" id="VtY-Oc-h3i">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.93725490570000003" green="0.93725490570000003" blue="0.95686274770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -817,7 +817,7 @@
         <scene sceneID="ZTG-rT-g3M">
             <objects>
                 <tableViewController storyboardIdentifier="ObjectBrowserViewController" title="Object Browser" useStoryboardIdentifierAsRestorationIdentifier="YES" id="CTS-4X-oQG" customClass="ObjectBrowserViewController" customModule="NetXMS_Mobile_Console" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="82" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="Kzm-uN-Q5w">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="82" sectionHeaderHeight="28" sectionFooterHeight="28" id="Kzm-uN-Q5w">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -978,7 +978,7 @@
                                                             <constraint firstItem="bWR-2W-MsF" firstAttribute="leading" secondItem="abB-oP-Ulk" secondAttribute="leading" id="tsM-Hi-hRG"/>
                                                         </constraints>
                                                     </view>
-                                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="prototypes" style="plain" rowHeight="70" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="elE-OF-Ewg">
+                                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="prototypes" style="plain" rowHeight="70" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="elE-OF-Ewg">
                                                         <rect key="frame" x="0.0" y="32" width="382" height="70"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
@@ -1114,7 +1114,7 @@
                                                             <constraint firstAttribute="bottom" secondItem="bP3-cu-bLx" secondAttribute="bottom" id="xcu-xT-syp"/>
                                                         </constraints>
                                                     </view>
-                                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="prototypes" style="plain" rowHeight="70" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="WgL-HX-bkC">
+                                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="prototypes" style="plain" rowHeight="70" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="WgL-HX-bkC">
                                                         <rect key="frame" x="0.0" y="32" width="382" height="70"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
@@ -1277,31 +1277,27 @@
                                                         </constraints>
                                                         <viewLayoutGuide key="safeArea" id="lRl-vc-zcQ"/>
                                                     </view>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AJF-4c-0cI" userLabel="Comments Content View">
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RJT-gi-IYc" userLabel="Comments Content View">
                                                         <rect key="frame" x="0.0" y="32" width="382" height="0.0"/>
                                                         <subviews>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" verticalHuggingPriority="249" restorationIdentifier="Comments area" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hsl-MK-wQQ">
-                                                                <rect key="frame" x="16" y="0.0" width="350" height="0.0"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" verticalHuggingPriority="249" restorationIdentifier="Comments area" text="Test" lineBreakMode="tailTruncation" numberOfLines="0" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hsl-MK-wQQ">
+                                                                <rect key="frame" x="0.0" y="0.0" width="382" height="0.0"/>
                                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                <attributedString key="attributedText">
-                                                                    <fragment content="Test">
-                                                                        <attributes>
-                                                                            <font key="NSFont" metaFont="system" size="14"/>
-                                                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                                                        </attributes>
-                                                                    </fragment>
-                                                                </attributedString>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" id="mVp-rL-Kzj"/>
+                                                                </constraints>
+                                                                <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="14"/>
+                                                                <nil key="textColor"/>
                                                                 <nil key="highlightedColor"/>
                                                                 <size key="shadowOffset" width="0.0" height="0.0"/>
                                                             </label>
                                                         </subviews>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="height" id="7FL-2F-ZFF"/>
-                                                            <constraint firstItem="Hsl-MK-wQQ" firstAttribute="centerY" secondItem="AJF-4c-0cI" secondAttribute="centerY" id="J9z-9A-gPX"/>
-                                                            <constraint firstItem="Hsl-MK-wQQ" firstAttribute="height" secondItem="AJF-4c-0cI" secondAttribute="height" id="aNo-k9-QN3"/>
-                                                            <constraint firstItem="Hsl-MK-wQQ" firstAttribute="leading" secondItem="AJF-4c-0cI" secondAttribute="leading" constant="16" id="gWV-0K-B5t"/>
-                                                            <constraint firstAttribute="trailing" secondItem="Hsl-MK-wQQ" secondAttribute="trailing" constant="16" id="uka-ah-oZE"/>
+                                                            <constraint firstItem="Hsl-MK-wQQ" firstAttribute="top" secondItem="RJT-gi-IYc" secondAttribute="top" id="7rW-Bs-ICr"/>
+                                                            <constraint firstAttribute="trailing" secondItem="Hsl-MK-wQQ" secondAttribute="trailing" id="Alj-UK-zNg"/>
+                                                            <constraint firstItem="Hsl-MK-wQQ" firstAttribute="leading" secondItem="RJT-gi-IYc" secondAttribute="leading" id="C0u-xq-Wv2"/>
+                                                            <constraint firstAttribute="bottom" secondItem="Hsl-MK-wQQ" secondAttribute="bottom" id="Jkg-LP-f2c"/>
                                                         </constraints>
                                                     </view>
                                                 </subviews>
@@ -1381,13 +1377,17 @@
                         <outlet property="alarmsStack" destination="53z-wn-YEa" id="yP0-z9-n31"/>
                         <outlet property="alarmsTable" destination="elE-OF-Ewg" id="aeI-l6-ef5"/>
                         <outlet property="comments" destination="Hsl-MK-wQQ" id="OCP-sQ-zpv"/>
-                        <outlet property="commentsHeight" destination="7FL-2F-ZFF" id="h26-NT-GWj"/>
+                        <outlet property="commentsBottom" destination="Jkg-LP-f2c" id="Y0R-Cj-wtE"/>
+                        <outlet property="commentsHeight" destination="mVp-rL-Kzj" id="AGF-G6-AMC"/>
                         <outlet property="commentsLabel" destination="e9d-1P-jma" id="yDd-Mv-OCB"/>
                         <outlet property="commentsLabelHeight" destination="0BT-dR-x3n" id="SzD-2c-ofF"/>
+                        <outlet property="commentsLeading" destination="C0u-xq-Wv2" id="QQm-cY-iJg"/>
                         <outlet property="commentsShadow" destination="dZn-LC-1Mx" id="BYA-lu-pSI"/>
                         <outlet property="commentsStackBottom" destination="sLW-7r-g9R" id="rc1-bq-sc9"/>
                         <outlet property="commentsStackTop" destination="Ugx-mG-ubh" id="DrH-mY-DnJ"/>
-                        <outlet property="commentsView" destination="AJF-4c-0cI" id="fYk-0D-PHE"/>
+                        <outlet property="commentsTop" destination="7rW-Bs-ICr" id="uMm-Pm-yHc"/>
+                        <outlet property="commentsTrailing" destination="Alj-UK-zNg" id="amw-0V-2UH"/>
+                        <outlet property="commentsView" destination="RJT-gi-IYc" id="jbO-Rx-vgv"/>
                         <outlet property="lastValuesHeight" destination="bcX-xq-dlO" id="HnM-wd-6o0"/>
                         <outlet property="lastValuesTable" destination="WgL-HX-bkC" id="9gR-VC-hEv"/>
                         <outlet property="location" destination="Dhu-i0-skA" id="6m3-0x-G3K"/>
@@ -1408,7 +1408,7 @@
         <scene sceneID="YoH-tX-h88">
             <objects>
                 <tableViewController storyboardIdentifier="LastValuesViewController" id="AnJ-vf-kWS" customClass="LastValuesViewController" customModule="NetXMS_Mobile_Console" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" allowsSelectionDuringEditing="YES" allowsMultipleSelectionDuringEditing="YES" rowHeight="68" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="Gv8-te-CWT">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" allowsSelectionDuringEditing="YES" allowsMultipleSelectionDuringEditing="YES" rowHeight="68" sectionHeaderHeight="28" sectionFooterHeight="28" id="Gv8-te-CWT">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1541,7 +1541,7 @@
         <scene sceneID="3BQ-N2-913">
             <objects>
                 <tableViewController storyboardIdentifier="ObjectToolsViewController" id="Efp-hf-NS0" customClass="ObjectToolsViewController" customModule="NetXMS_Mobile_Console" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="48" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="mmk-xm-v1f">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="48" sectionHeaderHeight="28" sectionFooterHeight="28" id="mmk-xm-v1f">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
