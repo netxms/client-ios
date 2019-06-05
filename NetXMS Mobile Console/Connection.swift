@@ -112,7 +112,7 @@ class Connection: NSObject, URLSessionDelegate
    {
       if self.session != nil
       {
-         logoutStarted = true
+         stopNotificationHandler()
          let requestData = RequestData(url: "\(apiUrl)/sessions/\(self.session?.handle.description.lowercased() ?? "")", method: "DELETE")
          if let request = createRequest(requestData: requestData)
          {
@@ -380,7 +380,7 @@ class Connection: NSObject, URLSessionDelegate
                   {
                      if let alarm = self.alarmCache[id]
                      {
-                        alarm.state = Alarm.STATE_RESOLVED
+                        alarm.state = State.RESOLVED
                      }
                   }
                   NotificationCenter.default.post(name: .alarmsChanged, object: nil)
@@ -433,6 +433,11 @@ class Connection: NSObject, URLSessionDelegate
             sendRequest(request: request, onSuccess: onReceiveNotificationSuccess, onFailure: onReceiveNotificationFailure)
          }
       }
+   }
+   
+   func stopNotificationHandler()
+   {
+      notificationWorkItem?.cancel()
    }
    
    /**

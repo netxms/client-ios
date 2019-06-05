@@ -34,6 +34,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UITableViewDel
       NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
       self.apiUrl.addTarget(self, action: #selector(apiUrlIsEdited), for: .editingChanged)
       
+      historyTable.layer.cornerRadius = 4
+      
       loadCredentialsFromKeyChain()
       
       self.apiUrl.delegate = self
@@ -122,6 +124,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UITableViewDel
          {
             cell.login.text = credentials[0]
             cell.url.text = credentials[1]
+
             return cell
          }
       }

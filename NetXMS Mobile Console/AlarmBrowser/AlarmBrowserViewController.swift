@@ -8,6 +8,16 @@
 
 import UIKit
 
+extension UIImageView
+{
+   func setImageColor(color: UIColor)
+   {
+      let templateImage = self.image?.withRenderingMode(.alwaysTemplate)
+      self.image = templateImage
+      self.tintColor = color
+   }
+}
+
 class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
 {
    var alarms: [Alarm]!
@@ -15,15 +25,15 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
    var object: AbstractObject!
    @IBOutlet weak var searchBar: UISearchBar!
    @IBOutlet var cancelButton: UIBarButtonItem!
-   var selectButton: UIButton!
    var selectBarButtonItem: UIBarButtonItem!
    
    override func viewDidLoad()
    {
       super.viewDidLoad()
       
-      selectButton = UIButton(type: .system)
       selectBarButtonItem = UIBarButtonItem(title: "Select", style: .plain, target: self, action: #selector(AlarmBrowserViewController.selectButtonPressed(_:)))
+      
+      setToolbarButtons()
       
       setCancelButtonState(enabled: false)
       let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressOnCell))
@@ -64,6 +74,75 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
    @objc func onAlarmChanged()
    {
       refresh()
+   }
+   
+   func setToolbarButtons()
+   {
+      let acknowledgeImage = UIGraphicsImageRenderer(size: CGSize(width: 30, height: 30)).image { _ in
+      UIImage(imageLiteralResourceName: "acknowledged").draw(in: CGRect(x: 0, y: 0, width: 30, height: 30))
+      }
+      let resolveImage = UIGraphicsImageRenderer(size: CGSize(width: 30, height: 30)).image { _ in
+         UIImage(imageLiteralResourceName: "resolved").draw(in: CGRect(x: 0, y: 0, width: 30, height: 30))
+      }
+      let terminateImage = UIGraphicsImageRenderer(size: CGSize(width: 30, height: 30)).image { _ in
+         UIImage(imageLiteralResourceName: "terminated").draw(in: CGRect(x: 0, y: 0, width: 30, height: 30))
+      }
+      
+      let acknowledgeColor = UIColor(red: 0.341, green: 0.847, blue: 0.068, alpha: 1)
+      let resolveColor = UIColor(red: 0.007, green: 0.591, blue: 0.0, alpha: 1)
+      let terminateColor = UIColor.red
+      
+      let acknowledgeButton = UIButton.init(type: .custom)
+      acknowledgeButton.addTarget(self, action: #selector(onAcknowledgePressed), for: .touchUpInside)
+      let acknowledgeButtonView = UIView(frame: CGRect(x: 0, y: 0, width: 60, height: 50))
+      acknowledgeButton.frame = acknowledgeButtonView.frame
+      let acknowledgeImageView = UIImageView(frame: CGRect(x: acknowledgeButtonView.frame.minX+15, y: 0, width: 30, height: 30))
+      acknowledgeImageView.image = acknowledgeImage
+      acknowledgeImageView.setImageColor(color: acknowledgeColor)
+      let acknowledgeLabel = UILabel(frame: CGRect(x: acknowledgeButtonView.frame.minX, y: 25, width: 60, height: 20))
+      acknowledgeLabel.text = "Acknowledge"
+      acknowledgeLabel.adjustsFontSizeToFitWidth = true
+      acknowledgeLabel.textColor = acknowledgeColor
+      acknowledgeButtonView.addSubview(acknowledgeButton)
+      acknowledgeButtonView.addSubview(acknowledgeImageView)
+      acknowledgeButtonView.addSubview(acknowledgeLabel)
+      let acknowledgeBarButton = UIBarButtonItem.init(customView: acknowledgeButtonView)
+      
+      let resolveButton = UIButton.init(type: .custom)
+      resolveButton.addTarget(self, action: #selector(onResolvePressed), for: .touchUpInside)
+      let resolveButtonView = UIView(frame: CGRect(x: 0, y: 0, width: 60, height: 50))
+      resolveButton.frame = resolveButtonView.frame
+      let resolveImageView = UIImageView(frame: CGRect(x: resolveButtonView.frame.minX+15, y: 0, width: 30, height: 30))
+      resolveImageView.image = resolveImage
+      resolveImageView.setImageColor(color: resolveColor)
+      let resolveLabel = UILabel(frame: CGRect(x: resolveButtonView.frame.minX+10, y: 25, width: 40, height: 20))
+      resolveLabel.text = "Resolve"
+      resolveLabel.adjustsFontSizeToFitWidth = true
+      resolveLabel.textColor = resolveColor
+      resolveButtonView.addSubview(resolveButton)
+      resolveButtonView.addSubview(resolveImageView)
+      resolveButtonView.addSubview(resolveLabel)
+      let resolveBarButton = UIBarButtonItem.init(customView: resolveButtonView)
+      
+      let terminateButton = UIButton.init(type: .custom)
+      terminateButton.addTarget(self, action: #selector(onTerminatePressed), for: .touchUpInside)
+      let terminateButtonView = UIView(frame: CGRect(x: 0, y: 0, width: 60, height: 50))
+      terminateButton.frame = terminateButtonView.frame
+      let terminateImageView = UIImageView(frame: CGRect(x: terminateButtonView.frame.minX+15, y: 0, width: 30, height: 30))
+      terminateImageView.image = terminateImage
+      terminateImageView.setImageColor(color: terminateColor)
+      let terminateLabel = UILabel(frame: CGRect(x: terminateButtonView.frame.minX+5, y: 25, width: 50, height: 20))
+      terminateLabel.text = "Terminate"
+      terminateLabel.adjustsFontSizeToFitWidth = true
+      terminateLabel.textColor = terminateColor
+      terminateButtonView.addSubview(terminateButton)
+      terminateButtonView.addSubview(terminateImageView)
+      terminateButtonView.addSubview(terminateLabel)
+      let terminateBarButton = UIBarButtonItem.init(customView: terminateButtonView)
+      
+      let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+      
+      self.setToolbarItems([acknowledgeBarButton, flexibleSpace, resolveBarButton, flexibleSpace, terminateBarButton], animated: true)
    }
    
    func refresh()
@@ -126,40 +205,13 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
    
    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
    {
-      let cell = tableView.dequeueReusableCell(withIdentifier: "AlarmCell", for: indexPath) as! AlarmBrowserViewCell
-      cell.alarmId = self.filteredAlarms[indexPath.row].id
-      cell.objectName?.text = Connection.sharedInstance?.resolveObjectName(objectId: self.filteredAlarms[indexPath.row].sourceObjectId)
-      cell.message?.text = self.filteredAlarms[indexPath.row].message
-      cell.createdOn?.text = DateFormatter.localizedString(from: Date(timeIntervalSince1970: self.filteredAlarms[indexPath.row].creationTime), dateStyle: DateFormatter.Style.short, timeStyle: DateFormatter.Style.short)
-      
-      switch self.filteredAlarms[indexPath.row].currentSeverity
+      if let cell = tableView.dequeueReusableCell(withIdentifier: "AlarmCell", for: indexPath) as? AlarmBrowserViewCell
       {
-         case Severity.NORMAL:
-           cell.severityLabel.text = "Normal"
-           cell.severityLabel.textColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
-         case Severity.WARNING:
-           cell.severityLabel.text = "Warning"
-            cell.severityLabel.textColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
-         case Severity.MINOR:
-           cell.severityLabel.text = "Minor"
-            cell.severityLabel.textColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
-         case Severity.MAJOR:
-           cell.severityLabel.text = "Major"
-            cell.severityLabel.textColor = UIColor(red: 255, green: 0, blue: 0, alpha: 100)
-         case Severity.CRITICAL:
-           cell.severityLabel.text = "Critical"
-            cell.severityLabel.textColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
-         case Severity.UNKNOWN:
-           cell.severityLabel.text = "Unknown"
-            cell.severityLabel.textColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
-         case Severity.TERMINATE:
-           cell.severityLabel.text = "Terminate"
-            cell.severityLabel.textColor = UIColor(red: 139, green: 0, blue: 0, alpha: 100)
-         case Severity.RESOLVE:
-           cell.severityLabel.text = "Resolve"
-            cell.severityLabel.textColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
+         cell.fillCell(alarm: filteredAlarms[indexPath.row])
+         return cell
       }
-      return cell
+      
+      return UITableViewCell()
    }
    
    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
@@ -172,16 +224,23 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       }
    }
    
-   override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]?
+   override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
    {
-      let acknowledgeAction = UITableViewRowAction(style: .normal, title: "Acknowledge") { (rowAction, indexPath) in
+      let acknowledge =  UIContextualAction(style: .normal, title: "Acknowledge") { action,view,completionHandler in
          Connection.sharedInstance?.modifyAlarm(alarmId: self.filteredAlarms[indexPath.row].id, action: AlarmAction.ACKNOWLEDGE)
+         completionHandler(true)
       }
-      let terminateAction = UITableViewRowAction(style: .default, title: "Terminate") { (rowAction, indexPath) in
-         Connection.sharedInstance?.modifyAlarm(alarmId: self.filteredAlarms[indexPath.row].id, action: AlarmAction.TERMINATE)
+      acknowledge.image = UIGraphicsImageRenderer(size: CGSize(width: 50, height: 50)).image { _ in
+         UIImage(imageLiteralResourceName: "acknowledged").draw(in: CGRect(x: 0, y: 0, width: 50, height: 50))
       }
       
-      return [acknowledgeAction, terminateAction]
+      let terminate =  UIContextualAction(style: .destructive, title: "Terminate") { action,view,completionHandler in
+         Connection.sharedInstance?.modifyAlarm(alarmId: self.filteredAlarms[indexPath.row].id, action: AlarmAction.TERMINATE)
+      }
+      terminate.image = UIGraphicsImageRenderer(size: CGSize(width: 50, height: 50)).image { _ in
+         UIImage(imageLiteralResourceName: "terminated").draw(in: CGRect(x: 0, y: 0, width: 50, height: 50))
+      }
+      return UISwipeActionsConfiguration(actions: [acknowledge, terminate])
    }
    
    @objc func longPressOnCell(longPressGestureRecognizer: UILongPressGestureRecognizer)
@@ -204,15 +263,16 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       setCancelButtonState(enabled: false)
    }
    
-   @IBAction func onAcknowledgePRessed(_ sender: Any)
+   @objc func onAcknowledgePressed()
    {
       var alarms = [Int]()
       for cell in self.tableView.visibleCells
       {
          if let cell = cell as? AlarmBrowserViewCell,
+            let alarm = cell.alarm,
             cell.isSelected == true
          {
-            alarms.append(cell.alarmId)
+            alarms.append(alarm.id)
          }
       }
       Connection.sharedInstance?.modifyAlarm(alarms: alarms, action: AlarmAction.ACKNOWLEDGE)
@@ -220,15 +280,16 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       setCancelButtonState(enabled: false)
    }
    
-   @IBAction func onResolvePressed(_ sender: Any)
+   @objc func onResolvePressed()
    {
       var alarms = [Int]()
       for cell in self.tableView.visibleCells
       {
          if let cell = cell as? AlarmBrowserViewCell,
+            let alarm = cell.alarm,
             cell.isSelected == true
          {
-            alarms.append(cell.alarmId)
+            alarms.append(alarm.id)
          }
       }
       Connection.sharedInstance?.modifyAlarm(alarms: alarms, action: AlarmAction.RESOLVE)
@@ -236,15 +297,16 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       setCancelButtonState(enabled: false)
    }
    
-   @IBAction func onTerminatePressed(_ sender: Any)
+   @objc func onTerminatePressed()
    {
       var alarms = [Int]()
       for cell in self.tableView.visibleCells
       {
          if let cell = cell as? AlarmBrowserViewCell,
+            let alarm = cell.alarm,
             cell.isSelected == true
          {
-            alarms.append(cell.alarmId)
+            alarms.append(alarm.id)
          }
       }
       Connection.sharedInstance?.modifyAlarm(alarms: alarms, action: AlarmAction.TERMINATE)

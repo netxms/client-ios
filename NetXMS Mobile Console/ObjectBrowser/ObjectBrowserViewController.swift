@@ -18,20 +18,10 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
    {
       super.viewDidLoad()
       
-      if parentId == 0
-      {
-         objects = Connection.sharedInstance?.getTopLevelObjects() ?? []
-         title = "Root"
-      }
-      else
-      {
-         let parent = Connection.sharedInstance?.objectCache[parentId]
-         objects = Array((Connection.sharedInstance?.objectCache.filter { return (parent?.children.contains($0.key))! })!.values)
-         title = parent?.objectName
-      }
-      sortObjects()
-      NotificationCenter.default.addObserver(self, selector: #selector(refresh), name: .objectChanged, object: nil)
+      refresh()
       
+      NotificationCenter.default.addObserver(self, selector: #selector(refresh), name: .objectChanged, object: nil)
+   
       self.searchBar.delegate = self
       let searchBarHeight = searchBar.frame.size.height
       tableView.setContentOffset(CGPoint(x: 0, y: searchBarHeight), animated: false)
@@ -44,7 +34,7 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
          {
             return true
          }
-         if o1.objectName.lowercased() > o2.objectName.lowercased()
+         if o1.objectClass != .OBJECT_CONTAINER && o2.objectClass == .OBJECT_CONTAINER
          {
             return false
          }
@@ -61,6 +51,7 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
       if parentId == 0
       {
          objects = Connection.sharedInstance?.getTopLevelObjects() ?? []
+         self.title = "Objects"
       }
       else
       {
@@ -126,61 +117,29 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
       return objects.count
    }
    
-   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+   func setArrow(object: AbstractObject, cell: ObjectBrowserViewCell)
    {
-      let cell = tableView.dequeueReusableCell(withIdentifier: "ObjectCell", for: indexPath) as! ObjectBrowserViewCell
-      cell.parentId = self.objects[indexPath.row].objectId
-      cell.objectBrowser = self
-      cell.objectName?.text = self.objects[indexPath.row].objectName
-      
-      if self.objects[indexPath.row].objectClass == ObjectClass.OBJECT_NODE
-      {
-         cell.buttonWidth.constant = CGFloat(0)
-         cell.nextImage.isHidden = true
-      }
-      else
+      if object.objectClass == .OBJECT_CONTAINER || object.objectClass == .OBJECT_SUBNET
       {
          cell.buttonWidth.constant = CGFloat(80)
          cell.nameTrailing.constant = CGFloat(42)
       }
-      
-      switch self.objects[indexPath.row].objectClass
+      else
       {
-      case .OBJECT_NODE:
-         cell.typeImage.image = UIImage(named: "node")
-      case .OBJECT_CLUSTER:
-         cell.typeImage.image = UIImage(named: "cluster")
-      case .OBJECT_CONTAINER:
-         cell.typeImage.image = UIImage(named: "container")
-      case .OBJECT_RACK:
-         cell.typeImage.image = UIImage(named: "rack")
-      default:
-         break
+         cell.buttonWidth.constant = CGFloat(0)
+         cell.nextImage.isHidden = true
+      }
+   }
+   
+   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+   {
+      if let cell = tableView.dequeueReusableCell(withIdentifier: "ObjectCell", for: indexPath) as? ObjectBrowserViewCell
+      {
+         cell.fillCell(object: self.objects[indexPath.row], view: self)
+         return cell
       }
       
-      switch self.objects[indexPath.row].status
-      {
-      case ObjectStatus.NORMAL:
-         cell.severityLabel.text = "Normal"
-         cell.severityLabel.textColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
-      case ObjectStatus.WARNING:
-         cell.severityLabel.text = "Warning"
-         cell.severityLabel.textColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
-      case ObjectStatus.MINOR:
-         cell.severityLabel.text = "Minor"
-         cell.severityLabel.textColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
-      case ObjectStatus.MAJOR:
-         cell.severityLabel.text = "Major"
-         cell.severityLabel.textColor = UIColor(red: 255, green: 0, blue: 0, alpha: 100)
-      case ObjectStatus.CRITICAL:
-         cell.severityLabel.text = "Critical"
-         cell.severityLabel.textColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
-      case ObjectStatus.UNKNOWN:
-         cell.severityLabel.text = "Unknown"
-         cell.severityLabel.textColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
-      }
-      
-      return cell
+      return UITableViewCell()
    }
    
    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)

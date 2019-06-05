@@ -2,15 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "acknowledged_sticky.png",
+      "filename" : "alarm-sticky-ack_x1.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "alarm-sticky-ack_x2.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
+      "filename" : "alarm-sticky-ack_x3.png",
       "scale" : "3x"
     }
   ],

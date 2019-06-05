@@ -21,6 +21,11 @@ class AlarmDetailsViewController : UIViewController
    @IBOutlet weak var resolveButton: UIButton!
    @IBOutlet weak var terminateButton: UIButton!
    @IBOutlet weak var lastValuesButton: UIButton!
+   @IBOutlet var acknowledgeView: UIView!
+   @IBOutlet var stickyView: UIView!
+   @IBOutlet var resolveView: UIView!
+   @IBOutlet var terminateView: UIView!
+   @IBOutlet var valuesView: UIView!
    let blackView = UIView()
    @IBOutlet weak var buttonStack: UIStackView!
    @IBOutlet weak var contentView: UIView!
@@ -64,25 +69,29 @@ class AlarmDetailsViewController : UIViewController
          severityLabel.textColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
       }
       
-      if alarm.state == Alarm.STATE_ACKNOWLEDGED || alarm.state == Alarm.STATE_ACKNOWLEDGED_STICKY
+      if alarm.state == .ACKNOWLEDGED || alarm.state == .ACKNOWLEDGED_STICKY
       {
-         acknowledgeButton.isHidden = true
-         stickyAcknowledgeButton.isHidden = true
+         acknowledgeView.isHidden = true
+         stickyView.isHidden = true
+         buttonStack.sizeToFit()
+         buttonStack.layoutIfNeeded()
       }
-      else if alarm.state == Alarm.STATE_RESOLVED
+      else if alarm.state == .RESOLVED
       {
-         acknowledgeButton.isHidden = true
-         stickyAcknowledgeButton.isHidden = true
-         resolveButton.isHidden = true
+         acknowledgeView.isHidden = true
+         stickyView.isHidden = true
+         resolveView.isHidden = true
+         buttonStack.sizeToFit()
+         buttonStack.layoutIfNeeded()
       }
       
-      for button in [acknowledgeButton, stickyAcknowledgeButton, resolveButton, terminateButton, lastValuesButton]
+      for view in [acknowledgeView, stickyView, resolveView, terminateView, valuesView]
       {
-         button?.layer.cornerRadius = 4
-         button?.layer.shadowColor = UIColor(red:0.2, green:0.03, blue:0, alpha:0.3).cgColor
-         button?.layer.shadowOpacity = 1
-         button?.layer.shadowOffset = CGSize(width: 0, height: 4)
-         button?.layer.shadowRadius = 6
+         view?.layer.cornerRadius = 4
+         view?.layer.shadowColor = UIColor(red:0.2, green:0.03, blue:0, alpha:0.3).cgColor
+         view?.layer.shadowOpacity = 1
+         view?.layer.shadowOffset = CGSize(width: 0, height: 4)
+         view?.layer.shadowRadius = 6
       }
       
       let actionsBarButtonItem = UIBarButtonItem(title: "Actions", style: .plain, target: self, action: #selector(openMenu))

@@ -11,8 +11,10 @@
 		11043454210F3543003DB91A /* LastValuesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11043453210F3543003DB91A /* LastValuesCell.swift */; };
 		1104347D21105D17003DB91A /* LineChartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104347C21105D17003DB91A /* LineChartViewController.swift */; };
 		1104348F211199B7003DB91A /* LargeValueFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104348E211199B7003DB91A /* LargeValueFormatter.swift */; };
+		1106F3AB22A80251007194BE /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1106F3AA22A80251007194BE /* LocationViewController.swift */; };
 		110CE04521525086007CED7F /* ObjectToolViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110CE04421525086007CED7F /* ObjectToolViewCell.swift */; };
 		110CE049215274E8007CED7F /* ObjectTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110CE048215274E8007CED7F /* ObjectTool.swift */; };
+		1121601122A65956001538CE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1121601022A65956001538CE /* Assets.xcassets */; };
 		1125612D21368C9500F492AD /* PredefinedGraphsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1125612C21368C9500F492AD /* PredefinedGraphsViewController.swift */; };
 		1125612F21368DE100F492AD /* GraphFolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1125612E21368DE100F492AD /* GraphFolder.swift */; };
 		1125613121368DFB00F492AD /* GraphSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1125613021368DFB00F492AD /* GraphSettings.swift */; };
@@ -81,7 +83,6 @@
 		11C42593229550FD00008308 /* CredentialHistoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C42592229550FD00008308 /* CredentialHistoryCell.swift */; };
 		11C425952296A8BF00008308 /* MenuItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C425942296A8BF00008308 /* MenuItemCell.swift */; };
 		11C4259F2297E11F00008308 /* StatusCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4259E2297E11F00008308 /* StatusCodes.swift */; };
-		11C425A12297EC0500008308 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11C425A02297EC0500008308 /* Assets.xcassets */; };
 		11DDCE6420D2561700CF2BB1 /* ObjectBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DDCE6320D2561700CF2BB1 /* ObjectBrowserViewController.swift */; };
 		11DDCE6620D257ED00CF2BB1 /* ObjectBrowserViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DDCE6520D257ED00CF2BB1 /* ObjectBrowserViewCell.swift */; };
 /* End PBXBuildFile section */
@@ -201,8 +202,10 @@
 		11043453210F3543003DB91A /* LastValuesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastValuesCell.swift; sourceTree = "<group>"; };
 		1104347C21105D17003DB91A /* LineChartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChartViewController.swift; sourceTree = "<group>"; };
 		1104348E211199B7003DB91A /* LargeValueFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeValueFormatter.swift; sourceTree = "<group>"; };
+		1106F3AA22A80251007194BE /* LocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
 		110CE04421525086007CED7F /* ObjectToolViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectToolViewCell.swift; sourceTree = "<group>"; };
 		110CE048215274E8007CED7F /* ObjectTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectTool.swift; sourceTree = "<group>"; };
+		1121601022A65956001538CE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1125612C21368C9500F492AD /* PredefinedGraphsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredefinedGraphsViewController.swift; sourceTree = "<group>"; };
 		1125612E21368DE100F492AD /* GraphFolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphFolder.swift; sourceTree = "<group>"; };
 		1125613021368DFB00F492AD /* GraphSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphSettings.swift; sourceTree = "<group>"; };
@@ -274,7 +277,6 @@
 		11C42592229550FD00008308 /* CredentialHistoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialHistoryCell.swift; sourceTree = "<group>"; };
 		11C425942296A8BF00008308 /* MenuItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemCell.swift; sourceTree = "<group>"; };
 		11C4259E2297E11F00008308 /* StatusCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusCodes.swift; sourceTree = "<group>"; };
-		11C425A02297EC0500008308 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		11DDCE6320D2561700CF2BB1 /* ObjectBrowserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectBrowserViewController.swift; sourceTree = "<group>"; };
 		11DDCE6520D257ED00CF2BB1 /* ObjectBrowserViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectBrowserViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -324,6 +326,19 @@
 				1148CC41214FD9DB007005EC /* DateValueFormatter.swift */,
 			);
 			path = Formatters;
+			sourceTree = "<group>";
+		};
+		1121602722A679BA001538CE /* ObjectTools */ = {
+			isa = PBXGroup;
+			children = (
+				1148CC4821510C1A007005EC /* ObjectToolsViewController.swift */,
+				110CE04421525086007CED7F /* ObjectToolViewCell.swift */,
+				1192CCB9223FEC3800FB1DE1 /* ObjectToolFolderViewCell.swift */,
+				114995AB217F02BF002F2FE6 /* ObjectToolOutputViewController.swift */,
+				112B7FED21AE98C0009AAD52 /* ObjectDetailsNoDataCell.swift */,
+				1160B6BF21B53A690078EF27 /* ObjectToolsURLOutputViewController.swift */,
+			);
+			path = ObjectTools;
 			sourceTree = "<group>";
 		};
 		1125612921368C7300F492AD /* PredefinedGraphs */ = {
@@ -437,21 +452,22 @@
 		1161F7B1203EAFE700B9C845 /* NetXMS Mobile Console */ = {
 			isa = PBXGroup;
 			children = (
-				11C2DA26228C28EB0087C0F6 /* LoginView */,
-				1125612921368C7300F492AD /* PredefinedGraphs */,
+				1121602722A679BA001538CE /* ObjectTools */,
+				1137427B20A5920C00A80679 /* AlarmBrowser */,
 				1104347921105A94003DB91A /* Charts */,
+				1137427920A591C500A80679 /* Images */,
 				11B67996210B2678005C8C4B /* LastValues */,
+				11C2DA26228C28EB0087C0F6 /* LoginView */,
+				1137427C20A5922A00A80679 /* MainView */,
 				113F8E8A20EF54240076A79E /* Objects */,
 				11AF174320CFEFCC005607FD /* ObjectBrowser */,
+				1125612921368C7300F492AD /* PredefinedGraphs */,
 				1161F7E3203EB03F00B9C845 /* Connection.swift */,
-				1137427920A591C500A80679 /* Images */,
 				1161F7B2203EAFE700B9C845 /* AppDelegate.swift */,
-				11C425A02297EC0500008308 /* Assets.xcassets */,
+				1121601022A65956001538CE /* Assets.xcassets */,
 				1161F7B6203EAFE700B9C845 /* Main.storyboard */,
 				1161F7BB203EAFE700B9C845 /* LaunchScreen.storyboard */,
 				1161F7BE203EAFE700B9C845 /* Info.plist */,
-				1137427B20A5920C00A80679 /* AlarmBrowser */,
-				1137427C20A5922A00A80679 /* MainView */,
 				11C4259E2297E11F00008308 /* StatusCodes.swift */,
 			);
 			path = "NetXMS Mobile Console";
@@ -483,12 +499,7 @@
 				1189A8B620F754E300510DB4 /* ObjectDetailsViewController.swift */,
 				1189A8B820F7557900510DB4 /* ObjectDetailsAlarmCell.swift */,
 				116F027120F761E200056C7F /* ObjectDetailsLastValuesCell.swift */,
-				1148CC4821510C1A007005EC /* ObjectToolsViewController.swift */,
-				110CE04421525086007CED7F /* ObjectToolViewCell.swift */,
-				1192CCB9223FEC3800FB1DE1 /* ObjectToolFolderViewCell.swift */,
-				114995AB217F02BF002F2FE6 /* ObjectToolOutputViewController.swift */,
-				112B7FED21AE98C0009AAD52 /* ObjectDetailsNoDataCell.swift */,
-				1160B6BF21B53A690078EF27 /* ObjectToolsURLOutputViewController.swift */,
+				1106F3AA22A80251007194BE /* LocationViewController.swift */,
 			);
 			path = ObjectBrowser;
 			sourceTree = "<group>";
@@ -730,7 +741,7 @@
 				119DDFE8229290470055D4A4 /* major.png in Resources */,
 				119DDFE4229290470055D4A4 /* Aknowledge.png in Resources */,
 				1161F7BD203EAFE700B9C845 /* LaunchScreen.storyboard in Resources */,
-				11C425A12297EC0500008308 /* Assets.xcassets in Resources */,
+				1121601122A65956001538CE /* Assets.xcassets in Resources */,
 				119DDFF3229290470055D4A4 /* minor.png in Resources */,
 				119DDFE7229290470055D4A4 /* filter.png in Resources */,
 				119DDFEB229290470055D4A4 /* node.png in Resources */,
@@ -776,6 +787,7 @@
 				1160B6C021B53A690078EF27 /* ObjectToolsURLOutputViewController.swift in Sources */,
 				1137427620A4957600A80679 /* MainNavigationController.swift in Sources */,
 				1137427820A49C9D00A80679 /* MainViewController.swift in Sources */,
+				1106F3AB22A80251007194BE /* LocationViewController.swift in Sources */,
 				1137427E20A5926800A80679 /* AlarmDetailsViewController.swift in Sources */,
 				1104347D21105D17003DB91A /* LineChartViewController.swift in Sources */,
 				1161F7EF203EFC1C00B9C845 /* AlarmBrowserViewController.swift in Sources */,

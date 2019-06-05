@@ -17,6 +17,7 @@ class CredentialHistoryCell: UITableViewCell
    {
       super.init(style: style, reuseIdentifier: reuseIdentifier)
 
+      backgroundColor = UIColor(red: 0.92, green: 0.94, blue: 0.96, alpha: 0.8)
       //urlLabel.text = "url"
       url.font = UIFont.systemFont(ofSize: 14, weight: UIFont.Weight.medium)
       url.textAlignment = .left

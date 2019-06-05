@@ -9,17 +9,37 @@
 import Foundation
 import UIKit
 
-class Alarm
+enum State: Int
 {
-   /**
-    * Alarm states
-    **/
-   static public let STATE_OUTSTANDING = 0
-   static public let STATE_ACKNOWLEDGED = 1
-   static public let STATE_RESOLVED = 2
-   static public let STATE_TERMINATED = 3
-   static public let STATE_ACKNOWLEDGED_STICKY = 4
+   case OUTSTANDING = 0
+   case ACKNOWLEDGED = 1
+   case RESOLVED = 2
+   case TERMINATED = 3
+   case ACKNOWLEDGED_STICKY = 4
+   case UNKNOWN = 5
    
+   static func resolveState(state: Int) -> State
+   {
+      switch (state)
+      {
+      case 0:
+         return State.OUTSTANDING
+      case 1:
+         return State.ACKNOWLEDGED
+      case 2:
+         return State.RESOLVED
+      case 3:
+         return State.TERMINATED
+      case 4:
+         return State.ACKNOWLEDGED_STICKY
+      default:
+         return State.UNKNOWN
+      }
+   }
+}
+
+class Alarm
+{   
    let ackByUser: Int
    let ackTime: Int
    let commentsCount: Int
@@ -38,7 +58,7 @@ class Alarm
    let sourceEventCode: Int
    let sourceEventId: Int
    let sourceObjectId: Int
-   var state: Int
+   var state: State
    let sticky: Int
    let terminatedByUser: Int
    let timeout: Int
@@ -64,7 +84,7 @@ class Alarm
       self.sourceEventCode = json["sourceEventCode"] as? Int ?? 0
       self.sourceEventId = json["sourceEventId"] as? Int ?? 0
       self.sourceObjectId = json["sourceObjectId"] as? Int ?? -1
-      self.state = json["state"] as? Int ?? 0
+      self.state = State.resolveState(state: json["state"] as? Int ?? 5)
       self.sticky = json["sticky"] as? Int ?? 0
       self.terminatedByUser = json["terminateByUser"] as? Int ?? -1
       self.timeout = json["timeout"] as? Int ?? 0

@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "alarm-outstanding_x1.png",
+      "filename" : "mobile_x1.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "alarm-outstanding_x2.png",
+      "filename" : "mobile_x2.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "alarm-outstanding_x3.png",
+      "filename" : "mobile_x3.png",
       "scale" : "3x"
     }
   ],
