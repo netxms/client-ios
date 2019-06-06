@@ -33,31 +33,31 @@ class AlarmBrowserViewCell: UITableViewCell
       setState()
    }
    
-   func setState()
+   func setState(state: State? = nil)
    {
       if let alarm = alarm
       {
          let alpha: CGFloat = 1
          stateLabel.backgroundColor = UIColor.clear
          stateLabel.layer.cornerRadius = 4
-         switch alarm.state
+         switch (state != nil ? state : alarm.state)
          {
-         case .OUTSTANDING:
+         case .OUTSTANDING?:
             stateLabel.text = "Outstanding"
             stateLabel.layer.backgroundColor = UIColor(red: 1, green: 0.627, blue: 0, alpha: alpha).cgColor
-         case .ACKNOWLEDGED:
+         case .ACKNOWLEDGED?:
             stateLabel.text = "Acknowledged"
             stateLabel.layer.backgroundColor = UIColor(red: 0.686, green: 0.706, blue: 0.169, alpha: alpha).cgColor
-         case .RESOLVED:
+         case .RESOLVED?:
             stateLabel.text = "Resolved"
             stateLabel.layer.backgroundColor = UIColor(red: 0.376, green: 0.490, blue: 0.545, alpha: alpha).cgColor
-         case .TERMINATED:
+         case .TERMINATED?:
             stateLabel.text = "Terminated"
             stateLabel.layer.backgroundColor = UIColor(red: 180, green: 0, blue: 0, alpha: alpha).cgColor
-         case State.ACKNOWLEDGED_STICKY:
+         case .ACKNOWLEDGED_STICKY?:
             stateLabel.text = "Acknowledged"
             stateLabel.layer.backgroundColor = UIColor(red: 0.686, green: 0.706, blue: 0.169, alpha: alpha).cgColor
-         case .UNKNOWN:
+         default:
             stateLabel.text = "Unknown"
             stateLabel.layer.backgroundColor = UIColor(red: 0, green: 0, blue: 128, alpha: alpha).cgColor
          }

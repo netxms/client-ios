@@ -63,6 +63,7 @@ class ObjectBrowserViewCell: UITableViewCell
       {
          buttonWidth.constant = CGFloat(80)
          nameTrailing.constant = CGFloat(42)
+         nextImage.isHidden = false
       }
       else
       {

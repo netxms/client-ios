@@ -34,8 +34,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UITableViewDel
       NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
       self.apiUrl.addTarget(self, action: #selector(apiUrlIsEdited), for: .editingChanged)
       
-      historyTable.layer.cornerRadius = 4
-      
       loadCredentialsFromKeyChain()
       
       self.apiUrl.delegate = self
@@ -44,8 +42,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UITableViewDel
       
       self.historyTable.delegate = self
       self.historyTable.dataSource = self
-      self.historyTable.register(CredentialHistoryCell.self, forCellReuseIdentifier: "CredentialHistoryCell")
-      self.historyTable.rowHeight = 48
       
       if apiUrl.text?.isEmpty == false
       {
@@ -103,8 +99,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UITableViewDel
          {
             filteredCredentialHistory = credentialHistory
          }
-         print(filteredCredentialHistory.count)
-         historyTableHeight.constant = CGFloat(filteredCredentialHistory.count * 48)
+         let credentialCount = CGFloat(filteredCredentialHistory.count)
+         historyTableHeight.constant = credentialCount < 9 ? credentialCount * historyTable.rowHeight : 480
          self.historyTable.reloadData()
          self.view.updateConstraints()
       }
@@ -122,8 +118,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UITableViewDel
          if let credentials = filteredCredentialHistory[indexPath.row].components(separatedBy: "@") as [String]?,
             credentials.count == 2
          {
-            cell.login.text = credentials[0]
-            cell.url.text = credentials[1]
+            cell.fillCell(url: credentials[1], name: credentials[0])
 
             return cell
          }
@@ -137,7 +132,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UITableViewDel
       if let cell = tableView.cellForRow(at: indexPath) as? CredentialHistoryCell
       {
          if let url = cell.url.text,
-            let login = cell.login.text
+            let login = cell.name.text
          {
             self.apiUrl.text = url
             self.login.text = login
@@ -150,6 +145,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UITableViewDel
             {
                self.password.text = ""
             }
+            self.underlineURL.backgroundColor = UIColor.darkGray
             self.underlineUsername.backgroundColor = UIColor.darkGray
          }
       }
@@ -227,6 +223,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UITableViewDel
    {
       if !(apiUrl.text?.isEmpty)! && !(login.text?.isEmpty)!
       {
+         errorLabel.text = ""
          startLoading()
          Connection.sharedInstance = Connection(login: login.text!, password: password.text ?? "", apiUrl: apiUrl.text!)
          Connection.sharedInstance?.loginView = self
@@ -308,7 +305,24 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UITableViewDel
       loadingIndicator.activityIndicatorViewStyle = UIActivityIndicatorView.Style.gray
       loadingIndicator.startAnimating();
       alert.view.addSubview(loadingIndicator)
+      
+      let stopImage = UIGraphicsImageRenderer(size: CGSize(width: 30, height: 30)).image { _ in
+         UIImage(imageLiteralResourceName: "stop").draw(in: CGRect(x: 0, y: 0, width: 30, height: 30))
+      }
+      
+      let stopButton = UIButton(type: .system)
+      stopButton.setImage(stopImage, for: UIControlState.normal)
+      stopButton.frame = CGRect(x: 238, y: 2, width: 30, height: 30)
+      stopButton.addTarget(self, action: #selector(onStopButtonPressed), for: UIControlEvents.touchDown)
+      stopButton.tintColor = UIColor.black
+      alert.view.addSubview(stopButton)
+      
       self.present(alert, animated: true, completion: nil)
+   }
+   
+   @objc func onStopButtonPressed()
+   {
+      Connection.sharedInstance?.dataTask?.cancel()
    }
    
    func stopLoading(completition: (() -> Void)?)

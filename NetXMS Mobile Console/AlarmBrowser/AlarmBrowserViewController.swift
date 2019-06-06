@@ -18,6 +18,32 @@ extension UIImageView
    }
 }
 
+extension Array
+{
+   mutating func insert(elem: Element, isOrderedBefore: (Element, Element) -> Bool) -> Int
+   {
+      var lo = 0
+      var hi = self.count - 1
+      while lo <= hi
+      {
+         let mid = (lo + hi)/2
+         if isOrderedBefore(self[mid], elem)
+         {
+            lo = mid + 1
+         } else if isOrderedBefore(elem, self[mid])
+         {
+            hi = mid - 1
+         } else
+         {
+            insert(elem, at: mid)
+            return mid // found at position mid
+         }
+      }
+      insert(elem, at: lo)
+      return lo // not found, would be inserted at position lo
+   }
+}
+
 class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
 {
    var alarms: [Alarm]!
@@ -31,6 +57,8 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
    {
       super.viewDidLoad()
       
+      refreshControl?.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
+      
       selectBarButtonItem = UIBarButtonItem(title: "Select", style: .plain, target: self, action: #selector(AlarmBrowserViewController.selectButtonPressed(_:)))
       
       setToolbarButtons()
@@ -42,37 +70,121 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       self.searchBar.delegate = self
       let searchBarHeight = searchBar.frame.size.height
       tableView.setContentOffset(CGPoint(x: 0, y: searchBarHeight), animated: false)
-      alarms = (Connection.sharedInstance?.getSortedAlarms())!
-      if object != nil
+      
+      filteredAlarms = filterAlarms()
+      
+      NotificationCenter.default.addObserver(self, selector: #selector(onAlarmChanged(_:)), name: .alarmsChanged, object: nil)
+      NotificationCenter.default.addObserver(self, selector: #selector(onAlarmTerminated(_:)), name: .alarmsTerminated, object: nil)
+      NotificationCenter.default.addObserver(self, selector: #selector(onAlarmResolved(_:)), name: .alarmsResolved, object: nil)
+      NotificationCenter.default.addObserver(self, selector: #selector(onAlarmsReceived), name: .alarmsReceived, object: nil)
+   }
+   
+   func filterAlarms() -> [Alarm]
+   {
+      if let alarms = (Connection.sharedInstance?.getSortedAlarms())
       {
-         for a in alarms
+         var result = [Alarm]()
+         if let object = object
          {
-            if object.children.count > 0 && object.objectClass == ObjectClass.OBJECT_CONTAINER
+            for a in alarms
             {
-               for c in object.children
+               if object.objectClass == ObjectClass.OBJECT_CONTAINER && object.children.count > 0
                {
-                  if a.sourceObjectId == c
+                  for c in object.children
                   {
-                     filteredAlarms.append(a)
+                     if a.sourceObjectId == c
+                     {
+                        result.append(a)
+                     }
                   }
                }
+               else
+               {
+                  result = alarms.filter { $0.sourceObjectId == object.objectId }
+               }
+            }
+            return result
+         }
+         else
+         {
+            return alarms
+         }
+      }
+      
+      return[]
+   }
+   
+   @objc func onAlarmsReceived()
+   {
+      if let alarms = alarms,
+         alarms.isEmpty
+      {
+         refresh()
+      }
+   }
+   
+   @objc func onAlarmChanged(_ notification: NSNotification)
+   {
+      /*if let alarm = notification.userInfo?["alarm"] as? Alarm
+      {
+         let position = filteredAlarms.insert(elem: alarm)
+         {
+            if ($0.currentSeverity.rawValue == $1.currentSeverity.rawValue),
+               let name1 = Connection.sharedInstance?.resolveObjectName(objectId: $0.sourceObjectId),
+               let name2 = Connection.sharedInstance?.resolveObjectName(objectId: $1.sourceObjectId)
+            {
+               return (name1.lowercased()) < (name2.lowercased())
             }
             else
             {
-               filteredAlarms = alarms.filter { $0.sourceObjectId == object.objectId }
+               return $0.currentSeverity.rawValue > $1.currentSeverity.rawValue
             }
          }
-      }
-      else
-      {
-         filteredAlarms = alarms
-      }
-      
-      NotificationCenter.default.addObserver(self, selector: #selector(onAlarmChanged), name: .alarmsChanged, object: nil)
+         tableView.beginUpdates()
+         tableView.insertRows(at: [IndexPath(row: position, section: 0)], with: .fade)
+         tableView.endUpdates()
+      }*/
+      refresh()
    }
    
-   @objc func onAlarmChanged()
+   @objc func onAlarmTerminated(_ notification: NSNotification)
    {
+      /*if let alarmIds = notification.userInfo?["alarmIds"] as? [Int]
+      {
+         for id in alarmIds
+         {
+            if let pos = filteredAlarms.firstIndex(where: { (alarm) -> Bool in
+               return alarm.id == id
+            })
+            {
+               if let cell = tableView.cellForRow(at: IndexPath(row: pos, section: 0)) as? AlarmBrowserViewCell
+               {
+                  cell.setState(state: State.TERMINATED)
+               }
+            }
+
+         }
+      }*/
+      refresh()
+   }
+   
+   @objc func onAlarmResolved(_ notification: NSNotification)
+   {
+      /*if let alarmIds = notification.userInfo?["alarmIds"] as? [Int]
+      {
+         for id in alarmIds
+         {
+            if let pos = filteredAlarms.firstIndex(where: { (alarm) -> Bool in
+               return alarm.id == id
+            })
+            {
+               if let cell = tableView.cellForRow(at: IndexPath(row: pos, section: 0)) as? AlarmBrowserViewCell
+               {
+                  cell.setState(state: State.RESOLVED)
+               }
+            }
+         }
+      }*/
       refresh()
    }
    
@@ -145,34 +257,11 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       self.setToolbarItems([acknowledgeBarButton, flexibleSpace, resolveBarButton, flexibleSpace, terminateBarButton], animated: true)
    }
    
-   func refresh()
+   @objc func refresh()
    {
-      alarms = (Connection.sharedInstance?.getSortedAlarms())!
-      if object != nil
-      {
-         for a in alarms
-         {
-            if object.children.count > 0 && object.objectClass == ObjectClass.OBJECT_CONTAINER
-            {
-               for c in object.children
-               {
-                  if a.sourceObjectId == c
-                  {
-                     filteredAlarms.append(a)
-                  }
-               }
-            }
-            else
-            {
-               filteredAlarms = alarms.filter { $0.sourceObjectId == object.objectId }
-            }
-         }
-      }
-      else
-      {
-         filteredAlarms = alarms
-      }
+      filteredAlarms = filterAlarms()
       self.tableView.reloadData()
+      refreshControl?.endRefreshing()
    }
    
    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String)
@@ -189,6 +278,10 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
                return true
             }
             else if Connection.sharedInstance?.resolveObjectName(objectId: alarm.sourceObjectId).lowercased().range(of: searchText.lowercased()) != nil
+            {
+               return true
+            }
+            else if alarm.currentSeverity == Severity.resolveSeverity(severity: searchText.uppercased())
             {
                return true
             }
@@ -228,7 +321,11 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
    {
       let acknowledge =  UIContextualAction(style: .normal, title: "Acknowledge") { action,view,completionHandler in
          Connection.sharedInstance?.modifyAlarm(alarmId: self.filteredAlarms[indexPath.row].id, action: AlarmAction.ACKNOWLEDGE)
-         completionHandler(true)
+         if let cell = tableView.cellForRow(at: indexPath) as? AlarmBrowserViewCell
+         {
+            cell.setState(state: .ACKNOWLEDGED)
+         }
+         tableView.setEditing(false, animated: true)
       }
       acknowledge.image = UIGraphicsImageRenderer(size: CGSize(width: 50, height: 50)).image { _ in
          UIImage(imageLiteralResourceName: "acknowledged").draw(in: CGRect(x: 0, y: 0, width: 50, height: 50))
@@ -236,6 +333,9 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       
       let terminate =  UIContextualAction(style: .destructive, title: "Terminate") { action,view,completionHandler in
          Connection.sharedInstance?.modifyAlarm(alarmId: self.filteredAlarms[indexPath.row].id, action: AlarmAction.TERMINATE)
+         self.filteredAlarms.remove(at: indexPath.row)
+         tableView.deleteRows(at: [indexPath], with: .fade)
+         tableView.setEditing(false, animated: true)
       }
       terminate.image = UIGraphicsImageRenderer(size: CGSize(width: 50, height: 50)).image { _ in
          UIImage(imageLiteralResourceName: "terminated").draw(in: CGRect(x: 0, y: 0, width: 50, height: 50))
@@ -252,6 +352,7 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
          {
             self.tableView.setEditing(true, animated: true)
             setCancelButtonState(enabled: true)
+            self.navigationController?.setToolbarHidden(false, animated: true)
             // your code here, get the row for the indexPath or do whatever you want
          }
       }
@@ -316,7 +417,9 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
    
    override func viewWillDisappear(_ animated: Bool)
    {
+      self.tableView.setEditing(false, animated: true)
       self.navigationController?.setToolbarHidden(true, animated: true)
+      setCancelButtonState(enabled: false)
    }
    
    func setCancelButtonState(enabled: Bool)

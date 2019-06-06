@@ -12,6 +12,7 @@
 		1104347D21105D17003DB91A /* LineChartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104347C21105D17003DB91A /* LineChartViewController.swift */; };
 		1104348F211199B7003DB91A /* LargeValueFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104348E211199B7003DB91A /* LargeValueFormatter.swift */; };
 		1106F3AB22A80251007194BE /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1106F3AA22A80251007194BE /* LocationViewController.swift */; };
+		1106F3B222A986BE007194BE /* icons8-cancel.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 1106F3B122A986BE007194BE /* icons8-cancel.pdf */; };
 		110CE04521525086007CED7F /* ObjectToolViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110CE04421525086007CED7F /* ObjectToolViewCell.swift */; };
 		110CE049215274E8007CED7F /* ObjectTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110CE048215274E8007CED7F /* ObjectTool.swift */; };
 		1121601122A65956001538CE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1121601022A65956001538CE /* Assets.xcassets */; };
@@ -203,6 +204,7 @@
 		1104347C21105D17003DB91A /* LineChartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChartViewController.swift; sourceTree = "<group>"; };
 		1104348E211199B7003DB91A /* LargeValueFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeValueFormatter.swift; sourceTree = "<group>"; };
 		1106F3AA22A80251007194BE /* LocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
+		1106F3B122A986BE007194BE /* icons8-cancel.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "icons8-cancel.pdf"; sourceTree = "<group>"; };
 		110CE04421525086007CED7F /* ObjectToolViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectToolViewCell.swift; sourceTree = "<group>"; };
 		110CE048215274E8007CED7F /* ObjectTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectTool.swift; sourceTree = "<group>"; };
 		1121601022A65956001538CE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -362,6 +364,7 @@
 		1137427920A591C500A80679 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				1106F3B122A986BE007194BE /* icons8-cancel.pdf */,
 				119DDFF7229290F70055D4A4 /* AlarmBrowser.png */,
 				119DDFF8229290F70055D4A4 /* ObjectBrowser.png */,
 				119DDFF9229290F70055D4A4 /* PredefinedGraphs.png */,
@@ -737,6 +740,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1106F3B222A986BE007194BE /* icons8-cancel.pdf in Resources */,
 				119DDFEF229290470055D4A4 /* cluster.png in Resources */,
 				119DDFE8229290470055D4A4 /* major.png in Resources */,
 				119DDFE4229290470055D4A4 /* Aknowledge.png in Resources */,

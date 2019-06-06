@@ -117,20 +117,6 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
       return objects.count
    }
    
-   func setArrow(object: AbstractObject, cell: ObjectBrowserViewCell)
-   {
-      if object.objectClass == .OBJECT_CONTAINER || object.objectClass == .OBJECT_SUBNET
-      {
-         cell.buttonWidth.constant = CGFloat(80)
-         cell.nameTrailing.constant = CGFloat(42)
-      }
-      else
-      {
-         cell.buttonWidth.constant = CGFloat(0)
-         cell.nextImage.isHidden = true
-      }
-   }
-   
    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
    {
       if let cell = tableView.dequeueReusableCell(withIdentifier: "ObjectCell", for: indexPath) as? ObjectBrowserViewCell

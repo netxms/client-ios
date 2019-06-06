@@ -291,43 +291,12 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
       }
       else if tableView == self.lastValuesTable && self.lastValuesWithActiveThresholds.count > 0
       {
-         let cell: ObjectDetailsLastValuesCell = tableView.dequeueReusableCell(withIdentifier: "ObjectDetailsLastValuesCell", for: indexPath) as! ObjectDetailsLastValuesCell
-
-         cell.name.text = lastValuesWithActiveThresholds[indexPath.row].description
-         cell.value.text = lastValuesWithActiveThresholds[indexPath.row].value.description
-         cell.timestamp.text = DateFormatter.localizedString(from: Date(timeIntervalSince1970: lastValuesWithActiveThresholds[indexPath.row].timestamp), dateStyle: DateFormatter.Style.short, timeStyle: DateFormatter.Style.short)
-         
-         if let activeThreshold = lastValuesWithActiveThresholds[indexPath.row].activeThreshold
+         if let cell = tableView.dequeueReusableCell(withIdentifier: "ObjectDetailsLastValuesCell", for: indexPath) as? ObjectDetailsLastValuesCell
          {
-            switch activeThreshold.currentSeverity
-            {
-            case Severity.NORMAL:
-               cell.statusLabel.text = "Normal"
-               cell.statusLabel.textColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
-            case Severity.WARNING:
-               cell.statusLabel.text = "Warning"
-               cell.statusLabel.textColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
-            case Severity.MINOR:
-               cell.statusLabel.text = "Minor"
-               cell.statusLabel.textColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
-            case Severity.MAJOR:
-               cell.statusLabel.text = "Major"
-               cell.statusLabel.textColor = UIColor(red: 255, green: 0, blue: 0, alpha: 100)
-            case Severity.CRITICAL:
-               cell.statusLabel.text = "Critical"
-               cell.statusLabel.textColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
-            case Severity.UNKNOWN:
-               cell.statusLabel.text = "Unknown"
-               cell.statusLabel.textColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
-            case Severity.TERMINATE:
-               cell.statusLabel.text = "Terminate"
-               cell.statusLabel.textColor = UIColor(red: 139, green: 0, blue: 0, alpha: 100)
-            case Severity.RESOLVE:
-               cell.statusLabel.text = "Resolve"
-               cell.statusLabel.textColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
-            }
+            cell.fillCell(value: lastValuesWithActiveThresholds[indexPath.row])
+            
+            return cell
          }
-         return cell
       }
       else
       {
@@ -335,6 +304,8 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
          
          return cell
       }
+      
+      return UITableViewCell()
    }
    
    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)

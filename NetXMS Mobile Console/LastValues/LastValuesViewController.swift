@@ -26,6 +26,10 @@ class LastValuesViewController: UITableViewController, UISearchBarDelegate
       self.title = "Last Values"
       Connection.sharedInstance?.getLastValues(objectId: objectId, onSuccess: onGetLastValuesSuccess)
       
+      let actionButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(onActionPressed))
+      actionButtonItem.tintColor = UIColor.blue
+      self.setToolbarItems([actionButtonItem], animated: true)
+      
       self.searchBar.delegate = self
       let searchBarHeight = searchBar.frame.size.height
       tableView.setContentOffset(CGPoint(x: 0, y: searchBarHeight), animated: false)
@@ -100,64 +104,18 @@ class LastValuesViewController: UITableViewController, UISearchBarDelegate
    
    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
    {
-      let cell: LastValuesCell = tableView.dequeueReusableCell(withIdentifier: "LastValuesCell", for: indexPath) as! LastValuesCell
-      
-      cell.dciValue = filteredLastValues[indexPath.row]
-      cell.dciName.text = filteredLastValues[indexPath.row].description
-      cell.timestamp.text = DateFormatter.localizedString(from: Date(timeIntervalSince1970: filteredLastValues[indexPath.row].timestamp), dateStyle: DateFormatter.Style.short, timeStyle: DateFormatter.Style.short)
-      if filteredLastValues[indexPath.row].value == ""
+      if let cell = tableView.dequeueReusableCell(withIdentifier: "LastValuesCell", for: indexPath) as? LastValuesCell
       {
-         cell.value.text = "<ERROR>"
-         cell.value.textColor = UIColor.red
+         cell.fillCell(value: filteredLastValues[indexPath.row])
+         
+         return cell
       }
-      else
-      {
-         let formatter = LargeValueFormatter()
-         cell.value.text = formatter.stringForValue(Double(filteredLastValues[indexPath.row].value)!, axis: nil)
-         cell.value.textColor = UIColor.black
-      }
-      
-      if let activeThreshold = filteredLastValues[indexPath.row].activeThreshold
-      {
-         switch activeThreshold.currentSeverity
-         {
-         case Severity.NORMAL:
-            cell.statusLabel.text = "Normal"
-            cell.statusLabel.textColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
-         case Severity.WARNING:
-            cell.statusLabel.text = "Warning"
-            cell.statusLabel.textColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
-         case Severity.MINOR:
-            cell.statusLabel.text = "Minor"
-            cell.statusLabel.textColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
-         case Severity.MAJOR:
-            cell.statusLabel.text = "Major"
-            cell.statusLabel.textColor = UIColor(red: 255, green: 0, blue: 0, alpha: 100)
-         case Severity.CRITICAL:
-            cell.statusLabel.text = "Critical"
-            cell.statusLabel.textColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
-         case Severity.UNKNOWN:
-            cell.statusLabel.text = "Unknown"
-            cell.statusLabel.textColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
-         case Severity.TERMINATE:
-            cell.statusLabel.text = "Terminate"
-            cell.statusLabel.textColor = UIColor(red: 139, green: 0, blue: 0, alpha: 100)
-         case Severity.RESOLVE:
-            cell.statusLabel.text = "Resolve"
-            cell.statusLabel.textColor = UIColor(red: 0, green: 128, blue: 0, alpha: 100)
-         }
-      }
-      else
-      {
-         cell.statusLabel.text = ""
-      }
-      
-      return cell
+      return UITableViewCell()
    }
    
    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
    {
-      if filteredLastValues[indexPath.row].value.isEmpty
+      if filteredLastValues[indexPath.row].value == Double(-1)
       {
          self.tableView.deselectRow(at: indexPath, animated: false)
          return
@@ -205,7 +163,7 @@ class LastValuesViewController: UITableViewController, UISearchBarDelegate
       }
    }
    
-   @IBAction func onActionPressed(_ sender: Any)
+   @objc func onActionPressed()
    {
       if let lineChartVC = storyboard?.instantiateViewController(withIdentifier: "LastValuesChartController")
       {

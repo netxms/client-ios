@@ -124,7 +124,7 @@ class DciValue
 {
    let dcObjectType: Int
    let name: String
-   let value: String
+   let value: Double
    let source: Int
    let id: Int
    let errorCount: Int
@@ -140,7 +140,7 @@ class DciValue
    {
       self.dcObjectType = json["dcObjectType"] as? Int ?? -1
       self.name = json["name"] as? String ?? ""
-      self.value = json["value"] as? String ?? ""
+      self.value = Double(json["value"] as? String ?? "") ?? -1
       self.source = json["source"] as? Int ?? -1
       self.id = json["id"] as? Int ?? 0
       self.errorCount = json["errorCount"] as? Int ?? 0

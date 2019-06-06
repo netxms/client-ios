@@ -34,6 +34,9 @@ struct RequestData
 extension Notification.Name
 {
    static let alarmsChanged = Notification.Name("alarmsChanged")
+   static let alarmsTerminated = Notification.Name("alarmsTerminated")
+   static let alarmsResolved = Notification.Name("alarmsResolved")
+   static let alarmsReceived = Notification.Name("alarmsReceived")
    static let objectChanged = Notification.Name("objectChanged")
 }
 
@@ -57,6 +60,7 @@ class Connection: NSObject, URLSessionDelegate
    var failedRequest: URLRequest?
    var handler: (([String : Any]?) -> Void)?
    var notificationWorkItem: DispatchWorkItem?
+   var dataTask: URLSessionDataTask?
    
    // Views
    var loginView: LoginViewController?
@@ -143,6 +147,7 @@ class Connection: NSObject, URLSessionDelegate
          request.setValue(value, forHTTPHeaderField: key)
       }
       
+      request.timeoutInterval = 10
       return request
    }
    
@@ -152,7 +157,7 @@ class Connection: NSObject, URLSessionDelegate
    func sendRequest(request: URLRequest, onSuccess: @escaping ([String : Any]?) -> Void, onFailure: ((Any?) -> Void)? = nil)
    {
       let session = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: OperationQueue.main)
-      let task = session.dataTask(with: request) { data, response, error in
+      dataTask = session.dataTask(with: request) { data, response, error in
          if let data = data,
             let response = response as? HTTPURLResponse
          {
@@ -184,7 +189,7 @@ class Connection: NSObject, URLSessionDelegate
             }
          }
       }
-      task.resume()
+      dataTask?.resume()
    }
    
    func onReloginSuccess(jsonData: [String : Any]?) -> Void
@@ -301,7 +306,7 @@ class Connection: NSObject, URLSessionDelegate
             let alarm = Alarm(json: a)
             alarmCache.updateValue(alarm, forKey: alarm.id)
          }
-         NotificationCenter.default.post(name: .alarmsChanged, object: nil)
+         NotificationCenter.default.post(name: .alarmsReceived, object: nil)
       }
    }
    
@@ -362,28 +367,30 @@ class Connection: NSObject, URLSessionDelegate
                if let alarm = n.object as? Alarm
                {
                   self.alarmCache.updateValue(alarm, forKey: alarm.id)
-                  NotificationCenter.default.post(name: .alarmsChanged, object: nil)
+                  NotificationCenter.default.post(name: .alarmsChanged, object: nil, userInfo: ["alarm" : alarm])
                }
             case NotificationCode.MULTIPLE_ALARMS_TERMINATED:
-               if let data = n.object as? BulkAlarmStateChangeData
+               if let data = n.object as? BulkAlarmStateChangeData,
+                  let alarms = data.alarms
                {
-                  for id in data.alarms ?? []
+                  for id in alarms
                   {
                      self.alarmCache.removeValue(forKey: id)
                   }
-                  NotificationCenter.default.post(name: .alarmsChanged, object: nil)
+                  NotificationCenter.default.post(name: .alarmsTerminated, object: nil, userInfo: ["alarmIds" : alarms])
                }
             case NotificationCode.MULTIPLE_ALARMS_RESOLVED:
-               if let data = n.object as? BulkAlarmStateChangeData
+               if let data = n.object as? BulkAlarmStateChangeData,
+                  let alarms = data.alarms
                {
-                  for id in data.alarms ?? []
+                  for id in alarms
                   {
                      if let alarm = self.alarmCache[id]
                      {
                         alarm.state = State.RESOLVED
                      }
                   }
-                  NotificationCenter.default.post(name: .alarmsChanged, object: nil)
+                  NotificationCenter.default.post(name: .alarmsResolved, object: nil, userInfo: ["alarmIds" : alarms])
                }
             case NotificationCode.OBJECT_CHANGED:
                if let object = n.object as? AbstractObject
@@ -539,7 +546,8 @@ class Connection: NSObject, URLSessionDelegate
    
    func getSortedAlarms() -> [Alarm]
    {
-      return alarmCache.values.sorted {
+      return alarmCache.values.sorted
+      {
          if ($0.currentSeverity.rawValue == $1.currentSeverity.rawValue)
          {
             return (resolveObjectName(objectId: $0.sourceObjectId).lowercased()) < (resolveObjectName(objectId: $1.sourceObjectId).lowercased())
