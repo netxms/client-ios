@@ -18,7 +18,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
    {
       self.navigationController?.setToolbarHidden(true, animated: false)
       
-      self.title = "\(Connection.sharedInstance!.session!.userData.name)@\(Connection.sharedInstance!.session!.serverData.address)"
+      self.title = "\(Connection.sharedInstance!.session!.serverData.serverName)"
       
       self.tableView.delegate = self
       self.tableView.dataSource = self

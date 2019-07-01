@@ -11,6 +11,7 @@ import Foundation
 class ServerData
 {
    let address: String
+   let serverName: String
    let color: String
    let id: Int
    let timeZone: String
@@ -19,6 +20,7 @@ class ServerData
    init?(json: [String : Any])
    {
       guard let address = json["address"] as? String,
+         let serverName = json["serverName"] as? String,
          let color = json["color"] as? String,
          let id = json["id"] as? Int,
          let timeZone = json["timeZone"] as? String,
@@ -28,6 +30,7 @@ class ServerData
          return nil
       }
       
+      self.serverName = serverName
       self.address = address
       self.color = color
       self.id = id

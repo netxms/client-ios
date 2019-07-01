@@ -16,6 +16,7 @@ class AlarmBrowserViewCell: UITableViewCell
    @IBOutlet weak var message: UILabel!
    @IBOutlet var stateLabel: UILabel!
    var alarm: Alarm?
+   var state: State?
    
    override func awakeFromNib()
    {
@@ -37,6 +38,7 @@ class AlarmBrowserViewCell: UITableViewCell
    {
       if let alarm = alarm
       {
+         self.state = state
          let alpha: CGFloat = 1
          stateLabel.backgroundColor = UIColor.clear
          stateLabel.layer.cornerRadius = 4
@@ -70,25 +72,24 @@ class AlarmBrowserViewCell: UITableViewCell
       {
          createdOn.backgroundColor = UIColor.clear
          createdOn.layer.cornerRadius = 4
-         let alpha: CGFloat = 1
          switch alarm.currentSeverity
          {
          case .NORMAL:
-            createdOn.layer.backgroundColor = UIColor(red: 0, green: 192, blue: 0, alpha: alpha).cgColor
+            createdOn.layer.backgroundColor = #colorLiteral(red: 0, green: 0.6724151373, blue: 0, alpha: 1)
          case .WARNING:
-            createdOn.layer.backgroundColor = UIColor(red: 0, green: 255, blue: 255, alpha: alpha).cgColor
+            createdOn.layer.backgroundColor = #colorLiteral(red: 0, green: 0.7642611861, blue: 0.7715749145, alpha: 1)
          case .MINOR:
-            createdOn.layer.backgroundColor = UIColor(red: 231, green: 226, blue: 0, alpha: alpha).cgColor
+            createdOn.layer.backgroundColor = #colorLiteral(red: 0.8109195232, green: 0.7863419056, blue: 0, alpha: 1)
          case .MAJOR:
-            createdOn.layer.backgroundColor = UIColor(red: 255, green: 0, blue: 0, alpha: alpha).cgColor
+            createdOn.layer.backgroundColor = #colorLiteral(red: 0.8439414501, green: 0.4790760279, blue: 0, alpha: 1)
          case .CRITICAL:
-            createdOn.layer.backgroundColor = UIColor(red: 192, green: 0, blue: 0, alpha: alpha).cgColor
+            createdOn.layer.backgroundColor = #colorLiteral(red: 0.7659458518, green: 0.1022023931, blue: 0, alpha: 1)
          case .UNKNOWN:
-            createdOn.layer.backgroundColor = UIColor(red: 0, green: 0, blue: 128, alpha: alpha).cgColor
+            createdOn.layer.backgroundColor = #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)
          case .TERMINATE:
-            createdOn.layer.backgroundColor = UIColor(red: 139, green: 0, blue: 0, alpha: alpha).cgColor
+            createdOn.layer.backgroundColor = UIColor(red: 180, green: 0, blue: 0, alpha: alpha).cgColor
          case .RESOLVE:
-            createdOn.layer.backgroundColor = UIColor(red: 0, green: 128, blue: 0, alpha: alpha).cgColor
+            createdOn.layer.backgroundColor = UIColor(red: 0.376, green: 0.490, blue: 0.545, alpha: alpha).cgColor
          }
       }
    }

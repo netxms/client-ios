@@ -57,6 +57,8 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
    {
       super.viewDidLoad()
       
+      self.title = "Alarms"
+      
       refreshControl?.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
       
       selectBarButtonItem = UIBarButtonItem(title: "Select", style: .plain, target: self, action: #selector(AlarmBrowserViewController.selectButtonPressed(_:)))
@@ -77,6 +79,11 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
       NotificationCenter.default.addObserver(self, selector: #selector(onAlarmTerminated(_:)), name: .alarmsTerminated, object: nil)
       NotificationCenter.default.addObserver(self, selector: #selector(onAlarmResolved(_:)), name: .alarmsResolved, object: nil)
       NotificationCenter.default.addObserver(self, selector: #selector(onAlarmsReceived), name: .alarmsReceived, object: nil)
+   }
+   
+   func searchBarSearchButtonClicked(_ searchBar: UISearchBar)
+   {
+      searchBar.resignFirstResponder()
    }
    
    func filterAlarms() -> [Alarm]
@@ -116,6 +123,7 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
    
    @objc func onAlarmsReceived()
    {
+      print("received")
       if let alarms = alarms,
          alarms.isEmpty
       {
@@ -125,8 +133,13 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
    
    @objc func onAlarmChanged(_ notification: NSNotification)
    {
-      /*if let alarm = notification.userInfo?["alarm"] as? Alarm
+      print("changed") // Fix alarms that are removed (e.g. maintenance mode)
+      if let alarm = notification.userInfo?["alarm"] as? Alarm,
+         !filteredAlarms.contains(where: { (a) -> Bool in
+            return a.id == alarm.id
+         })
       {
+         print("new")
          let position = filteredAlarms.insert(elem: alarm)
          {
             if ($0.currentSeverity.rawValue == $1.currentSeverity.rawValue),
@@ -143,49 +156,23 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
          tableView.beginUpdates()
          tableView.insertRows(at: [IndexPath(row: position, section: 0)], with: .fade)
          tableView.endUpdates()
-      }*/
-      refresh()
+      }
    }
    
    @objc func onAlarmTerminated(_ notification: NSNotification)
    {
+      print("terminated")
       /*if let alarmIds = notification.userInfo?["alarmIds"] as? [Int]
       {
-         for id in alarmIds
-         {
-            if let pos = filteredAlarms.firstIndex(where: { (alarm) -> Bool in
-               return alarm.id == id
-            })
-            {
-               if let cell = tableView.cellForRow(at: IndexPath(row: pos, section: 0)) as? AlarmBrowserViewCell
-               {
-                  cell.setState(state: State.TERMINATED)
-               }
-            }
-
-         }
       }*/
-      refresh()
    }
    
    @objc func onAlarmResolved(_ notification: NSNotification)
    {
+      print("resolved")
       /*if let alarmIds = notification.userInfo?["alarmIds"] as? [Int]
       {
-         for id in alarmIds
-         {
-            if let pos = filteredAlarms.firstIndex(where: { (alarm) -> Bool in
-               return alarm.id == id
-            })
-            {
-               if let cell = tableView.cellForRow(at: IndexPath(row: pos, section: 0)) as? AlarmBrowserViewCell
-               {
-                  cell.setState(state: State.RESOLVED)
-               }
-            }
-         }
       }*/
-      refresh()
    }
    
    func setToolbarButtons()
@@ -323,23 +310,31 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
          Connection.sharedInstance?.modifyAlarm(alarmId: self.filteredAlarms[indexPath.row].id, action: AlarmAction.ACKNOWLEDGE)
          if let cell = tableView.cellForRow(at: indexPath) as? AlarmBrowserViewCell
          {
-            cell.setState(state: .ACKNOWLEDGED)
+            if cell.state != .RESOLVED
+            {
+               cell.setState(state: .ACKNOWLEDGED)
+            }
          }
          tableView.setEditing(false, animated: true)
       }
       acknowledge.image = UIGraphicsImageRenderer(size: CGSize(width: 50, height: 50)).image { _ in
          UIImage(imageLiteralResourceName: "acknowledged").draw(in: CGRect(x: 0, y: 0, width: 50, height: 50))
       }
+      acknowledge.backgroundColor = UIColor.green
       
-      let terminate =  UIContextualAction(style: .destructive, title: "Terminate") { action,view,completionHandler in
+      let terminate =  UIContextualAction(style: .normal, title: "Terminate") { action,view,completionHandler in
          Connection.sharedInstance?.modifyAlarm(alarmId: self.filteredAlarms[indexPath.row].id, action: AlarmAction.TERMINATE)
          self.filteredAlarms.remove(at: indexPath.row)
-         tableView.deleteRows(at: [indexPath], with: .fade)
+         tableView.beginUpdates()
+         tableView.deleteRows(at: [indexPath], with: .left)
+         tableView.endUpdates()
          tableView.setEditing(false, animated: true)
       }
       terminate.image = UIGraphicsImageRenderer(size: CGSize(width: 50, height: 50)).image { _ in
          UIImage(imageLiteralResourceName: "terminated").draw(in: CGRect(x: 0, y: 0, width: 50, height: 50))
       }
+      terminate.backgroundColor = UIColor.red
+      
       return UISwipeActionsConfiguration(actions: [acknowledge, terminate])
    }
    
@@ -367,16 +362,22 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
    @objc func onAcknowledgePressed()
    {
       var alarms = [Int]()
-      for cell in self.tableView.visibleCells
+      if let selectedRows = self.tableView.indexPathsForSelectedRows
       {
-         if let cell = cell as? AlarmBrowserViewCell,
-            let alarm = cell.alarm,
-            cell.isSelected == true
+         for index in selectedRows
          {
-            alarms.append(alarm.id)
+            if let cell = tableView.cellForRow(at: index) as? AlarmBrowserViewCell
+            {
+               if cell.state == .RESOLVED
+               {
+                  continue
+               }
+               cell.setState(state: .ACKNOWLEDGED)
+            }
+            alarms.append(filteredAlarms[index.row].id)
          }
+         Connection.sharedInstance?.modifyAlarm(alarms: alarms, action: AlarmAction.ACKNOWLEDGE)
       }
-      Connection.sharedInstance?.modifyAlarm(alarms: alarms, action: AlarmAction.ACKNOWLEDGE)
       self.tableView.setEditing(false, animated: true)
       setCancelButtonState(enabled: false)
    }
@@ -384,16 +385,18 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
    @objc func onResolvePressed()
    {
       var alarms = [Int]()
-      for cell in self.tableView.visibleCells
+      if let selectedRows = self.tableView.indexPathsForSelectedRows
       {
-         if let cell = cell as? AlarmBrowserViewCell,
-            let alarm = cell.alarm,
-            cell.isSelected == true
+         for index in selectedRows
          {
-            alarms.append(alarm.id)
+            if let cell = tableView.cellForRow(at: index) as? AlarmBrowserViewCell
+            {
+               cell.setState(state: .RESOLVED)
+            }
+            alarms.append(filteredAlarms[index.row].id)
          }
+         Connection.sharedInstance?.modifyAlarm(alarms: alarms, action: AlarmAction.RESOLVE)
       }
-      Connection.sharedInstance?.modifyAlarm(alarms: alarms, action: AlarmAction.RESOLVE)
       self.tableView.setEditing(false, animated: true)
       setCancelButtonState(enabled: false)
    }
@@ -401,16 +404,18 @@ class AlarmBrowserViewController: UITableViewController, UISearchBarDelegate
    @objc func onTerminatePressed()
    {
       var alarms = [Int]()
-      for cell in self.tableView.visibleCells
+      if let selectedRows = self.tableView.indexPathsForSelectedRows
       {
-         if let cell = cell as? AlarmBrowserViewCell,
-            let alarm = cell.alarm,
-            cell.isSelected == true
+         for index in selectedRows
          {
-            alarms.append(alarm.id)
+            alarms.append(filteredAlarms[index.row].id)
+            filteredAlarms.remove(at: index.row)
          }
+         self.tableView.beginUpdates()
+         self.tableView.deleteRows(at: self.tableView.indexPathsForSelectedRows!, with: .left)
+         self.tableView.endUpdates()
+         Connection.sharedInstance?.modifyAlarm(alarms: alarms, action: AlarmAction.TERMINATE)
       }
-      Connection.sharedInstance?.modifyAlarm(alarms: alarms, action: AlarmAction.TERMINATE)
       self.tableView.setEditing(false, animated: true)
       setCancelButtonState(enabled: false)
    }

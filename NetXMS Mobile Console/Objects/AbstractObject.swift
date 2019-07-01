@@ -206,6 +206,9 @@ enum ObjectStatus: Int
    case MAJOR = 3
    case CRITICAL = 4
    case UNKNOWN = 5
+   case UNMANAGED = 6
+   case DISABLED = 7
+   case TESTING = 8
    
    static func resolveObjectStatus(status: String) -> ObjectStatus
    {
@@ -221,6 +224,12 @@ enum ObjectStatus: Int
          return ObjectStatus.MAJOR
       case "CRITICAL":
          return ObjectStatus.CRITICAL
+      case "UNMANAGED":
+         return ObjectStatus.UNMANAGED
+      case "DISABLED":
+         return ObjectStatus.DISABLED
+      case "TESTING":
+         return ObjectStatus.TESTING
       default:
          return ObjectStatus.UNKNOWN
       }

@@ -61,6 +61,8 @@ class Connection: NSObject, URLSessionDelegate
    var handler: (([String : Any]?) -> Void)?
    var notificationWorkItem: DispatchWorkItem?
    var dataTask: URLSessionDataTask?
+   var notificationThread: BackgroundWorker?
+   var notificationSemaphore: DispatchSemaphore?
    
    // Views
    var loginView: LoginViewController?
@@ -125,7 +127,7 @@ class Connection: NSObject, URLSessionDelegate
       }
    }
    
-   func createRequest(requestData: RequestData) -> URLRequest?
+   func createRequest(requestData: RequestData, timeout: Int = 10) -> URLRequest?
    {
       var components = URLComponents(string: requestData.url)
       components?.queryItems = requestData.queryItems
@@ -147,7 +149,7 @@ class Connection: NSObject, URLSessionDelegate
          request.setValue(value, forHTTPHeaderField: key)
       }
       
-      request.timeoutInterval = 10
+      request.timeoutInterval = TimeInterval(timeout)
       return request
    }
    
@@ -158,12 +160,11 @@ class Connection: NSObject, URLSessionDelegate
    {
       let session = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: OperationQueue.main)
       dataTask = session.dataTask(with: request) { data, response, error in
-         if let data = data,
-            let response = response as? HTTPURLResponse
+         if let response = response as? HTTPURLResponse
          {
             if (400...511).contains(response.statusCode)
             {
-               print("[\(String(describing: request.httpMethod)) ERROR RESPONSE]: \(response)")
+               //print("[\(String(describing: request.httpMethod)) ERROR RESPONSE]: \(response)")
                if response.statusCode == 401 // Unauthorized
                {
                   self.relogin(request: request, handler: onSuccess)
@@ -174,18 +175,20 @@ class Connection: NSObject, URLSessionDelegate
                }
             }
             
+            if let data = data,
             let jsonData = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String : Any]
-            if let jsonData = jsonData
             {
                onSuccess(jsonData)
             }
          }
-         else if let error = error
+         else
          {
-            print("error: " + error.localizedDescription)
-            if let onFailure = onFailure
+            if let onFailure = onFailure,
+               let error = error
             {
+               print("error: " + error.localizedDescription)
                onFailure(error.localizedDescription)
+               self.notificationThread?.stop()
             }
          }
       }
@@ -203,10 +206,7 @@ class Connection: NSObject, URLSessionDelegate
          getAllObjects()
          getAllAlarms()
          getPredefinedGraphs()
-         if notificationWorkItem?.isCancelled ?? false
-         {
-            startNotificationHandler()
-         }
+         startNotificationHandler()
       }
    }
    
@@ -406,10 +406,7 @@ class Connection: NSObject, URLSessionDelegate
             }
          }
       }
-      DispatchQueue.main.async
-      {
-         self.sendNotificationRequest()
-      }
+      self.notificationSemaphore?.signal()
    }
    
    func onReceiveNotificationFailure(data: Any?)
@@ -418,14 +415,13 @@ class Connection: NSObject, URLSessionDelegate
       {
          if response.statusCode == 408
          {
-            sendNotificationRequest()
          }
       }
+      notificationSemaphore?.signal()
    }
    
    func sendNotificationRequest()
    {
-      print("send")
       if logoutStarted == true
       {
          return
@@ -435,7 +431,7 @@ class Connection: NSObject, URLSessionDelegate
       {
          var requestData = RequestData(url: "\(apiUrl)/notifications", method: "GET")
          requestData.fields.updateValue(String(describing: self.session?.handle), forKey: "Session-Id")
-         if let request = createRequest(requestData: requestData)
+         if let request = createRequest(requestData: requestData, timeout: 60)
          {
             sendRequest(request: request, onSuccess: onReceiveNotificationSuccess, onFailure: onReceiveNotificationFailure)
          }
@@ -444,7 +440,8 @@ class Connection: NSObject, URLSessionDelegate
    
    func stopNotificationHandler()
    {
-      notificationWorkItem?.cancel()
+      notificationThread?.stop()
+      self.notificationSemaphore?.signal()
    }
    
    /**
@@ -452,12 +449,31 @@ class Connection: NSObject, URLSessionDelegate
     */
    func startNotificationHandler()
    {
-      notificationWorkItem = DispatchWorkItem {
-         self.sendNotificationRequest()
+      if notificationThread == nil
+      {
+         notificationThread = BackgroundWorker()
+         notificationSemaphore = DispatchSemaphore(value: 0)
+         
+         notificationThread?.start
+         {
+            while !self.notificationThread!.isCanceled()
+            {
+               self.sendNotificationRequest()
+               self.notificationSemaphore?.wait()
+            }
+         }
       }
-      
-      let queue = DispatchQueue(label: "NotificationThread", qos: .background)
-      queue.async(execute: notificationWorkItem!)
+      else
+      {
+         notificationThread?.start
+         {
+            while !self.notificationThread!.isCanceled()
+            {
+               self.sendNotificationRequest()
+               self.notificationSemaphore?.wait()
+            }
+         }
+      }
    }
    
    /**
@@ -671,5 +687,50 @@ class Connection: NSObject, URLSessionDelegate
    func onStopObjectToolSuccess(jsonData: [String : Any]?) -> Void
    {
       
+   }
+}
+
+class BackgroundWorker: NSObject
+{
+   private var thread: Thread!
+   private var block: (()->Void)!
+   
+   @objc internal func runBlock() { block() }
+   
+   internal func start(_ block: @escaping () -> Void)
+   {
+      self.block = block
+      
+      let threadName = String(describing: self)
+         .components(separatedBy: .punctuationCharacters)[1]
+      
+      thread = Thread
+      { [weak self] in
+         while (self != nil && !self!.thread.isCancelled)
+         {
+            RunLoop.current.run(
+               mode: RunLoopMode.defaultRunLoopMode,
+               before: Date.distantFuture)
+         }
+         Thread.exit()
+      }
+      thread.name = "\(threadName)-\(UUID().uuidString)"
+      thread.start()
+      
+      perform(#selector(runBlock),
+              on: thread,
+              with: nil,
+              waitUntilDone: false,
+              modes: [RunLoopMode.defaultRunLoopMode.rawValue])
+   }
+   
+   public func isCanceled() -> Bool
+   {
+      return (thread == nil) || (thread.isCancelled)
+   }
+   
+   public func stop()
+   {
+      thread.cancel()
    }
 }

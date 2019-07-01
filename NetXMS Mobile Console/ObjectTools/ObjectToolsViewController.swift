@@ -26,12 +26,17 @@ class ObjectToolsViewController: UITableViewController, UISearchBarDelegate {
       else
       {
          self.title = root.displayName
-         list = getObjectList()
+         list = getToolList()
       }
       
       self.searchBar.delegate = self
       let searchBarHeight = searchBar.frame.size.height
       tableView.setContentOffset(CGPoint(x: 0, y: searchBarHeight), animated: false)
+   }
+   
+   func searchBarSearchButtonClicked(_ searchBar: UISearchBar)
+   {
+      searchBar.resignFirstResponder()
    }
    
    func onGetObjectToolsSuccess(jsonData: [String : Any]?) -> Void
@@ -42,7 +47,7 @@ class ObjectToolsViewController: UITableViewController, UISearchBarDelegate {
          self.root = ObjectToolFolder(json: rootData)
          self.title = "Object Tools"
          
-         self.list = getObjectList()
+         self.list = getToolList()
          
          DispatchQueue.main.async
          {
@@ -53,17 +58,20 @@ class ObjectToolsViewController: UITableViewController, UISearchBarDelegate {
    
    func refresh()
    {
-      list = getObjectList()
+      list = getToolList()
       self.tableView.reloadData()
    }
    
-   func getObjectList() -> [AnyObject]
+   func getToolList() -> [AnyObject]
    {
       var objects = [AnyObject]()
       
       for f in root.subfolders
       {
-         objects.append(f)
+         if !f.isEmpty()
+         {
+            objects.append(f)
+         }
       }
       for t in root.tools
       {
@@ -146,6 +154,7 @@ class ObjectToolsViewController: UITableViewController, UISearchBarDelegate {
          if let objectToolsVC = storyboard?.instantiateViewController(withIdentifier: "ObjectToolsViewController") as? ObjectToolsViewController
          {
             objectToolsVC.root = folder
+            objectToolsVC.objectId = self.objectId
             navigationController?.pushViewController(objectToolsVC, animated: true)
          }
       }
@@ -244,7 +253,7 @@ class ObjectToolsViewController: UITableViewController, UISearchBarDelegate {
       }
       else
       {
-         self.list = getObjectList().filter
+         self.list = getToolList().filter
          {
             (obj) -> Bool in
             if let tool = obj as? ObjectTool

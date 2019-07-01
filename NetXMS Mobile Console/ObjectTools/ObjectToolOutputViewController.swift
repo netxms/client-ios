@@ -10,12 +10,15 @@ import UIKit
 
 class ObjectToolOutputViewController: UIViewController
 {
+   @IBOutlet var statusView: UIView!
+   @IBOutlet var statusLabel: UILabel!
    @IBOutlet weak var textArea: UITextView!
    var uuid: UUID!
    var objectId: Int!
    var objectTool: ObjectTool!
    var inputFieldQuery = [String]()
    var streamId: Int!
+   var stopBarButton: UIBarButtonItem!
    
    override func viewDidLoad()
    {
@@ -24,11 +27,7 @@ class ObjectToolOutputViewController: UIViewController
       
       self.title = objectTool.displayName
       
-      let stopButton = UIButton(type: .system)
-      stopButton.frame = CGRect(x: 0, y: 0, width: 45, height: 45)
-      let stopBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.stop, target: self, action: #selector(ObjectToolOutputViewController.onStopButtonPressed(_:)))
-      stopBarButtonItem.tintColor = UIColor.red
-      self.navigationItem.rightBarButtonItem = stopBarButtonItem
+      setBarButtons()
       
       Connection.sharedInstance?.getObjectToolOutput(objectId: objectId, uuid: uuid, onSuccess: onReceiveOutputSuccess)
    }
@@ -51,14 +50,37 @@ class ObjectToolOutputViewController: UIViewController
          {
             Connection.sharedInstance?.getObjectToolOutput(objectId: objectId, uuid: uuid, onSuccess: onReceiveOutputSuccess)
          }
+         else
+         {
+            statusView.backgroundColor = UIColor.red
+            statusLabel.text = "Stopped"
+            stopBarButton.isEnabled = false
+         }
       }
    }
    
-   @IBAction func onStopButtonPressed(_ sender: Any)
+   func setBarButtons()
+   {
+      stopBarButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.stop, target: self, action: #selector(onStopButtonPressed))
+      stopBarButton.tintColor = UIColor.red
+      self.navigationItem.rightBarButtonItem = stopBarButton
+      
+      let refreshBarButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(onRefreshPressed))
+      refreshBarButton.tintColor = UIColor.blue
+      
+      self.setToolbarItems([refreshBarButton], animated: true)
+   }
+   
+   @objc func onStopButtonPressed()
    {
       Connection.sharedInstance?.stopObjectTool(objectId: objectId, uuid: uuid, streamId: streamId)
+      
+      statusView.backgroundColor = UIColor.red
+      statusLabel.text = "Stopped"
+      stopBarButton.isEnabled = false
    }
-   @IBAction func onRefreshPressed(_ sender: Any)
+   
+   @objc func onRefreshPressed()
    {
       Connection.sharedInstance?.stopObjectTool(objectId: objectId, uuid: uuid, streamId: streamId)
       
@@ -72,10 +94,13 @@ class ObjectToolOutputViewController: UIViewController
          let uuid  = jsonData["UUID"] as? String
       {
          DispatchQueue.main.async
-            {
-               self.uuid = UUID(uuidString: uuid)
-               self.textArea.text = ""
-               Connection.sharedInstance?.getObjectToolOutput(objectId: self.objectId, uuid: self.uuid, onSuccess: self.onReceiveOutputSuccess)
+         {
+            self.statusView.backgroundColor = UIColor.green
+            self.statusLabel.text = "Running"
+            self.stopBarButton.isEnabled = true
+            self.uuid = UUID(uuidString: uuid)
+            self.textArea.text = ""
+            Connection.sharedInstance?.getObjectToolOutput(objectId: self.objectId, uuid: self.uuid, onSuccess: self.onReceiveOutputSuccess)
          }
       }
    }

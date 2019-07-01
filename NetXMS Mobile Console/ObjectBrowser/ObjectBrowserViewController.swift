@@ -27,6 +27,11 @@ class ObjectBrowserViewController: UITableViewController, UISearchBarDelegate
       tableView.setContentOffset(CGPoint(x: 0, y: searchBarHeight), animated: false)
    }
    
+   func searchBarSearchButtonClicked(_ searchBar: UISearchBar)
+   {
+      searchBar.resignFirstResponder()
+   }
+   
    func sortObjects()
    {
        self.objects = self.objects.sorted(by: { (o1, o2) -> Bool in

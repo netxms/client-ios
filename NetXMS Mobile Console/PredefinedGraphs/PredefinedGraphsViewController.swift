@@ -24,7 +24,7 @@ class PredefinedGraphsViewController: UITableViewController, UISearchBarDelegate
          self.root = root
       }
       
-      title = root.name
+      title = (root.name == "[root]" ? "Graphs" : root.name)
       for f in root.subfolders
       {
          list.append(f)
@@ -44,7 +44,7 @@ class PredefinedGraphsViewController: UITableViewController, UISearchBarDelegate
       if let root = Connection.sharedInstance?.predefinedGraphRoot
       {
          self.root = root
-         title = root.name
+         title = (root.name == "[root]" ? "Graphs" : root.name)
          for f in root.subfolders
          {
             list.append(f)

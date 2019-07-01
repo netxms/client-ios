@@ -13,6 +13,7 @@
 		1104348F211199B7003DB91A /* LargeValueFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104348E211199B7003DB91A /* LargeValueFormatter.swift */; };
 		1106F3AB22A80251007194BE /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1106F3AA22A80251007194BE /* LocationViewController.swift */; };
 		1106F3B222A986BE007194BE /* icons8-cancel.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 1106F3B122A986BE007194BE /* icons8-cancel.pdf */; };
+		1106F3B422AE7D72007194BE /* GraphQueryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1106F3B322AE7D72007194BE /* GraphQueryViewController.swift */; };
 		110CE04521525086007CED7F /* ObjectToolViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110CE04421525086007CED7F /* ObjectToolViewCell.swift */; };
 		110CE049215274E8007CED7F /* ObjectTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110CE048215274E8007CED7F /* ObjectTool.swift */; };
 		1121601122A65956001538CE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1121601022A65956001538CE /* Assets.xcassets */; };
@@ -86,6 +87,8 @@
 		11C4259F2297E11F00008308 /* StatusCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4259E2297E11F00008308 /* StatusCodes.swift */; };
 		11DDCE6420D2561700CF2BB1 /* ObjectBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DDCE6320D2561700CF2BB1 /* ObjectBrowserViewController.swift */; };
 		11DDCE6620D257ED00CF2BB1 /* ObjectBrowserViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DDCE6520D257ED00CF2BB1 /* ObjectBrowserViewCell.swift */; };
+		11E6240822C6303600A775FF /* Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E6240722C6303600A775FF /* Tools.swift */; };
+		11E6240A22C6314D00A775FF /* BaseTableViewerTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E6240922C6314D00A775FF /* BaseTableViewerTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -205,6 +208,7 @@
 		1104348E211199B7003DB91A /* LargeValueFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeValueFormatter.swift; sourceTree = "<group>"; };
 		1106F3AA22A80251007194BE /* LocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
 		1106F3B122A986BE007194BE /* icons8-cancel.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "icons8-cancel.pdf"; sourceTree = "<group>"; };
+		1106F3B322AE7D72007194BE /* GraphQueryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQueryViewController.swift; sourceTree = "<group>"; };
 		110CE04421525086007CED7F /* ObjectToolViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectToolViewCell.swift; sourceTree = "<group>"; };
 		110CE048215274E8007CED7F /* ObjectTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectTool.swift; sourceTree = "<group>"; };
 		1121601022A65956001538CE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -281,6 +285,8 @@
 		11C4259E2297E11F00008308 /* StatusCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusCodes.swift; sourceTree = "<group>"; };
 		11DDCE6320D2561700CF2BB1 /* ObjectBrowserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectBrowserViewController.swift; sourceTree = "<group>"; };
 		11DDCE6520D257ED00CF2BB1 /* ObjectBrowserViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectBrowserViewCell.swift; sourceTree = "<group>"; };
+		11E6240722C6303600A775FF /* Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tools.swift; sourceTree = "<group>"; };
+		11E6240922C6314D00A775FF /* BaseTableViewerTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewerTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -472,6 +478,8 @@
 				1161F7BB203EAFE700B9C845 /* LaunchScreen.storyboard */,
 				1161F7BE203EAFE700B9C845 /* Info.plist */,
 				11C4259E2297E11F00008308 /* StatusCodes.swift */,
+				11E6240722C6303600A775FF /* Tools.swift */,
+				11E6240922C6314D00A775FF /* BaseTableViewerTableViewController.swift */,
 			);
 			path = "NetXMS Mobile Console";
 			sourceTree = "<group>";
@@ -513,6 +521,7 @@
 				11B67997210B269E005C8C4B /* LastValuesViewController.swift */,
 				11043453210F3543003DB91A /* LastValuesCell.swift */,
 				1148CC452150F6FE007005EC /* LastValuesChartController.swift */,
+				1106F3B322AE7D72007194BE /* GraphQueryViewController.swift */,
 			);
 			path = LastValues;
 			sourceTree = "<group>";
@@ -788,6 +797,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1106F3B422AE7D72007194BE /* GraphQueryViewController.swift in Sources */,
 				1160B6C021B53A690078EF27 /* ObjectToolsURLOutputViewController.swift in Sources */,
 				1137427620A4957600A80679 /* MainNavigationController.swift in Sources */,
 				1137427820A49C9D00A80679 /* MainViewController.swift in Sources */,
@@ -818,7 +828,9 @@
 				1161F7B3203EAFE700B9C845 /* AppDelegate.swift in Sources */,
 				11043454210F3543003DB91A /* LastValuesCell.swift in Sources */,
 				11C4259F2297E11F00008308 /* StatusCodes.swift in Sources */,
+				11E6240A22C6314D00A775FF /* BaseTableViewerTableViewController.swift in Sources */,
 				11283D6B214A759300EF4083 /* TimestampFormatter.swift in Sources */,
+				11E6240822C6303600A775FF /* Tools.swift in Sources */,
 				11C42593229550FD00008308 /* CredentialHistoryCell.swift in Sources */,
 				1192CCBA223FEC3800FB1DE1 /* ObjectToolFolderViewCell.swift in Sources */,
 				11283D6D214A7B1200EF4083 /* PredefinedGraphChartController.swift in Sources */,

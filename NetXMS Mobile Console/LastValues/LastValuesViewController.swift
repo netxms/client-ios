@@ -26,13 +26,37 @@ class LastValuesViewController: UITableViewController, UISearchBarDelegate
       self.title = "Last Values"
       Connection.sharedInstance?.getLastValues(objectId: objectId, onSuccess: onGetLastValuesSuccess)
       
-      let actionButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(onActionPressed))
-      actionButtonItem.tintColor = UIColor.blue
-      self.setToolbarItems([actionButtonItem], animated: true)
+      setToolbarButtons()
       
       self.searchBar.delegate = self
       let searchBarHeight = searchBar.frame.size.height
       tableView.setContentOffset(CGPoint(x: 0, y: searchBarHeight), animated: false)
+   }
+   
+   func setToolbarButtons()
+   {
+      let actionImage = UIGraphicsImageRenderer(size: CGSize(width: 40, height: 40)).image { _ in
+         UIImage(imageLiteralResourceName: "Graph").draw(in: CGRect(x: 0, y: 0, width: 40, height: 40))
+      }
+      
+      let actionButton = UIButton.init(type: .custom)
+      actionButton.addTarget(self, action: #selector(onActionPressed), for: .touchUpInside)
+      let actionButtonView = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+      actionButton.frame = actionButtonView.frame
+      let actionImageView = UIImageView(frame: CGRect(x: actionButtonView.frame.minX, y: 0, width: 40, height: 40))
+      actionImageView.image = actionImage
+      actionImageView.setImageColor(color: UIColor.black)
+      actionButtonView.addSubview(actionButton)
+      actionButtonView.addSubview(actionImageView)
+      let actionBarButton = UIBarButtonItem.init(customView: actionButtonView)
+      
+      let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+      self.setToolbarItems([actionBarButton, flexibleSpace], animated: true)
+   }
+   
+   func searchBarSearchButtonClicked(_ searchBar: UISearchBar)
+   {
+      searchBar.resignFirstResponder()
    }
    
    func onGetLastValuesSuccess(jsonData: [String : Any]?) -> Void

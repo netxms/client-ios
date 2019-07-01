@@ -100,26 +100,37 @@ class ObjectBrowserViewCell: UITableViewCell
    {
       if let object = object
       {
+         severityLabel.backgroundColor = UIColor.clear
+         severityLabel.layer.cornerRadius = 4
          switch object.status
          {
          case .NORMAL:
             severityLabel.text = "Normal"
-            severityLabel.textColor = UIColor(red: 0, green: 192, blue: 0, alpha: 100)
+            severityLabel.layer.backgroundColor = #colorLiteral(red: 0, green: 0.6724151373, blue: 0, alpha: 1)
          case .WARNING:
             severityLabel.text = "Warning"
-            severityLabel.textColor = UIColor(red: 0, green: 255, blue: 255, alpha: 100)
+            severityLabel.layer.backgroundColor = #colorLiteral(red: 0, green: 0.7642611861, blue: 0.7715749145, alpha: 1)
          case .MINOR:
             severityLabel.text = "Minor"
-            severityLabel.textColor = UIColor(red: 231, green: 226, blue: 0, alpha: 100)
+            severityLabel.layer.backgroundColor = #colorLiteral(red: 0.8109195232, green: 0.7863419056, blue: 0, alpha: 1)
          case .MAJOR:
             severityLabel.text = "Major"
-            severityLabel.textColor = UIColor(red: 255, green: 0, blue: 0, alpha: 100)
+            severityLabel.layer.backgroundColor = #colorLiteral(red: 0.8439414501, green: 0.4790760279, blue: 0, alpha: 1)
          case .CRITICAL:
             severityLabel.text = "Critical"
-            severityLabel.textColor = UIColor(red: 192, green: 0, blue: 0, alpha: 100)
+            severityLabel.layer.backgroundColor = #colorLiteral(red: 0.7659458518, green: 0.1022023931, blue: 0, alpha: 1)
          case .UNKNOWN:
             severityLabel.text = "Unknown"
-            severityLabel.textColor = UIColor(red: 0, green: 0, blue: 128, alpha: 100)
+            severityLabel.layer.backgroundColor = #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)
+         case .UNMANAGED:
+            severityLabel.text = "Unmanaged"
+            severityLabel.layer.backgroundColor = #colorLiteral(red: 0.5741485357, green: 0.5741624236, blue: 0.574154973, alpha: 1)
+         case .DISABLED:
+            severityLabel.text = "Disabled"
+            severityLabel.layer.backgroundColor = #colorLiteral(red: 0.1674376428, green: 0.1674425602, blue: 0.167439878, alpha: 1)
+         case .TESTING:
+            severityLabel.text = "Testing"
+            severityLabel.layer.backgroundColor = #colorLiteral(red: 0.5813295245, green: 0.5770503879, blue: 0.4152996242, alpha: 1)
          }
       }
    }

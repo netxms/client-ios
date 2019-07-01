@@ -185,6 +185,8 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
       
       Connection.sharedInstance?.getLastValues(objectId: object.objectId, onSuccess: onGetLastValuesSuccess)
       NotificationCenter.default.addObserver(self, selector: #selector(onAlarmChanged), name: .alarmsChanged, object: nil)
+      NotificationCenter.default.addObserver(self, selector: #selector(onAlarmChanged), name: .alarmsTerminated, object: nil)
+      NotificationCenter.default.addObserver(self, selector: #selector(onAlarmChanged), name: .alarmsResolved, object: nil)
    }
    
    func populateAlarmTable()
@@ -329,21 +331,38 @@ class ObjectDetailsViewController: UIViewController, UITableViewDataSource, UITa
       tableView.deselectRow(at: indexPath, animated: true)
    }
    
-   func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]?
+   func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
    {
       if tableView == self.alarmsTable
       {
-         let acknowledgeAction = UITableViewRowAction(style: .normal, title: "Acknowledge") { (rowAction, indexPath) in
+         let acknowledge =  UIContextualAction(style: .normal, title: nil) { action,view,completionHandler in
             Connection.sharedInstance?.modifyAlarm(alarmId: self.alarms[indexPath.row].id, action: AlarmAction.ACKNOWLEDGE)
+            if let cell = tableView.cellForRow(at: indexPath) as? AlarmBrowserViewCell
+            {
+               if cell.state != .RESOLVED
+               {
+                  cell.setState(state: .ACKNOWLEDGED)
+               }
+            }
+            tableView.setEditing(false, animated: true)
          }
-         let terminateAction = UITableViewRowAction(style: .default, title: "Terminate") { (rowAction, indexPath) in
+         acknowledge.image = UIGraphicsImageRenderer(size: CGSize(width: 50, height: 50)).image { _ in
+            UIImage(imageLiteralResourceName: "acknowledged").draw(in: CGRect(x: 0, y: 0, width: 50, height: 50))
+         }
+         acknowledge.backgroundColor = UIColor.green
+         
+         let terminate =  UIContextualAction(style: .normal, title: nil) { action,view,completionHandler in
             Connection.sharedInstance?.modifyAlarm(alarmId: self.alarms[indexPath.row].id, action: AlarmAction.TERMINATE)
          }
+         terminate.image = UIGraphicsImageRenderer(size: CGSize(width: 50, height: 50)).image { _ in
+            UIImage(imageLiteralResourceName: "terminated").draw(in: CGRect(x: 0, y: 0, width: 50, height: 50))
+         }
+         terminate.backgroundColor = UIColor.red
          
-         return [acknowledgeAction, terminateAction]
+         return UISwipeActionsConfiguration(actions: [acknowledge, terminate])
       }
       
-      return [UITableViewRowAction]()
+      return UISwipeActionsConfiguration(actions: [])
    }
    
    @IBAction func onLastValuesButtonPressed(_ sender: Any)

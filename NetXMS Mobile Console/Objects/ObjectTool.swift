@@ -111,21 +111,36 @@ class ObjectToolFolder
       self.name = json["name"] as? String ?? ""
       self.displayName = json["displayName"] as? String ?? ""
       
-      if let tools = json["tools"] as? [String : Any]
+      if let tools = json["tools"] as? [String : [String : Any]]
       {
          for t in tools.values
          {
-            self.tools.append(ObjectTool(json: t as? [String : Any] ?? [:]))
+            let type = ObjectToolType.resolveObjectToolType(type: t["type"] as? Int ?? 0)
+            if type == .TYPE_ACTION || type == .TYPE_SERVER_COMMAND || type == .TYPE_URL
+            {
+               self.tools.append(ObjectTool(json: t))
+            }
          }
       }
       
-      if let subfolders = json["subfolders"] as? [String : Any]
+      if let subfolders = json["subfolders"] as? [String : [String : Any]]
       {
          for s in subfolders.values
          {
-            self.subfolders.append(ObjectToolFolder(json: s as? [String : Any] ?? [:]))
+            self.subfolders.append(ObjectToolFolder(json: s))
          }
       }
+   }
+   
+   func isEmpty() -> Bool
+   {
+      var result = tools.isEmpty
+      for folder in subfolders
+      {
+         result = folder.isEmpty()
+      }
+      
+      return result
    }
 }
 
